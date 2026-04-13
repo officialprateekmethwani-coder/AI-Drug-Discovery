@@ -1,0 +1,328 @@
+#!/usr/bin/env python3
+"""
+Generate PowerPoint presentations for AI for Drug Discovery course (Weeks 1-4).
+Run: python generate_slides.py
+Requirements: pip install python-pptx
+"""
+import os
+from pptx import Presentation
+from pptx.util import Inches, Pt, Emu
+from pptx.dml.color import RGBColor
+from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
+from pptx.enum.shapes import MSO_SHAPE
+
+NAVY = RGBColor(23, 55, 94)
+TEAL = RGBColor(31, 119, 180)
+DARK_SLATE = RGBColor(44, 62, 80)
+WHITE = RGBColor(255, 255, 255)
+LIGHT_GRAY = RGBColor(240, 240, 240)
+BODY_TEXT = RGBColor(50, 50, 50)
+ACCENT_GREEN = RGBColor(39, 174, 96)
+SLIDE_WIDTH = Inches(13.333)
+SLIDE_HEIGHT = Inches(7.5)
+
+def new_prs():
+    prs = Presentation()
+    prs.slide_width = SLIDE_WIDTH
+    prs.slide_height = SLIDE_HEIGHT
+    return prs
+
+def _add_bg(slide, color):
+    fill = slide.background.fill
+    fill.solid()
+    fill.fore_color.rgb = color
+
+def _add_textbox(slide, left, top, width, height, text, font_size=18, bold=False, color=BODY_TEXT, alignment=PP_ALIGN.LEFT):
+    txBox = slide.shapes.add_textbox(left, top, width, height)
+    tf = txBox.text_frame
+    tf.word_wrap = True
+    p = tf.paragraphs[0]
+    p.text = text
+    p.font.size = Pt(font_size)
+    p.font.bold = bold
+    p.font.color.rgb = color
+    p.font.name = "Calibri"
+    p.alignment = alignment
+    return tf
+
+def _add_slide_number(slide, num):
+    _add_textbox(slide, Inches(12.3), Inches(7.0), Inches(0.8), Inches(0.4), str(num), font_size=10, color=RGBColor(150,150,150), alignment=PP_ALIGN.RIGHT)
+
+def _add_bullets(tf, bullets, font_size=18, color=BODY_TEXT):
+    for i, bullet in enumerate(bullets):
+        if i == 0:
+            p = tf.paragraphs[0]
+        else:
+            p = tf.add_paragraph()
+        p.text = bullet
+        p.font.size = Pt(font_size)
+        p.font.color.rgb = color
+        p.font.name = "Calibri"
+        p.space_after = Pt(8)
+
+def _set_notes(slide, notes_text):
+    slide.notes_slide.notes_text_frame.text = notes_text
+
+def make_title_slide(prs, title, subtitle, week_num, course_name, notes):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    _add_bg(slide, NAVY)
+    _add_textbox(slide, Inches(0.8), Inches(0.6), Inches(3), Inches(0.6), f"WEEK {week_num}", font_size=16, bold=True, color=TEAL)
+    _add_textbox(slide, Inches(0.8), Inches(1.8), Inches(11), Inches(2), title, font_size=44, bold=True, color=WHITE)
+    _add_textbox(slide, Inches(0.8), Inches(4.0), Inches(11), Inches(1), subtitle, font_size=22, color=LIGHT_GRAY)
+    _add_textbox(slide, Inches(0.8), Inches(6.2), Inches(5), Inches(0.5), course_name, font_size=14, color=TEAL)
+    _set_notes(slide, notes)
+
+def make_section_divider(prs, section_title, slide_num, notes, subtitle=""):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    _add_bg(slide, TEAL)
+    _add_textbox(slide, Inches(1), Inches(2.5), Inches(11), Inches(1.5), section_title, font_size=40, bold=True, color=WHITE, alignment=PP_ALIGN.CENTER)
+    if subtitle:
+        _add_textbox(slide, Inches(1), Inches(4.2), Inches(11), Inches(1), subtitle, font_size=20, color=WHITE, alignment=PP_ALIGN.CENTER)
+    _add_slide_number(slide, slide_num)
+    _set_notes(slide, notes)
+
+def make_content_slide(prs, title, bullets, slide_num, notes):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    shape = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, SLIDE_WIDTH, Inches(1.1))
+    shape.fill.solid()
+    shape.fill.fore_color.rgb = NAVY
+    shape.line.fill.background()
+    _add_textbox(slide, Inches(0.6), Inches(0.15), Inches(12), Inches(0.8), title, font_size=28, bold=True, color=WHITE)
+    txBox = slide.shapes.add_textbox(Inches(0.8), Inches(1.4), Inches(11.5), Inches(5.5))
+    tf = txBox.text_frame
+    tf.word_wrap = True
+    _add_bullets(tf, bullets, font_size=20, color=BODY_TEXT)
+    _add_slide_number(slide, slide_num)
+    _set_notes(slide, notes)
+
+def make_two_column_slide(prs, title, left_title, left_bullets, right_title, right_bullets, slide_num, notes):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    shape = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, 0, 0, SLIDE_WIDTH, Inches(1.1))
+    shape.fill.solid()
+    shape.fill.fore_color.rgb = NAVY
+    shape.line.fill.background()
+    _add_textbox(slide, Inches(0.6), Inches(0.15), Inches(12), Inches(0.8), title, font_size=28, bold=True, color=WHITE)
+    _add_textbox(slide, Inches(0.8), Inches(1.3), Inches(5.5), Inches(0.5), left_title, font_size=22, bold=True, color=TEAL)
+    txL = slide.shapes.add_textbox(Inches(0.8), Inches(1.9), Inches(5.5), Inches(5))
+    tfL = txL.text_frame; tfL.word_wrap = True
+    _add_bullets(tfL, left_bullets, font_size=18)
+    _add_textbox(slide, Inches(7.0), Inches(1.3), Inches(5.5), Inches(0.5), right_title, font_size=22, bold=True, color=TEAL)
+    txR = slide.shapes.add_textbox(Inches(7.0), Inches(1.9), Inches(5.5), Inches(5))
+    tfR = txR.text_frame; tfR.word_wrap = True
+    _add_bullets(tfR, right_bullets, font_size=18)
+    _add_slide_number(slide, slide_num)
+    _set_notes(slide, notes)
+
+def make_discussion_slide(prs, question, context_bullets, slide_num, notes):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    _add_bg(slide, DARK_SLATE)
+    _add_textbox(slide, Inches(1), Inches(0.5), Inches(11), Inches(0.6), "DISCUSSION QUESTION", font_size=18, bold=True, color=TEAL)
+    _add_textbox(slide, Inches(1), Inches(1.5), Inches(11), Inches(2), question, font_size=30, bold=True, color=WHITE, alignment=PP_ALIGN.CENTER)
+    if context_bullets:
+        txBox = slide.shapes.add_textbox(Inches(1.5), Inches(4.0), Inches(10), Inches(3))
+        tf = txBox.text_frame; tf.word_wrap = True
+        _add_bullets(tf, context_bullets, font_size=18, color=LIGHT_GRAY)
+    _add_slide_number(slide, slide_num)
+    _set_notes(slide, notes)
+
+def make_takeaway_slide(prs, takeaways, week_num, slide_num, notes):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    _add_bg(slide, NAVY)
+    _add_textbox(slide, Inches(1), Inches(0.5), Inches(11), Inches(0.8), f"KEY TAKEAWAYS - WEEK {week_num}", font_size=28, bold=True, color=WHITE, alignment=PP_ALIGN.CENTER)
+    txBox = slide.shapes.add_textbox(Inches(1.5), Inches(1.8), Inches(10), Inches(5))
+    tf = txBox.text_frame; tf.word_wrap = True
+    _add_bullets(tf, takeaways, font_size=22, color=WHITE)
+    _add_slide_number(slide, slide_num)
+    _set_notes(slide, notes)
+
+def make_story_slide(prs, title, story_text, slide_num, notes):
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    _add_bg(slide, DARK_SLATE)
+    _add_textbox(slide, Inches(1), Inches(0.5), Inches(11), Inches(0.7), title, font_size=26, bold=True, color=ACCENT_GREEN)
+    _add_textbox(slide, Inches(1.2), Inches(1.6), Inches(10.5), Inches(5.2), story_text, font_size=20, color=WHITE)
+    _add_slide_number(slide, slide_num)
+    _set_notes(slide, notes)
+
+
+# ===== WEEK 1 =====
+def generate_week1():
+    prs = new_prs()
+    n = 0
+    n += 1
+    make_title_slide(prs, "Introduction & The Drug Discovery Pipeline", "From bench to bedside - and how AI is rewriting the rules", 1, "AI for Drug Discovery", notes="Welcome everyone to AI for Drug Discovery! Take a moment to introduce yourself and your background. Explain that this is a 7-week course plus a project week. The goal is to give students hands-on skills in applying ML/AI to pharmaceutical research. Today we cover the big picture: what drug discovery looks like, why it is so hard, and where AI changes the game. Spend about 2 minutes on introductions. Ask students: how many of you have a chemistry background? How many CS? This diversity is exactly what modern drug discovery teams look like.")
+    n += 1
+    make_content_slide(prs, "Course Roadmap - 7 Weeks + Project", ["Week 1: Introduction & Drug Discovery Pipeline (TODAY)", "Week 2: Molecular Representation & Baseline ML", "Week 3: Model Evaluation & Interpretability", "Week 4: Deep Learning & Graph Neural Networks", "Week 5: Generative AI for Molecule Design", "Week 6: Protein Targets & Binding Prediction", "Week 7: Ethics, Regulation & Project Workshop", "Week 8: Group Project Exam (Presentation + Code + Report)", "", "Assessment: Implementation 40% | Scientific reasoning 25% | Evaluation 20% | Presentation 15%"], n, notes="Walk through the roadmap quickly, about 2 minutes. Emphasize that the course is hands-on: every week has a practical coding session. Tell students they will work in groups of 3-4 for the final project and can choose from QSAR prediction, GNN-based activity prediction, generative molecule design, or binding affinity modeling. Groups should start forming informally over the next few weeks. All code will be in Python and Jupyter notebooks, primarily using RDKit, scikit-learn, PyTorch, and DeepChem. No prior chemistry knowledge is required.")
+    n += 1
+    make_content_slide(prs, "The Brutal Reality of Drug Discovery", ["Average time to market: 12-15 years", "Average cost: $2.6 billion per approved drug (DiMasi et al., 2016, J. Health Economics)", "Success rate from Phase I to approval: ~7.9% (Wong et al., 2019, Biostatistics)", "Over 90% of drug candidates fail in clinical trials", "Only ~14% of drugs entering Phase I get FDA approval", "", "\"The most expensive experiment in science is a failed clinical trial.\""], n, notes="Spend 3-4 minutes here. Let these numbers sink in. Ask students: does anyone know how much a single Phase III clinical trial costs? Answer: $50-100M+. The DiMasi 2016 study in the Journal of Health Economics is the landmark reference for drug development costs. The Wong et al. 2019 paper in Biostatistics analyzed 406,038 entries from ClinicalTrials.gov. Point out that for every drug that reaches patients, thousands of candidates were tested and discarded. This is why even small improvements in efficiency from AI could save billions. Transition: So where exactly does it go wrong?")
+    n += 1
+    make_content_slide(prs, "Traditional Drug Discovery Pipeline", ["1. TARGET IDENTIFICATION - Find a biological target (protein, enzyme, receptor)", "2. TARGET VALIDATION - Confirm the target is relevant to the disease", "3. HIT DISCOVERY - Screen millions of compounds (High-Throughput Screening)", "4. LEAD OPTIMIZATION - Improve hits for potency, selectivity, ADMET", "5. PRECLINICAL - Animal studies for safety and efficacy", "6. PHASE I - Safety in healthy volunteers (20-100 people)", "7. PHASE II - Efficacy in patients (100-300 people)", "8. PHASE III - Large-scale trials (1,000-3,000+ people)", "9. FDA REVIEW & APPROVAL", "10. POST-MARKET SURVEILLANCE (Phase IV)"], n, notes="Walk through each step in 4-5 minutes. At HIT DISCOVERY, mention that traditional HTS screens 1-2 million compounds physically, incredibly expensive. At LEAD OPTIMIZATION, mention that medicinal chemists manually tweak molecules, this is where AI has huge potential. ADMET stands for Absorption, Distribution, Metabolism, Excretion, Toxicity. Finding a drug is like finding a needle in a haystack, except the haystack is the size of a galaxy. Chemical space is estimated at 10^60 drug-like molecules. Transition: So what goes wrong?")
+    n += 1
+    make_two_column_slide(prs, "Where Drug Candidates Fail", "Clinical Failure Reasons", ["Lack of efficacy: ~40-50%", "Safety / toxicity: ~30%", "Poor pharmacokinetics: ~10%", "Commercial reasons: ~10%", "Other: ~5%"], "Infamous Failures", ["Vioxx (rofecoxib) - withdrawn 2004, cardiac risk", "Thalidomide (1960s) - birth defects", "BIA 10-2474 (2016) - Phase I death in France", "Pfizer torcetrapib - $800M Phase III failure", "Eli Lilly semagacestat - worsened Alzheimer's"], n, notes="Spend 3-4 minutes here. The left column shows aggregate statistics from Kola & Landis (2004, Nature Reviews Drug Discovery). On the right, give brief stories: Vioxx was a blockbuster painkiller withdrawn after ~88,000 estimated cardiac events. Torcetrapib raised HDL cholesterol as intended but also raised blood pressure, $800M lost. These failures are not just financial, they affect patients. This is WHY we need better predictive tools. Ask students: can you think of other drug safety scandals? Transition: Now let me tell you an inspiring story.")
+    n += 1
+    make_story_slide(prs, "David Willson's mRNA Vaccine for His Dog", "In 2024, David Willson's beloved dog was diagnosed with cancer.\n\nRather than accept the prognosis, Willson worked with his veterinarian to design a personalized mRNA vaccine targeting his dog's specific tumor antigens.\n\nThe approach: sequence the tumor, identify neoantigens, design mRNA encoding those antigens, and inject it to train the dog's immune system.\n\nThe story went viral, sparking global conversation about personalized medicine.\n\nThis is the same technology behind COVID-19 vaccines (Moderna, BioNTech/Pfizer) now being applied to individual patients and even pets.\n\nKey insight: The tools for personalized medicine are becoming accessible. AI accelerates every step, from neoantigen prediction to vaccine design.", n, notes="This is your hook story, spend 4-5 minutes here and make it personal. David Willson's story went viral in 2024. He leveraged mRNA technology to create a personalized cancer vaccine for his dog, working with his veterinarian. The point is NOT that everyone should make DIY vaccines, there are serious safety and regulatory considerations. The point IS that the fundamental technologies (sequencing, mRNA design, neoantigen prediction) are becoming accessible and affordable. AI plays a role at every step: predicting which neoantigens will elicit an immune response, optimizing mRNA sequences for stability and expression, and modeling immune responses. Connect this to the course: by the end, students will understand the AI/ML methods that power these advances.")
+    n += 1
+    make_section_divider(prs, "Enter AI: The Game Changer", n, notes="Quick transition slide, 30 seconds. Tell students: we have seen the problem. It is slow, expensive, and risky. Now let us see how AI is fundamentally changing the game. Major pharma companies (Pfizer, Novartis, AstraZeneca, Roche) are all investing heavily in AI. Startups like Insilico Medicine, Recursion Pharmaceuticals, and Isomorphic Labs are dedicated AI drug discovery companies.", subtitle="How machine learning is reshaping pharmaceutical R&D")
+    n += 1
+    make_content_slide(prs, "Where AI Fits in the Drug Discovery Pipeline", ["Target Identification - NLP on literature, network biology, multi-omics", "Virtual Screening - Score millions of compounds in silico (vs. months in HTS)", "Lead Optimization - Predict ADMET, suggest modifications, multi-objective optimization", "De novo Drug Design - Generate entirely new molecules with desired properties", "Clinical Trial Optimization - Patient stratification, endpoint prediction", "Repurposing - Find new uses for existing approved drugs (e.g., Baricitinib for COVID-19)", "", "AI can reduce timelines by 2-4 years and costs by 30-50% (McKinsey, 2021)"], n, notes="Spend 4-5 minutes on this slide. Go through each bullet with a real example. Virtual screening: BenevolentAI used AI to identify baricitinib as a potential COVID-19 treatment in Feb 2020, later validated in clinical trials and received FDA emergency use authorization. Lead optimization: Relay Therapeutics uses molecular dynamics + ML. De novo design: Insilico Medicine designed a novel drug candidate from scratch using AI. Clinical trials: Unlearn.AI creates digital twins to reduce control group sizes. AI does not replace wet-lab experiments, it prioritizes them.")
+    n += 1
+    make_content_slide(prs, "Case Study: Insilico Medicine ISM001-055", ["First AI-designed drug to reach Phase II clinical trials (2023)", "Target: Idiopathic Pulmonary Fibrosis (IPF)", "AI identified a novel target (TNIK) AND designed the molecule", "Timeline: Target to preclinical candidate in 18 months (vs. typical 4-5 years)", "Cost: ~$2.6M (vs. typical $100M+)", "Published: Ren et al. (2024), Chemical Science", "", "Key AI methods used:", "  PandaOmics - target identification from multi-omics data", "  Chemistry42 - generative chemistry for molecule design", "  InClinico - clinical trial outcome prediction"], n, notes="Spend 3-4 minutes on this landmark case. Insilico Medicine, founded by Alex Zhavoronkov, is based in Hong Kong. ISM001-055 targets TNIK (TRAF2 and NCK-interacting kinase), a novel target for IPF that was not previously known to be relevant. The AI both discovered the target AND designed the drug, end-to-end AI-driven discovery. The cost comparison is staggering: $2.6M vs. $100M+. Ren F. et al. (2024) Chemical Science. Ask: what do you think the biggest challenge is in translating AI-designed drugs to the clinic?")
+    n += 1
+    make_content_slide(prs, "AlphaFold2: The Protein Folding Revolution", ["Protein structure prediction - a 50-year grand challenge in biology", "CASP14 (2020): AlphaFold2 achieved accuracy comparable to experimental methods", "Jumper et al. (2021), Nature - most-cited paper of the decade", "", "Impact on drug discovery:", "  200+ million protein structures predicted (AlphaFold DB)", "  Structure-based drug design now possible for undruggable targets", "  Faster understanding of disease mechanisms", "", "AlphaFold3 (2024): predicts protein-ligand, protein-DNA, protein-RNA complexes", "Isomorphic Labs (DeepMind spin-off) - applying this directly to drug design"], n, notes="AlphaFold is probably the most famous AI success story in biology. Spend 3 minutes here. Jumper J. et al. (2021) Highly accurate protein structure prediction with AlphaFold, Nature 596:583-589, won the 2024 Nobel Prize in Chemistry for Demis Hassabis and John Jumper. AlphaFold3 (Abramson et al. 2024, Nature) extends to protein-ligand complexes, directly relevant to drug design. We will revisit protein structures in Week 6.")
+    n += 1
+    make_section_divider(prs, "Molecular Data Types", n, notes="Transition: Now that we have seen the big picture, let us get technical. How do we actually represent molecules for a computer? We will cover SMILES, bioactivity data, and protein information.", subtitle="How do we represent molecules for computers?")
+    n += 1
+    make_content_slide(prs, "SMILES: Simplified Molecular-Input Line-Entry System", ["A way to write molecular structures as text strings", "Invented by David Weininger (1988), J. Chem. Inf. Comput. Sci. 28:31-36", "", "Examples:", "  Water: O", "  Ethanol: CCO", "  Aspirin: CC(=O)Oc1ccccc1C(=O)O", "  Caffeine: Cn1c(=O)c2c(ncn2C)n(C)c1=O", "  Ibuprofen: CC(C)Cc1ccc(cc1)C(C)C(=O)O", "", "Why SMILES matters: compact, human-readable, machine-parseable", "One molecule can have multiple valid SMILES (canonical vs. random)"], n, notes="Spend 3-4 minutes on SMILES. Key rules: atoms are letters, single bonds are implicit, double bonds =, triple bonds #, branches in parentheses, rings with number pairs. Lowercase letters mean aromatic atoms. The Weininger 1988 paper is the original reference. We will go much deeper into SMILES in Week 2. For now, just get comfortable with the idea that molecules can be written as strings for machine learning models. Ask: can anyone guess what c1ccccc1 represents? It is benzene!")
+    n += 1
+    make_content_slide(prs, "Bioactivity Data: Measuring Drug-Target Interactions", ["How well does a molecule interact with its biological target?", "", "Key measures:", "  IC50 - Concentration that inhibits 50% of target activity", "  Ki - Binding affinity constant (inhibition constant)", "  EC50 - Concentration that produces 50% of maximum effect", "  Kd - Dissociation constant (binding strength)", "", "Typically reported as pIC50 = -log10(IC50) for easier modeling", "Higher pIC50 = more potent compound", "", "Key databases: ChEMBL (>2.4M compounds), PubChem (>110M), BindingDB", "Reference: Gaulton et al. (2017), Nucleic Acids Research 45:D986-D994"], n, notes="Spend 3 minutes explaining bioactivity measures. Use an analogy: IC50 is like asking how much of this molecule do I need to shut down 50% of the enzyme? Lower IC50 = more potent = better drug. We convert to pIC50 because it makes the numbers easier to work with. A pIC50 of 8 means IC50 = 10nM, that is a very potent drug candidate. ChEMBL maintained by the European Bioinformatics Institute is the gold standard. We will use ChEMBL data extensively in our practicals.")
+    n += 1
+    make_two_column_slide(prs, "Key Public Databases for Drug Discovery", "Molecular / Chemical", ["ChEMBL - curated bioactivity data", "PubChem - largest public chemistry DB", "ZINC - purchasable compounds for screening", "DrugBank - approved drug information", "MoleculeNet - benchmark datasets for ML"], "Biological / Protein", ["UniProt - protein sequences & annotation", "PDB - experimental 3D structures", "AlphaFold DB - predicted structures", "STRING - protein-protein interactions", "KEGG / Reactome - biological pathways"], n, notes="Reference slide, go through quickly in 2 minutes. Emphasize that one of the great things about drug discovery research is that so much data is publicly available. MoleculeNet (Wu et al. 2018, Chemical Science) provides standardized benchmarks. Students should bookmark ChEMBL and MoleculeNet.")
+    n += 1
+    make_content_slide(prs, "From Neurons to Molecules: The Computational SpikerBox", ["The SpikerBox (Backyard Brains) - records real neural action potentials", "Marzullo et al. (2012), Advances in Physiology Education 36:2-14", "", "Why is this relevant to drug discovery?", "  Ion channels are major drug targets (~18% of approved drugs)", "  Neural signals are driven by the same ion channels drugs modulate", "  The recording paradigm: biological signal -> digitize -> features -> model", "", "Same computational pipeline in drug discovery:", "  Molecular structure -> fingerprint -> features -> ML model -> prediction", "", "The instructor's research: 512-channel ECoG brain-computer interfaces", "  (FUTRUE Neurosciences - same ML pipeline, different data domain!)"], n, notes="Spend 4-5 minutes here. This is a unique connection point. If you have a SpikerBox, this is the moment for a live demo. Show a spike train recording: voltage trace over time, with action potentials. Then show a dose-response curve: drug concentration vs. biological response. Both are SIGNAL to FEATURES to MODEL problems. The SpikerBox was developed by Backyard Brains (backyardbrains.com). Marzullo et al. 2012 published the original educational paper. Ion channel drugs include: local anesthetics (sodium channel blockers), anti-epileptics. hERG channel toxicity (cardiac risk) is one of the most common reasons drugs fail.")
+    n += 1
+    make_content_slide(prs, "Introduction to RDKit", ["RDKit - open-source cheminformatics library (C++ core, Python bindings)", "Landrum, G. (2006-2024). https://www.rdkit.org", "", "What can RDKit do?", "  Parse SMILES strings into molecular objects", "  Calculate molecular properties (MW, LogP, HBD, HBA, TPSA)", "  Generate molecular fingerprints (Morgan/ECFP, RDKit, MACCS)", "  Substructure searching and molecular similarity", "  2D and 3D molecular visualization", "", "Installation: pip install rdkit", "We will use RDKit in EVERY week of this course"], n, notes="Spend 2-3 minutes on RDKit. Created by Greg Landrum at Novartis, now maintained by a large open-source community. Think of RDKit as the NumPy of chemistry. In today's practical, we will install it and use it to load molecules, calculate properties, and draw structures. RDKit converts SMILES strings into rich molecular objects that we can compute features from. This is the bridge between chemistry and machine learning.")
+    n += 1
+    make_content_slide(prs, "Today's Practical: Explore Molecules with RDKit", ["Open the Week 1 Jupyter Notebook: week1_introduction/Week1_Practical.ipynb", "", "What we will do:", "  1. Install and import RDKit in Google Colab", "  2. Load a molecular dataset from ChEMBL (EGFR inhibitors)", "  3. Parse SMILES and visualize molecules", "  4. Calculate molecular properties (MW, LogP, number of rings, etc.)", "  5. Plot property distributions", "  6. Compare drug-like vs. non-drug-like molecules", "", "Time: ~60 minutes", "Work in pairs - discuss what you observe!"], n, notes="Spend 2 minutes explaining the practical, then transition to the hands-on session. The notebook is designed to run in Google Colab. We use EGFR (Epidermal Growth Factor Receptor) inhibitors as our example dataset because EGFR is a well-studied cancer target with lots of data in ChEMBL. Students may have heard of drugs like gefitinib (Iressa) or erlotinib (Tarceva). Encourage students to experiment.")
+    n += 1
+    make_discussion_slide(prs, "If you could use AI to accelerate ANY aspect\nof drug discovery, which would you choose and why?", ["Think about: target identification, molecule design, clinical trials, safety prediction...", "Consider: what is currently the biggest bottleneck?", "Bonus: what are the risks of using AI in each area?"], n, notes="This is a 5-7 minute discussion. Let students discuss in small groups first, then share with the class. Guide the discussion toward: there is no single answer. AI helps at every stage, but the highest-impact areas are probably lead optimization (most time-consuming) and clinical trial design (most expensive). If someone mentions risks, validate that: AI can learn biases in data, predict artifacts, or create false confidence. We will dedicate time to ethics in Week 7.")
+    n += 1
+    make_takeaway_slide(prs, ["Drug discovery is slow (12-15 years), expensive ($2.6B), and risky (>90% failure)", "AI can accelerate every stage - from target ID to clinical trials", "Real examples: Insilico Medicine, AlphaFold, BenevolentAI", "SMILES notation converts molecules into computer-readable text", "Bioactivity data (IC50, Ki) measures drug-target interactions", "RDKit is the essential Python toolkit for cheminformatics", "The computational pipeline (signal -> features -> model) is universal", "Personalized medicine (mRNA vaccines) shows where we are heading"], 1, n, notes="Quickly recap each point in 2-3 minutes. Emphasize the overarching narrative: drug discovery has a problem (slow/expensive/risky), AI is the solution, and this course will give students the tools to contribute. Remind students about the practical notebook.")
+    n += 1
+    make_content_slide(prs, "Next Week: Molecular Representation & Baseline ML", ["Deep dive into SMILES notation", "Molecular fingerprints: ECFP / Morgan", "Feature engineering for molecules", "QSAR: Quantitative Structure-Activity Relationships", "Train your first ML model on molecular data!", "", "Preparation:", "  Finish today's practical notebook", "  Read: Muegge & Mukherjee (2016), Expert Opinion on Drug Discovery 11:137-148"], n, notes="Quick preview, 1 minute. Next week we go from exploring molecules to actually predicting their properties. The optional reading by Muegge and Mukherjee is a nice accessible review of molecular fingerprints. Thank them for a great first session.")
+    os.makedirs("week1_introduction", exist_ok=True)
+    prs.save("week1_introduction/slides.pptx")
+    print(f"Week 1: {n} slides -> week1_introduction/slides.pptx")
+
+
+# ===== WEEK 2 =====
+def generate_week2():
+    prs = new_prs()
+    n = 0
+    n += 1
+    make_title_slide(prs, "Molecular Representation & Baseline ML", "Turning molecules into numbers and teaching machines to predict", 2, "AI for Drug Discovery", notes="Welcome back! Start by asking: who finished the Week 1 practical? What did you find interesting? Today is a big day: we go from exploring molecules to building our first predictive model. By the end of today, every student will have trained a machine learning model that predicts molecular properties. Remember from Week 1, the pipeline is signal to features to model to prediction. Today we focus on features.")
+    n += 1
+    make_content_slide(prs, "Recap & Today's Agenda", ["Last week we learned:", "  The drug discovery pipeline and where AI fits", "  SMILES notation basics", "  RDKit for molecular visualization", "", "Today's agenda:", "  1. SMILES deep dive - syntax, limitations, alternatives", "  2. Molecular fingerprints - ECFP / Morgan", "  3. Feature engineering for molecules", "  4. QSAR: the core concept", "  5. Train Random Forest & XGBoost models", "  6. Practical: predict aqueous solubility"], n, notes="Quick recap and agenda, 2 minutes. Emphasize the logical flow: we need to represent molecules (SMILES to fingerprints to features), then we need a framework for prediction (QSAR), and finally we need ML tools (RF, XGBoost). Today's practical uses the Delaney aqueous solubility dataset, a classic benchmark in cheminformatics.")
+    n += 1
+    make_section_divider(prs, "SMILES: Deep Dive", n, notes="Transition to the SMILES section. SMILES looks like random text, but there is a very logical grammar behind it.", subtitle="Weininger (1988), J. Chem. Inf. Comput. Sci. 28:31-36")
+    n += 1
+    make_content_slide(prs, "SMILES Syntax Rules", ["Atoms: C, N, O, S, P, F, Cl, Br, I (organic subset, implicit H)", "Single bond: implicit (CC = ethane)", "Double bond: = (C=O = formaldehyde)", "Triple bond: # (C#N = hydrogen cyanide)", "Aromatic atoms: lowercase (c1ccccc1 = benzene)", "Branches: parentheses - CC(=O)O = acetic acid", "Rings: matching digits - C1CCCCC1 = cyclohexane", "Charges: [NH4+], [O-]", "Stereochemistry: / \\ for E/Z, @ @@ for R/S", "", "Canonical SMILES: unique representation generated by RDKit/OpenBabel"], n, notes="Spend 5-6 minutes here. This is important foundational knowledge. Work through examples on the board: start with simple molecules and build up. Draw ethanol (CCO), then acetic acid (CC(=O)O), then benzene (c1ccccc1). Key point about canonical SMILES: OCC and CCO are both valid SMILES for ethanol, but the canonical form is CCO. RDKit Chem.MolToSmiles() always produces the canonical form.")
+    n += 1
+    make_content_slide(prs, "SMILES Practice: Can You Read These?", ["1. CCO  ->  ?", "2. c1ccccc1  ->  ?", "3. CC(=O)Oc1ccccc1C(=O)O  ->  ?", "4. CN1C=NC2=C1C(=O)N(C(=O)N2C)C  ->  ?", "5. CC12CCC3C(C1CCC2O)CCC4=CC(=O)CCC34C  ->  ?", "", "Answers: 1) Ethanol  2) Benzene  3) Aspirin", "4) Caffeine  5) Testosterone"], n, notes="Interactive slide, 3-4 minutes. Reveal answers one by one. For caffeine, walk through the SMILES. Testosterone is a good example of a complex multi-ring system. The point is to show that SMILES can represent complex molecules compactly. In practice, nobody writes SMILES by hand for complex molecules. We use drawing tools that convert drawings to SMILES.")
+    n += 1
+    make_content_slide(prs, "Beyond SMILES: Limitations and Alternatives", ["SMILES limitations:", "  Not unique without canonicalization", "  Syntax errors are easy to make", "  No built-in 3D information", "  Small edits can cause large structural changes", "", "Alternatives:", "  InChI - IUPAC International Chemical Identifier (Heller et al. 2015)", "  SELFIES - 100% valid molecular strings (Krenn et al. 2020)", "  DeepSMILES - easier for neural networks (O'Boyle & Dalke 2018)"], n, notes="Spend 2-3 minutes on limitations. The key limitation for ML is that SMILES is fragile: a single character change can completely change the molecule. SELFIES (Self-Referencing Embedded Strings) is particularly interesting for generative models because every possible string decodes to a valid molecule. We will use SELFIES in Week 5 for generative AI.")
+    n += 1
+    make_section_divider(prs, "Molecular Fingerprints", n, notes="Transition: SMILES represents molecules as text. But for ML, we need fixed-length numerical vectors. Enter fingerprints.", subtitle="From molecular structure to numerical vectors")
+    n += 1
+    make_content_slide(prs, "Molecular Fingerprints: The Concept", ["A fingerprint converts a molecule into a fixed-length bit vector", "Each bit indicates presence/absence of a molecular substructure", "", "Analogy: like a barcode for molecules", "", "Types of fingerprints:", "  Structural keys (MACCS, 166 bits) - predefined patterns", "  Topological (RDKit FP) - enumerate paths through molecular graph", "  Circular (Morgan/ECFP) - local atom environments at increasing radius", "", "Morgan fingerprints are the most widely used in modern drug discovery", "Reference: Rogers & Hahn (2010), J. Chem. Inf. Model. 50:742-754"], n, notes="Spend 3-4 minutes on the concept. The barcode analogy works well. The key difference between types: MACCS keys use human-defined patterns, while Morgan/ECFP automatically discovers patterns based on atom neighborhoods. Rogers and Hahn 2010 is the foundational paper for Extended Connectivity Fingerprints. ECFP4 (radius 2, 2048 bits) is the most common variant.")
+    n += 1
+    make_content_slide(prs, "Morgan / ECFP Fingerprints: How They Work", ["Algorithm (for each atom):", "  1. Start: initial identifier = atom type + properties", "  2. Iteration 1: collect identifiers from radius-1 neighbors", "  3. Hash the combined information -> new identifier", "  4. Iteration 2: expand to radius-2 neighbors, hash again", "  5. Map all identifiers to a fixed-length bit vector (1024 or 2048 bits)", "", "ECFP4 = radius 2 | ECFP6 = radius 3", "The circular name: each atom sees a circular neighborhood", "", "In RDKit: AllChem.GetMorganFingerprintAsBitVect(mol, radius=2, nBits=2048)"], n, notes="Spend 4-5 minutes here with a diagram on the board. Draw a simple molecule, pick one atom, show its radius-1 neighbors, then radius-2. Each iteration captures more context. The hashing step maps variable-length information into fixed-size identifiers. ECFP4 (radius=2, 2048 bits) is the default starting point for most ML projects.")
+    n += 1
+    make_content_slide(prs, "Molecular Similarity: Tanimoto Coefficient", ["Given two fingerprints A and B (bit vectors):", "  Tanimoto(A, B) = |A intersect B| / |A union B|", "", "Range: 0 (completely different) to 1 (identical)", "Rule of thumb: Tanimoto > 0.85 -> likely similar activity", "", "Applications:", "  Virtual screening: find compounds similar to a known active", "  Diversity analysis: how different are compounds in a library?", "  Clustering: group similar molecules", "", "In RDKit: DataStructs.TanimotoSimilarity(fp1, fp2)"], n, notes="Spend 2-3 minutes. The Tanimoto coefficient (also called Jaccard index) is the standard similarity metric. The 0.85 threshold is from the Similar Property Principle (Johnson and Maggiora 1990). But this is a heuristic, there are many exceptions called activity cliffs. We will discuss activity cliffs in Week 3.")
+    n += 1
+    make_section_divider(prs, "Feature Engineering & QSAR", n, notes="Transition to the modeling section. We now know how to represent molecules. The next question is: what do we predict?", subtitle="From molecular features to property prediction")
+    n += 1
+    make_content_slide(prs, "Feature Engineering for Molecules", ["Beyond fingerprints: physicochemical descriptors", "", "Common molecular descriptors:", "  Molecular Weight (MW) - size of the molecule", "  LogP - lipophilicity (oil vs. water preference)", "  Number of H-bond donors (HBD) & acceptors (HBA)", "  Topological Polar Surface Area (TPSA)", "  Number of rotatable bonds - molecular flexibility", "  Number of aromatic rings", "", "RDKit can calculate 200+ descriptors: Descriptors.descList", "Mordred library: >1800 descriptors (Moriwaki et al. 2018)"], n, notes="Spend 3 minutes on descriptors. LogP is particularly important: drugs need to cross cell membranes. Too hydrophilic = cannot cross, too lipophilic = gets stuck in fat tissue. The sweet spot is LogP 1-3. TPSA correlates with oral bioavailability: TPSA < 140 A squared is generally needed for oral drugs.")
+    n += 1
+    make_content_slide(prs, "Lipinski's Rule of Five", ["Christopher Lipinski (Pfizer, 1997) - most cited paper in medicinal chemistry", "Lipinski et al. (1997), Advanced Drug Delivery Reviews 23:3-25", "", "A compound is likely orally bioavailable if:", "  Molecular Weight <= 500 Da", "  LogP <= 5", "  H-bond donors <= 5", "  H-bond acceptors <= 10", "", "All multiples of 5 - hence Rule of Five", "", "Limitations: doesn't apply to natural products, peptides", "~80% of marketed oral drugs satisfy all four rules"], n, notes="Spend 2-3 minutes. The paper has over 14,000 citations, truly foundational. However, many successful drugs violate Ro5 (e.g., cyclosporine, taxol). Beyond Lipinski: Veber's rules (2002) add rotatable bonds <= 10 and TPSA <= 140. In the practical, we will filter our dataset using Lipinski's rules.")
+    n += 1
+    n += 1
+    make_section_divider(prs, "Machine Learning for QSAR", n, notes="Transition to ML methods. We have features and targets. Now we need a model.", subtitle="Random Forest and XGBoost for molecular property prediction")
+    n += 1
+    n += 1
+    make_content_slide(prs, "XGBoost: Gradient Boosted Trees", ["Sequential ensemble: each tree corrects errors of the previous ones", "Chen & Guestrin (2016), KDD - 'XGBoost: A Scalable Tree Boosting System'", "", "Advantages over Random Forest:", "  Often higher accuracy (learns from mistakes)", "  Regularization built-in (prevents overfitting)", "  Handles missing values natively", "  Extremely fast implementation", "", "Common in Kaggle competitions and industrial QSAR", "Sheridan (2016), J. Chem. Inf. Model. 56:2353-2360", "", "pip install xgboost"], n, notes="Spend 2-3 minutes on XGBoost. The Chen and Guestrin 2016 paper won the Best Paper award at KDD. XGBoost dominated Kaggle competitions for years. For tabular data (which molecular features are), XGBoost is still king. Sheridan 2016 (from Merck) showed that gradient boosting often outperforms RF for QSAR tasks. Key point: always try both RF and XGBoost as baselines before jumping to deep learning.")
+    n += 1
+    make_content_slide(prs, "Practical: Predict Aqueous Solubility", ["Open: week2_molecular_representation/Week2_Practical.ipynb", "", "Dataset: Delaney solubility dataset (Delaney 2004, JCICS 44:1000-1005)", "  ~1,128 molecules with measured aqueous solubility (logS)", "", "Steps:", "  1. Load dataset, parse SMILES with RDKit", "  2. Generate Morgan fingerprints (ECFP4, 2048 bits)", "  3. Calculate physicochemical descriptors", "  4. Train/test split (80/20)", "  5. Train Random Forest regressor", "  6. Train XGBoost regressor", "  7. Compare performance (RMSE, R-squared)"], n, notes="Spend 2 minutes explaining the practical. The Delaney dataset is one of the most used benchmarks in cheminformatics ML. Solubility prediction is important because ~40% of drug candidates have solubility issues. Expected results: RF should achieve RMSE ~0.6-0.8 logS units, R-squared ~0.85-0.90. XGBoost should be slightly better.")
+    n += 1
+    make_discussion_slide(prs, "Two molecules with 85% Tanimoto similarity - would you expect similar bioactivity? Why or why not?", ["Hint: think about the Similar Property Principle", "Counter-hint: search activity cliffs - we will cover this in Week 3", "Consider: what does Tanimoto similarity actually measure?"], n, notes="This is a 5-minute discussion designed to foreshadow Week 3. The answer is nuanced: USUALLY yes (the Similar Property Principle), but NOT always. Activity cliffs are pairs of molecules that are very similar structurally but have very different activity. Example: changing a single methyl group to a chlorine can change IC50 by 1000x.")
+    n += 1
+    make_takeaway_slide(prs, ["SMILES is the standard text representation for molecules", "Morgan/ECFP fingerprints convert molecules to fixed-length bit vectors", "Tanimoto similarity measures molecular resemblance (0 to 1)", "Physicochemical descriptors capture drug-relevant properties", "Lipinski's Rule of Five: simple drug-likeness filter", "QSAR: predicting activity from molecular structure (since 1964!)", "Random Forest and XGBoost: strong baselines for molecular ML", "Next week: How do we know if our models are actually good?"], 2, n, notes="Quick recap, 2 minutes. Emphasize that the combination of fingerprints + RF/XGBoost is a production-ready approach used in real pharmaceutical companies. It is not exotic AI, it is proven, reliable, and interpretable.")
+    os.makedirs("week2_molecular_representation", exist_ok=True)
+    prs.save("week2_molecular_representation/slides.pptx")
+    print(f"Week 2: {n} slides -> week2_molecular_representation/slides.pptx")
+
+
+# ===== WEEK 3 =====
+def generate_week3():
+    prs = new_prs()
+    n = 0
+    n += 1
+    make_title_slide(prs, "Model Evaluation & Interpretability", "How to know when your model is lying to you", 3, "AI for Drug Discovery", notes="Welcome back! This week is critical, it separates good data scientists from great ones. Anyone can train a model. The hard part is knowing whether it actually works. Ask: who got good results on the Week 2 practical? What RMSE did you achieve? Today we will learn why those numbers might be misleading.")
+    n += 1
+    make_content_slide(prs, "Recap & Today's Agenda", ["Last week: SMILES, fingerprints, QSAR, RF & XGBoost", "You trained models that predicted solubility - but are they trustworthy?", "", "Today:", "  1. Why standard evaluation fails for molecular data", "  2. Activity cliffs and scaffold bias", "  3. Proper cross-validation strategies", "  4. Metrics: RMSE, ROC-AUC, precision-recall", "  5. Overfitting detection and prevention", "  6. Explainability with SHAP", "  7. Practical: re-evaluate your Week 2 model properly"], n, notes="Quick recap, 2 minutes. Today is about rigor. In pharmaceutical companies, a model that looks great on paper but fails in practice can cost millions. We will learn that random train/test splits are dangerous for molecular data, that accuracy alone is misleading, and that understanding WHY a model makes predictions is as important as the predictions themselves.")
+    n += 1
+    make_story_slide(prs, "The Hall of Shame: When Models Lie", "Example 1: A QSAR model for hERG toxicity achieved 95% accuracy on a random test set. But it was memorizing chemical series. On novel scaffolds: 60%. Example 2: Published AUC-ROC 0.97 but dataset had duplicates. Remove duplicates: 0.72. Example 3: Scaffold split vs random: AUROC dropped from 0.92 to 0.75. Lesson: ALWAYS validate properly. Ref: Wallach & Heifets (2018).", n, notes="Spend 4-5 minutes on these cautionary tales. Wallach and Heifets 2018 is an important paper: Most Ligand-Based Virtual Screening Benchmarks Reward Memorization. They showed that many published models were not learning chemistry, they were memorizing molecular series. The key message: if your model looks too good to be true, it probably is.")
+    n += 1
+    n += 1
+    make_content_slide(prs, "Scaffold Bias and Data Leakage", ["Scaffold = core ring structure of a molecule", "Drug discovery projects often generate many molecules with the same scaffold", "", "Problem: random split puts molecules from same scaffold in both sets", "  Model memorizes scaffold-level activity, not molecular features", "  Overestimates performance on truly novel molecules", "", "Solutions:", "  Scaffold split (Bemis-Murcko): ensure no scaffold overlap", "  Bemis & Murcko (1996), J. Med. Chem. 39:2887-2893", "  Temporal split: train on older data, test on newer data", "  Cluster split: cluster molecules, split by cluster", "", "MoleculeNet uses scaffold split as default (Wu et al. 2018)"], n, notes="Spend 3-4 minutes. Draw a Bemis-Murcko framework: take a drug molecule, strip it to ring systems and linkers. That is the scaffold. The key insight: if training and test have the same scaffolds, the model just recognizes scaffolds. A scaffold split ensures the test set has scaffolds NOT seen in training. Wu et al. 2018 (MoleculeNet) made scaffold splitting the standard in the field.")
+    n += 1
+    n += 1
+    n += 1
+    n += 1
+    make_section_divider(prs, "Model Interpretability", n, notes="Transition: we have evaluated our model quantitatively. But can we understand WHY it makes certain predictions?", subtitle="Opening the black box")
+    n += 1
+    make_content_slide(prs, "Why Explainability Matters in Drug Discovery", ["Regulatory: FDA expects understanding of model behavior", "Scientific: chemists will not trust a model they cannot understand", "Safety: unexplained predictions could mask dangerous failure modes", "Discovery: understanding features drives new hypotheses", "", "Jimenez-Luna et al. (2020), Nature Machine Intelligence 2:573-584", "", "Types of interpretability:", "  Global: which features are generally important?", "  Local: why did the model predict THIS for THIS molecule?"], n, notes="Spend 3 minutes. The Jimenez-Luna et al. 2020 paper in Nature Machine Intelligence is the best review of interpretability methods for drug discovery. The FDA AI/ML framework emphasizes transparency. In Europe, the EU AI Act classifies medical AI as high-risk. If your model says a molecule will be toxic but cannot explain why, the chemist will be skeptical. If the model can say the nitro group at position 3 is driving the toxicity prediction, the chemist can engage.")
+    n += 1
+    make_content_slide(prs, "Feature Importance Methods", ["1. Random Forest built-in importance (Gini / mean decrease impurity)", "   Warning: Biased toward high-cardinality features", "", "2. Permutation importance:", "   Shuffle one feature at a time, measure performance drop", "   Model-agnostic, more reliable", "   Breiman (2001) described this", "", "3. For molecular fingerprints:", "   Important bit -> corresponds to a specific substructure", "   RDKit can decode fingerprint bits back to molecular fragments", "   GetMorganFingerprintBitInfo() reveals atom environments per bit"], n, notes="Spend 2-3 minutes. The key practical point: for molecular fingerprints, we can decode important bits back into molecular substructures. If bit 847 is the most important feature, and it corresponds to a pyridine ring, we have learned something about chemistry. Permutation importance is preferred over built-in Gini importance.")
+    n += 1
+    make_content_slide(prs, "SHAP: SHapley Additive exPlanations", ["Lundberg & Lee (2017), NeurIPS", "Based on Shapley values from cooperative game theory", "", "Key idea: for each prediction, assign a contribution to each feature", "  Positive SHAP value -> feature pushes prediction higher", "  Negative SHAP value -> feature pushes prediction lower", "  Sum of all SHAP values + baseline = predicted value", "", "Advantages:", "  Mathematically grounded (unique solution with desirable properties)", "  Works for any model (model-agnostic)", "  Local AND global explanations", "  Beautiful visualizations (beeswarm, waterfall, force plots)", "", "pip install shap"], n, notes="Spend 4-5 minutes on SHAP. The Shapley value idea: imagine each feature is a player in a game. The game is making a prediction. How much does each player contribute? For tree models (RF, XGBoost), there is an exact and fast algorithm: TreeSHAP (Lundberg et al. 2020, Nature MI). In the practical, students will compute SHAP values for their QSAR model.")
+    n += 1
+    make_content_slide(prs, "Applicability Domain", ["A model is only reliable within its training data distribution", "Applicability Domain (AD): the chemical space where predictions are trustworthy", "", "Methods to define AD:", "  Distance-based: is the new molecule close to training molecules?", "  Descriptor range: are all descriptors within training ranges?", "  Conformal prediction: distribution-free prediction intervals", "", "Sahigara et al. (2012), Molecules 17:4791-4810", "", "In practice: flag predictions outside AD as low confidence", "A confident wrong prediction is worse than an honest I don't know"], n, notes="Spend 2-3 minutes on applicability domain. Analogy: a model trained on kinase inhibitors should not be used to predict activity on GPCR ligands. Sahigara et al. 2012 reviews methods for defining AD in QSAR. Conformal prediction is gaining popularity because it provides prediction intervals with guaranteed coverage.")
+    n += 1
+    make_content_slide(prs, "Practical: Evaluate and Interpret Your QSAR Model", ["Open: week3_evaluation/Week3_Practical.ipynb", "", "Steps:", "  1. Load your Week 2 solubility model (or re-train)", "  2. Implement scaffold splitting (Bemis-Murcko)", "  3. Compare: random split vs. scaffold split performance", "  4. Compute and plot ROC curve, precision-recall curve", "  5. Calculate SHAP values for the Random Forest model", "  6. Create SHAP beeswarm plot: which features matter most?", "  7. Identify molecular substructures driving predictions", "  8. Define applicability domain using Tanimoto distance", "", "Time: ~60 minutes | Work in pairs"], n, notes="Spend 2 minutes on overview. The key learning moment: students will see their model performance DROP when switching from random to scaffold split. This is normal and expected! Typical: R-squared drops from 0.85-0.90 to 0.70-0.80. That is the real performance. The SHAP analysis is the most fun part.")
+    n += 1
+    make_discussion_slide(prs, "A model achieves AUC-ROC of 0.95 on the test set. Would you trust it to guide a 0M drug discovery campaign? What else would you want to know?", ["Think about: what kind of split was used? How imbalanced is the data?", "Consider: what is the applicability domain?", "Ask: has the model been validated prospectively?"], n, notes="5-minute discussion. The correct answer is: NO, not without more information. Key questions: Was it a random or scaffold split? What is the class balance? Has it been validated prospectively on truly new chemical series? In industry, models go through extensive validation before being used for decision-making.")
+    n += 1
+    os.makedirs("week3_evaluation", exist_ok=True)
+    prs.save("week3_evaluation/slides.pptx")
+    print(f"Week 3: {n} slides -> week3_evaluation/slides.pptx")
+
+
+# ===== WEEK 4 =====
+def generate_week4():
+    prs = new_prs()
+    n = 0
+    n += 1
+    make_title_slide(prs, "Deep Learning & Graph Neural Networks", "When molecules become graphs and graphs become predictions", 4, "AI for Drug Discovery", notes="Welcome to Week 4! This is where we level up from classical ML to deep learning. Start by asking: how many students have experience with neural networks? PyTorch? The key insight today: molecules are naturally graphs. Atoms are nodes, bonds are edges. Graph Neural Networks learn from this structure directly, instead of relying on handcrafted fingerprints.")
+    n += 1
+    make_content_slide(prs, "Recap: Weeks 1-3 -> Today", ["Week 1: Drug discovery pipeline, molecular data types, RDKit", "Week 2: SMILES, fingerprints (ECFP), QSAR with RF & XGBoost", "Week 3: Evaluation pitfalls, scaffold splits, SHAP interpretability", "", "The story so far: fingerprints + classical ML = strong baselines", "But fingerprints have limitations:", "  Fixed-length bit vectors lose information (hash collisions)", "  Cannot capture 3D spatial relationships", "  Hand-designed, not learned from data", "", "Today: learn molecular representations directly from graph structure"], n, notes="Quick recap, 2-3 minutes. Emphasize the logical progression. The key limitation of fingerprints: information loss due to hashing. Also, fingerprints treat all atoms at a given radius equally. GNNs solve both problems: they learn representations end-to-end from graph structure.")
+    n += 1
+    make_section_divider(prs, "Molecules as Graphs", n, notes="Transition: let us think about molecules differently. Not as text (SMILES) or bit vectors (fingerprints), but as mathematical objects: graphs.", subtitle="A natural representation for molecular structure")
+    n += 1
+    n += 1
+    make_content_slide(prs, "Node and Edge Features for Molecular Graphs", ["Atom (node) features:", "  Atomic number (C=6, N=7, O=8)", "  Degree (number of bonds)", "  Formal charge", "  Hybridization (sp, sp2, sp3)", "  Aromaticity (is this atom in an aromatic ring?)", "  Number of hydrogens", "", "Bond (edge) features:", "  Bond type (single, double, triple, aromatic)", "  Is in ring?", "  Is conjugated?", "  Stereochemistry (E/Z, cis/trans)"], n, notes="Spend 2-3 minutes on features. These features are similar to what is encoded in fingerprints, but they are preserved as separate attributes per atom/bond. The GNN will LEARN which features matter and how to combine them. We do not need to manually decide that aromatic carbon adjacent to nitrogen is important.")
+    n += 1
+    make_content_slide(prs, "GNN Intuition: Message Passing", ["Core idea: each node gathers information from its neighbors", "", "The message passing algorithm (for each node v):", "  1. AGGREGATE: collect features from all neighbors of v", "  2. UPDATE: combine aggregated message with v's own features", "  3. Repeat for K iterations (K = number of layers)", "", "After K iterations, each node has information from its K-hop neighborhood", "  K=1: knows about direct neighbors (like Morgan radius=1)", "  K=2: knows about 2-hop neighborhood (like Morgan radius=2)", "", "This is EXACTLY what ECFP fingerprints do - but learned, not hashed!"], n, notes="Spend 4-5 minutes on this, the core concept. Analogy: imagine each atom is a person at a party. In round 1, you talk to your direct friends. In round 2, your friends tell you what THEY learned. After 3 rounds, you know about people up to 3 handshakes away. Draw a molecular graph on the board, pick an atom, and trace neighborhoods. The connection to fingerprints is important.")
+    n += 1
+    make_content_slide(prs, "Message Passing: The Math (Simplified)", ["For layer k, node v:", "", "  m_v^(k) = AGGREGATE({h_u^(k-1) : u in N(v)})", "  h_v^(k) = UPDATE(h_v^(k-1), m_v^(k))", "", "Where:", "  h_v^(k) = node v representation at layer k", "  N(v) = neighbors of node v", "  AGGREGATE = sum, mean, or max pooling", "  UPDATE = neural network (MLP, GRU, ...)", "", "After K layers -> READOUT: aggregate all node features -> molecular property", "  h_graph = READOUT({h_v^(K) : v in V}) = mean/sum/attention pooling"], n, notes="Spend 3-4 minutes on the math. Do not go too deep, the intuition from the previous slide is more important. The key equations: AGGREGATE collects messages from neighbors, UPDATE combines with self. The choice of AGGREGATE function defines different GNN variants: GCN uses normalized sum, GraphSAGE uses mean or max, GAT uses attention-weighted sum.")
+    n += 1
+    make_content_slide(prs, "Common GNN Architectures", ["GCN - Graph Convolutional Network", "  Kipf & Welling (2017), ICLR", "", "GAT - Graph Attention Network", "  Velickovic et al. (2018), ICLR", "  Learns attention weights: some neighbors matter more", "", "MPNN - Message Passing Neural Network", "  Gilmer et al. (2017), ICML - the unifying framework", "", "SchNet / DimeNet - 3D-aware GNNs", "  Schutt et al. (2018), J. Chem. Phys.", "  Gasteiger et al. (2020), ICLR"], n, notes="Spend 3 minutes as an overview. GCN (Kipf and Welling 2017) is the most cited GNN paper (~12,000 citations). It is simple and effective. GAT adds attention: not all neighbors are equally important. MPNN is the most important for drug discovery. 3D-aware models use atomic coordinates, important for conformational properties and binding. The choice of architecture often matters less than the quality of data and featurization.")
+    n += 1
+    n += 1
+    make_content_slide(prs, "Real-World GNN Applications in Pharma", ["Stokes et al. (2020), Cell 180:688-702 - Halicin discovery", "  Neural networks to discover a novel antibiotic from 100M+ molecules", "  Active against pan-resistant A. baumannii", "  Collaboration: MIT + Broad Institute", "", "Chemprop - D-MPNN from MIT (Yang et al. 2019, JCIM 59:3370-3388)", "  Open-source MPNN achieving state-of-the-art on MoleculeNet", "", "Recursion Pharmaceuticals - high-content imaging + GNNs", "  Combining cell painting (microscopy) with molecular graphs", "", "Pre-trained models: MolBERT, ChemBERTa, Uni-Mol"], n, notes="Spend 3-4 minutes. The Stokes et al. 2020 Cell paper on halicin is a fantastic story: researchers trained a neural network on 2,335 molecules, then screened compounds. Halicin (originally an anti-diabetic candidate) was identified as a potent broad-spectrum antibiotic. Chemprop from the Barzilay/Jaakkola lab at MIT is an excellent open-source tool. Students can use it for their course projects.")
+    n += 1
+    make_content_slide(prs, "Cross-Domain: GNNs in Brain-Computer Interfaces", ["Same GNN architecture, different domain:", "", "Molecular graph:", "  Nodes = atoms | Edges = bonds", "  Task: predict molecular properties", "", "Brain connectivity graph:", "  Nodes = brain regions/electrodes | Edges = functional connectivity", "  Task: decode neural intent (speech, movement)", "", "The instructor's research (FUTRUE Neurosciences):", "  512-channel ECoG grid -> electrode connectivity graph -> GNN decoder", "  Same message passing, same readout - different signal domain", "", "Key insight: graph learning is a UNIVERSAL framework"], n, notes="Spend 2-3 minutes on this cross-domain connection. In brain-computer interfaces, we represent the brain as a graph: each ECoG electrode is a node, edges represent functional connectivity. GNNs on brain graphs can decode speech intent, motor commands, or emotional states. The instructor's work at FUTRUE Neurosciences: 512 electrodes recording from the brain surface. This is the beauty of GNNs: the mathematical framework is the same whether you are predicting molecular toxicity or decoding brain signals.")
+    n += 1
+    make_content_slide(prs, "Tools: DeepChem and PyTorch Geometric", ["DeepChem (Ramsundar et al.): high-level library for molecular ML", "  Built-in datasets (MoleculeNet), featurizers, models", "  pip install deepchem", "  Reference: Ramsundar et al. (2019), O'Reilly Deep Learning for the Life Sciences", "", "PyTorch Geometric (PyG): low-level GNN building blocks", "  Fey & Lenssen (2019), ICLR Workshop", "  pip install torch-geometric", "", "Chemprop: specialized for molecular property prediction", "  Easy to use CLI + Python API", "  pip install chemprop"], n, notes="Quick overview of tools, 2 minutes. DeepChem is the easiest starting point. PyTorch Geometric is more flexible but requires more code. Chemprop is the best out-of-the-box GNN for molecular property prediction. For the course project: start with Chemprop for quick results, use DeepChem for trying different architectures.")
+    n += 1
+    make_content_slide(prs, "Practical: Simple GNN for Activity Prediction", ["Open: week4_deep_learning_gnn/Week4_Practical.ipynb", "", "Steps:", "  1. Load a MoleculeNet dataset (HIV or BACE)", "  2. Featurize molecules as graphs using DeepChem", "  3. Train a Graph Convolutional Network (GCN)", "  4. Compare to your Week 2 Random Forest baseline", "  5. Analyze: when does GNN outperform RF? When doesn't it?", "  6. (Bonus) Try Chemprop D-MPNN and compare", "", "Time: ~60 minutes | Work in pairs", "Note: GNN training takes longer - GPU recommended (Colab provides free GPU)"], n, notes="Spend 2 minutes on overview. We use the HIV or BACE dataset from MoleculeNet. HIV has ~41,000 compounds (classification), BACE has ~1,500 compounds against BACE-1 Alzheimer's target. Students should compare GCN to their RF baseline on the SAME scaffold split. Expected: for HIV (large dataset), GNN should outperform RF. For BACE (small), it might not. Remind students to use GPU in Colab.")
+    n += 1
+    make_discussion_slide(prs, "GNNs achieve state-of-the-art on benchmarks. Are they ALWAYS better than Random Forest? When would you still choose RF?", ["Consider: dataset size, interpretability needs, computational budget", "Think about: the no-free-lunch theorem", "Reflect on: your experience in the practical"], n, notes="5-minute discussion. RF wins when data is small, interpretability is critical, or computational resources are limited. GNN wins when data is large. Yang et al. 2019 showed Chemprop beat RF on 7 of 8 MoleculeNet tasks, but RF won on 1. Always have an RF/XGBoost baseline.")
+    n += 1
+    n += 1
+    os.makedirs("week4_deep_learning_gnn", exist_ok=True)
+    prs.save("week4_deep_learning_gnn/slides.pptx")
+    print(f"Week 4: {n} slides -> week4_deep_learning_gnn/slides.pptx")
+
+
+# ===== MAIN =====
+if __name__ == "__main__":
+    import os
+    os.chdir(os.path.dirname(os.path.abspath(__file__)) if os.path.dirname(os.path.abspath(__file__)) else ".")
+    print("=" * 60)
+    print("  AI for Drug Discovery - Slide Generator")
+    print("=" * 60)
+    generate_week1()
+    generate_week2()
+    generate_week3()
+    generate_week4()
+    print("=" * 60)
+    print("=" * 60)
