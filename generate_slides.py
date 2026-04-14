@@ -25,6 +25,8 @@ WHITE = RGBColor(255, 255, 255)
 LIGHT_GRAY = RGBColor(240, 240, 240)
 BODY_TEXT = RGBColor(50, 50, 50)
 ACCENT_GREEN = RGBColor(39, 174, 96)
+ACCENT_RED = RGBColor(231, 76, 60)
+ACCENT_ORANGE = RGBColor(243, 156, 18)
 SLIDE_WIDTH = Inches(13.333)
 SLIDE_HEIGHT = Inches(7.5)
 
@@ -152,6 +154,76 @@ def make_story_slide(prs, title, story_text, slide_num, notes):
     _set_notes(slide, notes)
 
 
+def make_quiz_question_slide(prs, q_number, question, options, slide_num, notes):
+    """Quiz question slide: question + 4 options labeled A-D."""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    _add_bg(slide, NAVY)
+    _add_textbox(slide, Inches(0.8), Inches(0.4), Inches(3), Inches(0.5),
+                 f"QUIZ — Question {q_number}/10", font_size=16, bold=True, color=TEAL)
+    _add_textbox(slide, Inches(0.8), Inches(1.1), Inches(11.5), Inches(1.4),
+                 question, font_size=28, bold=True, color=WHITE)
+    labels = ["A", "B", "C", "D"]
+    y_start = 3.1
+    for i, opt in enumerate(options):
+        # option box
+        box = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,
+                                      Inches(1.5), Inches(y_start + i * 1.05),
+                                      Inches(10), Inches(0.85))
+        box.fill.solid()
+        box.fill.fore_color.rgb = DARK_SLATE
+        box.line.color.rgb = TEAL
+        box.line.width = Pt(2)
+        tf = box.text_frame
+        tf.word_wrap = True
+        tf.paragraphs[0].alignment = PP_ALIGN.LEFT
+        p = tf.paragraphs[0]
+        p.text = f"  {labels[i]})  {opt}"
+        p.font.size = Pt(22)
+        p.font.color.rgb = WHITE
+        p.font.name = "Calibri"
+    _add_slide_number(slide, slide_num)
+    _set_notes(slide, notes)
+
+
+def make_quiz_answer_slide(prs, q_number, question, options, correct_idx, explanation, slide_num, notes):
+    """Quiz answer reveal: correct answer highlighted green, others gray."""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    _add_bg(slide, NAVY)
+    _add_textbox(slide, Inches(0.8), Inches(0.3), Inches(3), Inches(0.4),
+                 f"ANSWER — Question {q_number}/10", font_size=16, bold=True, color=ACCENT_GREEN)
+    _add_textbox(slide, Inches(0.8), Inches(0.8), Inches(11.5), Inches(0.9),
+                 question, font_size=22, bold=True, color=LIGHT_GRAY)
+    labels = ["A", "B", "C", "D"]
+    y_start = 2.0
+    for i, opt in enumerate(options):
+        box = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,
+                                      Inches(1.5), Inches(y_start + i * 0.75),
+                                      Inches(10), Inches(0.65))
+        if i == correct_idx:
+            box.fill.solid()
+            box.fill.fore_color.rgb = ACCENT_GREEN
+            box.line.color.rgb = ACCENT_GREEN
+            txt_color = WHITE
+        else:
+            box.fill.solid()
+            box.fill.fore_color.rgb = RGBColor(60, 60, 70)
+            box.line.color.rgb = RGBColor(80, 80, 90)
+            txt_color = RGBColor(140, 140, 140)
+        box.line.width = Pt(2)
+        tf = box.text_frame
+        tf.word_wrap = True
+        p = tf.paragraphs[0]
+        p.text = f"  {labels[i]})  {opt}"
+        p.font.size = Pt(18)
+        p.font.color.rgb = txt_color
+        p.font.name = "Calibri"
+    # Explanation box
+    _add_textbox(slide, Inches(1.0), Inches(5.15), Inches(11), Inches(2.0),
+                 explanation, font_size=16, color=WHITE)
+    _add_slide_number(slide, slide_num)
+    _set_notes(slide, notes)
+
+
 # =====================================================================
 # DAY 1 — 15 April 2026 — 6 units (270 min)
 # Introduction, Drug Discovery Pipeline, AI Overview, Project Proposals
@@ -198,7 +270,7 @@ def generate_day1():
          "  The LAST readout of a drug is always PHYSIOLOGY",
          "  → Does it change cell function? Organ function? Patient health?",
          "  → Electrophysiology, calcium imaging, behavioral assays",
-         "  → The same techniques Dr. Serbe-Kamp uses in his research!",
+         "  → The same techniques used in neuroscience research on ion channels!",
          "",
          "\"The most expensive experiment in science is a failed clinical trial.\""],
         n,
@@ -312,7 +384,7 @@ def generate_day1():
          "  SpikerBox/SpikerBot → accessible version of these same measurements!",
          "",
          "Databases: ChEMBL (~2.5M compounds), PubChem (>110M), BindingDB",
-         "This is where Dr. Serbe-Kamp's physiology expertise meets drug discovery"],
+         "This is where physiology expertise meets drug discovery"],
         n,
         notes="TIMING: 90-100 min\n\nSpend 5-7 min. IC50 analogy: how much drug to shut down 50% of the target? Lower = more potent.\n\nCITATION: ChEMBL: Gaulton et al. (2017) 'The ChEMBL database in 2017.' Nucleic Acids Res. 45(D1):D945-D954. Latest release (ChEMBL 35, Dec 2024) contains ~2.5M compounds.\n\n=== PHYSIOLOGY AS DRUG READOUT — KEY THEME ===\nThis is the central connection between Dr. Serbe-Kamp's research and drug discovery:\n\n1. PATCH-CLAMP ELECTROPHYSIOLOGY: Gold standard for ion channel drugs. Measure current through channels, add drug, measure IC50. This is exactly what Dr. Serbe-Kamp's 2016 Neuron paper used — whole-cell recordings + optogenetics to characterize T5 neuron inputs (Serbe et al. 2016, Neuron 89:829-841). For hERG cardiac safety testing: patch-clamp HEK293 cells, measure block IC50.\n\n2. CALCIUM IMAGING: Dr. Serbe-Kamp's 2023 J.Neurosci. paper (43:2497-2514) used two-photon calcium imaging in Drosophila T4 neurons. Same technique used in drug screening (FLIPR assays for GPCR screens).\n\n3. EXTRACELLULAR RECORDING: The SpikerBox records extracellular spikes from neurons/muscles. Apply a drug (e.g., lidocaine = Nav blocker) and watch the action potentials disappear. This IS drug effect measurement! Ref: Marzullo & Gage (2012) PLoS ONE 7(3):e30837.\n\nThe SpikerBox/SpikerBot democratize the final step of drug testing: measuring physiological effects.")
 
@@ -329,7 +401,7 @@ def generate_day1():
          "  4. Tissue/organ: physiological response (cardiac QT, neural firing)",
          "  5. Organism: behavioral / clinical outcome",
          "",
-         "Dr. Serbe-Kamp's 2016 Neuron paper: steps 3-4 in Drosophila",
+         "Serbe et al. (2016) Neuron 89:829-841: steps 3-4 in Drosophila",
          "  → Calcium imaging + electrophysiology + optogenetics",
          "  → Characterizing physiological responses of neurons to stimuli",
          "",
@@ -349,11 +421,11 @@ def generate_day1():
     make_content_slide(prs,
         "Biophysical Modelling & The SpikerBot",
         ["The SpikerBot (Backyard Brains) — record AND stimulate real neurons",
-         "  Dr. Serbe-Kamp is Co-Director of Summer Fellowships at Backyard Brains",
+         "  BYB Summer Fellowships — citizen neuroscience at Backyard Brains",
          "",
          "Ion channels are important drug targets (Santos et al. 2017: ~6% of efficacy targets):",
          "  Nav (antiepileptics), GABA-A (anxiolytics), nAChR (addiction), hERG (safety)",
-         "  GluCl channels (from Dr. Serbe-Kamp's fly research) = ivermectin target!",
+         "  GluCl channels (Cys-loop receptor family, studied in Drosophila) = ivermectin target!",
          "",
          "Hodgkin-Huxley model (1952; Nobel Prize in Physiology/Medicine 1963):",
          "  Simulate how drugs alter ion channel gating → predict physiological effects",
@@ -489,7 +561,7 @@ def generate_day1():
         ["Drug discovery: 12-15 years, $2.6B, >90% failure rate",
          "AI accelerates every stage — Insilico Medicine, AlphaFold",
          "Physiology is the LAST and MOST IMPORTANT readout of drugs",
-         "  → Electrophysiology, calcium imaging = gold standard (Dr. Serbe-Kamp's expertise)",
+         "  → Electrophysiology, calcium imaging = gold standard for drug validation",
          "  → SpikerBox/SpikerBot = accessible DIY drug readout",
          "SMILES converts molecules to text; bioactivity (IC50/Ki) comes from physiological assays",
          "GluCl channels: from Drosophila motion vision to ivermectin drug target",
@@ -601,7 +673,7 @@ def generate_day2():
          "Answers: 1) Serotonin  2) Dopamine  3) GABA  4) Aspirin  5) Caffeine",
          "",
          "Note: GABA is simpler than serotonin, but both are critical NTs",
-         "GABA-A receptor is in the same superfamily as GluCl (Dr. Serbe-Kamp's research)"],
+         "GABA-A receptor is in the same Cys-loop superfamily as GluCl (ivermectin target)"],
         n,
         notes="TIMING: 25-30 min\n\n5 min interactive. Reveal answers one by one. Neuroscience SMILES walkthrough:\n1. SEROTONIN: indole ring + ethylamine + hydroxyl. Targeted by SSRIs.\n2. DOPAMINE: catechol ring + ethylamine. Targeted by L-DOPA, antipsychotics.\n3. GABA: simplest — amine + 4C + carboxyl. GABA-A = same superfamily as GluCl!\n4. ASPIRIN: acetyl + salicylic acid. COX inhibitor.\n5. CAFFEINE: purine xanthine. Adenosine A1/A2A antagonist.\n\nAsk: notice how simple GABA is vs serotonin? Structure ≠ biological importance.")
 
@@ -1099,9 +1171,9 @@ def generate_day3():
          "  GNNs predict neuron types from connectivity patterns",
          "  Brain imaging graphs: EEG/fMRI → GNN for disease classification",
          "",
-         "Dr. Serbe-Kamp's field:",
-         "  Visual motion circuit mapped by physiology (2016 Neuron paper)",
-         "  Currently working on connectomics graph data with MESH repository",
+         "Neuroscience & Connectomics:",
+         "  Visual motion circuit: physiology + connectomics approach",
+         "  Connectomics graph data (MESH repository) = neurons as graph nodes",
          "  Same GNN architecture works on molecules AND brain circuits!"],
         n,
         notes="TIMING: 59-69 min (Unit 3 start)\n\n7 min. CITATION: Stokes et al. (2020) 'A Deep Learning Approach to Antibiotic Discovery.' Cell 180:688-702. Neural network on 2,335 molecules → screened Broad repurposing library → discovered halicin.\n\n=== CONNECTOMICS & PHYSIOLOGY ===\nCITATION: Dorkenwald et al. (2024) 'Neuronal wiring diagram of an adult brain.' Nature 634:124-138. The Drosophila brain (FlyWire): ~139K neurons, ~54.5M synapses = the ultimate graph dataset.\n\nDr. Serbe-Kamp's 2016 Neuron paper: used PHYSIOLOGY (calcium imaging, electrophysiology, optogenetics) to characterize T5 neuron inputs. This is FUNCTIONAL characterization, not connectomics.\n\nDr. Serbe-Kamp CURRENTLY works on connectomics with the MESH repository — this is his ongoing research.\n\nThe connection: physiology tells you WHAT neurons do (functional), connectomics tells you HOW they're wired (structural). Both are graph problems. Same GNN architectures apply.")
@@ -1116,9 +1188,9 @@ def generate_day3():
          "Brain connectome: neurons = nodes, synapses = edges → predict function",
          "Physiological signals: channels = nodes, correlations = edges → classify states",
          "",
-         "From Dr. Serbe-Kamp's research:",
-         "  Physiology (2016 Neuron): functional characterization of T5 circuit",
-         "  Connectomics (MESH, current): structural graph of neural wiring",
+         "Neuroscience example:",
+         "  Physiology: functional characterization of T5 circuit (Serbe et al. 2016, Neuron)",
+         "  Connectomics: structural graph of neural wiring (MESH repository)",
          "  Together: structure constrains function, function validates structure",
          "",
          "For your projects: BYB data (EMG/ECG/EEG) can be graphs too!",
@@ -1230,7 +1302,7 @@ def generate_day3():
          "",
          "Neuroscience drug targets with AlphaFold structures:",
          "  hERG (cardiac safety)  |  GABA-A (anxiolytics, anesthetics)",
-         "  GluCl (ivermectin target, Dr. Serbe-Kamp's Cys-loop family)",
+         "  GluCl (ivermectin target, Cys-loop receptor superfamily)",
          "  Serotonin receptors (5-HT2A: psychedelics, antidepressants)",
          "  Dopamine receptors (D2: antipsychotics)  |  nAChR (addiction)"],
         n,
@@ -1372,7 +1444,7 @@ def generate_day4():
          "Unit 2 — Physiology: The Last Readout of Drug Action",
          "  From AI prediction to experimental validation",
          "  Ion channel pharmacology: patch-clamp, SpikerBox, SpikerBot",
-         "  Dr. Serbe-Kamp's physiology research meets drug discovery",
+         "  Physiology research meets drug discovery",
          "",
          "☕ BREAK — 15 min",
          "",
@@ -1456,7 +1528,7 @@ def generate_day4():
          "  → In silico prediction (QSAR, GNN, docking) — Day 2-3 content",
          "",
          "Level 2 — Cellular: physiological response (channel currents, Ca²⁺ signals)",
-         "  → Patch-clamp, calcium imaging — Dr. Serbe-Kamp's 2016 Neuron paper",
+         "  → Patch-clamp, calcium imaging — Serbe et al. (2016) Neuron 89:829-841",
          "  → SpikerBox: extracellular recording of drug effects on neural/muscle firing",
          "",
          "Level 3 — Tissue/Organ: cardiac QT interval, neural circuit function",
@@ -1491,10 +1563,10 @@ def generate_day4():
         n,
         notes="TIMING: 57-67 min\n\n7 min. CITATION: Santos et al. (2017) 'A comprehensive map of molecular drug targets.' Nature Rev. Drug Discov. 16:19-34. Note: Santos reports ion channels as ~6% of primary efficacy targets, NOT 18%. The 18% figure is sometimes cited but is incorrect — it likely conflates different target categories. GPCRs are ~34% (the largest family). Ion channels remain critically important despite the smaller percentage because of safety (hERG) and neurological disease applications.\n\n=== THE GluCl / IVERMECTIN CONNECTION ===\nGluCl is a glutamate-gated chloride channel in the Cys-loop receptor superfamily (same family as GABA-A, glycine receptors, nAChR). Ivermectin locks GluCl open → Cl⁻ influx → hyperpolarization → paralysis in parasites.\n\n2015 Nobel Prize (Ōmura & Campbell) for ivermectin discovery.\n\nDr. Serbe-Kamp's 2023 Nature Neuroscience paper (Ammer, Serbe-Kamp et al., Nature Neurosci. 26:1894-1905) found GluClα mediates direction-opponent inhibition in the Drosophila visual system. Same channel family, different organism, different function.\n\n=== hERG SAFETY ===\nhERG (human Ether-à-go-go Related Gene) channel is MANDATORY for drug safety. Block of hERG can cause QT prolongation → cardiac arrhythmia → sudden death. EVERY drug candidate must be tested. CITATION: Redfern et al. (2003) 'Relationships between preclinical cardiac electrophysiology, clinical QT interval prolongation and torsade de pointes.' Cardiovasc. Res. 58:32-45. The ICH S7B guideline requires hERG testing.\n\nAI predicts hERG block from molecular structure (QSAR). Physiology validates it (patch-clamp).\n\n=== DIY APPROACH ===\nSpikerBox: apply lidocaine to cockroach leg → Nav block → no action potentials. This IS drug testing at the most fundamental level. Making it accessible is the BYB mission.")
 
-    # --- Slide 10: Serbe-Kamp Physiology ---
+    # --- Slide 10: Physiology Research ---
     n += 1
     make_content_slide(prs,
-        "Dr. Serbe-Kamp's Physiology Research → Drug Discovery",
+        "Physiology Research → Drug Discovery",
         ["Key publication: Serbe et al. (2016) Neuron 89:829-841",
          "  'Comprehensive Characterization of the Major Presynaptic Elements",
          "  to the Drosophila OFF Motion Detector'",
@@ -1590,7 +1662,7 @@ def generate_day4():
         ["The 4-day journey: pipeline → molecular ML → deep learning → ethics/physiology",
          "Physiology is the FINAL readout of every drug — from patch-clamp to SpikerBox",
          "AI predicts, physiology validates — both are essential",
-         "Dr. Serbe-Kamp's 2016 Neuron paper = physiology of cells (not connectomics!)",
+         "Serbe et al. (2016) Neuron paper = physiology of cells (not connectomics!)",
          "  Current work: MESH repository for connectomics",
          "Ethics matters: bias, regulation, responsible innovation",
          "Your projects bridge AI methods with biological reality",
@@ -1611,18 +1683,277 @@ def generate_day4():
     print(f"  Day 4: {n} slides → day4_ethics_physiology/slides.pptx")
 
 
+# =====================================================================
+# QUIZ — Introductory Drug Discovery Quiz (10 questions, 20 slides)
+# Broad overview: drug types, markets, history, routes, targets, etc.
+# =====================================================================
+def generate_quiz():
+    prs = new_prs()
+    n = 0
+
+    # --- Title ---
+    n += 1
+    make_title_slide(prs,
+        "Drug Discovery Quiz",
+        "10 questions to test your knowledge — from ancient remedies to billion-dollar blockbusters",
+        1, "AI for Drug Discovery", date_str="15 April 2026",
+        notes="TIMING: Use this quiz at the very start of Day 1, BEFORE the lecture slides. It takes about 20-30 min. The quiz serves as an icebreaker and gives students a broad overview of the drug discovery landscape. Read each question aloud, give students 30 seconds to think, then advance to the answer slide. Encourage discussion after each answer.")
+
+    # ===== Q1: Highest-grossing drug =====
+    n += 1
+    make_quiz_question_slide(prs, 1,
+        "What is the highest-grossing drug of all time by total revenue?",
+        ["Lipitor (atorvastatin) — cholesterol",
+         "Humira (adalimumab) — autoimmune diseases",
+         "Keytruda (pembrolizumab) — cancer",
+         "Viagra (sildenafil) — erectile dysfunction"],
+        n,
+        notes="Let students guess. Most will say Lipitor or Viagra. This question introduces the concept of blockbuster drugs (>$1B/year revenue). Give them 30 seconds to think.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 1,
+        "What is the highest-grossing drug of all time by total revenue?",
+        ["Lipitor (atorvastatin) — cholesterol",
+         "Humira (adalimumab) — autoimmune diseases",
+         "Keytruda (pembrolizumab) — cancer",
+         "Viagra (sildenafil) — erectile dysfunction"],
+        1,  # B = Humira
+        "✓ Humira (adalimumab, AbbVie) — ~$230 billion lifetime revenue, peak $21.2B/year (2022).\nLipitor was the previous record holder at ~$125-170B. Humira treats rheumatoid arthritis, Crohn's disease, psoriasis. It is a monoclonal antibody — a biologic, not a small molecule!",
+        n,
+        notes="CITATION: Statista (2024) 'Top pharmaceutical products by lifetime sales worldwide.' AbbVie annual reports confirm Humira's cumulative sales exceeded $200B by 2023. Peak annual sales: $21.2B in 2022.\n\nEXPLAIN IN DETAIL:\n- Humira (adalimumab) is a monoclonal antibody that blocks TNF-alpha, a key inflammatory cytokine. It was approved in 2002 and became the world's best-selling drug.\n- A 'blockbuster drug' is defined as one earning >$1 billion per year in revenue. Humira earned >$20B/year at its peak.\n- Lipitor (atorvastatin, Pfizer) was the previous record holder — a statin that lowers cholesterol by inhibiting HMG-CoA reductase. Lifetime ~$125-170B.\n- KEY DISTINCTION: Humira is a biologic (large protein molecule, injected), Lipitor is a small molecule (taken orally as a pill). This distinction matters for AI drug discovery — designing small molecules vs. biologics requires very different approaches.\n- Humira's patent expired in 2023 (EU) and biosimilars are now available, which is why its sales are declining.\n- Viagra (sildenafil) is iconic but lifetime revenue is only ~$30-40B — much less than Humira or Lipitor.")
+
+    # ===== Q2: First drug in human history =====
+    n += 1
+    make_quiz_question_slide(prs, 2,
+        "What is considered the oldest drug used by humans?",
+        ["Aspirin (from willow bark)",
+         "Opium (from poppies)",
+         "Alcohol (from fermentation)",
+         "Penicillin (from mold)"],
+        n,
+        notes="This question explores the deep history of pharmacology. Many students may say aspirin. Let them discuss for a moment.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 2,
+        "What is considered the oldest drug used by humans?",
+        ["Aspirin (from willow bark)",
+         "Opium (from poppies)",
+         "Alcohol (from fermentation)",
+         "Penicillin (from mold)"],
+        1,  # B = Opium
+        "✓ Opium — used since ~3400 BCE by Sumerians (called the 'joy plant').\nWillow bark (salicin → aspirin) was used from ~1500 BCE. Alcohol from ~7000 BCE as beverage, but opium was specifically used as a MEDICINE. Penicillin was discovered in 1928.",
+        n,
+        notes="CITATION: Brownstein, M.J. (1993) 'A brief history of opiates, opioid peptides, and opioid receptors.' Proc. Natl. Acad. Sci. 90:5391-5393. Archaeological evidence from Sumerian clay tablets (~3400 BCE) describes opium poppy cultivation.\n\nEXPLAIN IN DETAIL:\n- Opium is extracted from Papaver somniferum (the opium poppy). The Sumerians in Mesopotamia (modern Iraq) used it for pain relief and called it 'hul gil' — the 'joy plant.'\n- The active compound is morphine, which was isolated in 1804 by Friedrich Sertürner — this was the first alkaloid ever isolated from a plant, marking the birth of modern pharmacology.\n- TRICKY POINT: Alcohol (ethanol) from fermentation dates to ~7000 BCE, but it was primarily used as a beverage, not as a medicine. If we define 'drug' as a substance intentionally used for therapeutic effect, opium is the clear winner.\n- Willow bark (salicin, precursor to aspirin) was used by Egyptians and Hippocrates (~400 BCE) for pain/fever. Aspirin (acetylsalicylic acid) was synthesized by Felix Hoffmann at Bayer in 1897.\n- Penicillin: discovered 1928 by Alexander Fleming, first clinical use 1941. Much more recent.\n- KEY TAKEAWAY: Humans have been doing 'drug discovery' for over 5,000 years. What's changed is that we now understand WHY these drugs work (opium → opioid receptors, willow bark → COX inhibition). AI helps us find new drugs faster by understanding these mechanisms computationally.")
+
+    # ===== Q3: Drug target families =====
+    n += 1
+    make_quiz_question_slide(prs, 3,
+        "Which protein family is targeted by the largest fraction of FDA-approved drugs?",
+        ["Ion channels (~15%)",
+         "Kinases (~12%)",
+         "Nuclear receptors (~8%)",
+         "GPCRs (~34%)"],
+        n,
+        notes="This question teaches students about drug target families. Most AI/bioinformatics students may not know what a GPCR is. This is a great teaching moment.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 3,
+        "Which protein family is targeted by the largest fraction of FDA-approved drugs?",
+        ["Ion channels (~15%)",
+         "Kinases (~12%)",
+         "Nuclear receptors (~8%)",
+         "GPCRs (~34%)"],
+        3,  # D = GPCRs
+        "✓ GPCRs — ~34% of ALL FDA-approved drugs target G protein-coupled receptors.\nExamples: beta-blockers (heart), antihistamines (allergies), opioids (pain), SSRIs (depression). GPCRs are the single largest drug target family in pharmacology.",
+        n,
+        notes="CITATION: Saikia et al. (2019) 'Established and In-trial GPCR Families in Clinical Trials: A Review for Target Selection.' Curr. Drug Targets 20:522-539. Also: Hauser et al. (2017) 'Trends in GPCR drug discovery: new agents, targets and indications.' Nature Rev. Drug Discov. 16:829-842.\n\nEXPLAIN IN DETAIL:\n- GPCRs (G Protein-Coupled Receptors) are a superfamily of ~800 membrane proteins in humans. They have 7 transmembrane domains and signal through G proteins.\n- ~34% of FDA-approved drugs target GPCRs on ~108 unique GPCR targets. This makes them by far the most 'druggable' protein family.\n- Examples students should know: beta-2 adrenergic receptor (salbutamol for asthma), histamine H1 receptor (cetirizine for allergies), mu-opioid receptor (morphine for pain), serotonin receptors (fluoxetine/Prozac for depression), dopamine D2 receptor (haloperidol for schizophrenia).\n- Ion channels are ~15% (important for neurology/cardiology — hERG, Nav, GABA-A).\n- Kinases are ~12% (mostly oncology — imatinib, erlotinib).\n- Nuclear receptors are ~8% (steroid hormones — estrogen receptor, glucocorticoid receptor).\n- WHY THIS MATTERS FOR AI: AlphaFold can now predict GPCR structures. Combined with molecular docking and GNNs, AI can design new GPCR drugs computationally. This is a huge opportunity.")
+
+    # ===== Q4: Most prescribed drug =====
+    n += 1
+    make_quiz_question_slide(prs, 4,
+        "What is the most prescribed drug in the world (by number of prescriptions)?",
+        ["Metformin (diabetes)",
+         "Amoxicillin (antibiotic)",
+         "Atorvastatin (cholesterol)",
+         "Omeprazole (stomach acid)"],
+        n,
+        notes="This question distinguishes between 'most revenue' (Humira) and 'most prescribed' (volume). Very different answers!")
+
+    n += 1
+    make_quiz_answer_slide(prs, 4,
+        "What is the most prescribed drug in the world (by number of prescriptions)?",
+        ["Metformin (diabetes)",
+         "Amoxicillin (antibiotic)",
+         "Atorvastatin (cholesterol)",
+         "Omeprazole (stomach acid)"],
+        2,  # C = Atorvastatin
+        "✓ Atorvastatin (Lipitor) — ~185 million prescriptions/year in the US alone.\nFollowed by levothyroxine (thyroid), lisinopril (blood pressure), metformin (diabetes). These are all chronic disease drugs — taken daily for life.",
+        n,
+        notes="CITATION: Oregon DFR (2024) '2024 Insurer Reporting Prescription Drug List.' Also: ClinCalc DrugStats database (clinicalc.com/DrugStats) tracks US prescription volumes.\n\nEXPLAIN IN DETAIL:\n- IMPORTANT DISTINCTION: 'Most prescribed' (by volume) ≠ 'highest revenue.' Atorvastatin is prescribed the most but is now generic and cheap (~$10/month). Humira earns the most revenue because each dose costs ~$5,000-7,000.\n- Atorvastatin is an HMG-CoA reductase inhibitor (statin). It lowers LDL cholesterol and is prescribed for cardiovascular disease prevention. It was originally Pfizer's Lipitor — the highest-grossing drug before Humira.\n- Metformin is the first-line treatment for type 2 diabetes. It works by decreasing hepatic glucose production and increasing insulin sensitivity. It is also being studied for anti-aging effects!\n- The top 5 most prescribed drugs are ALL for chronic conditions: cholesterol (atorvastatin), thyroid (levothyroxine), blood pressure (lisinopril), ADHD (amphetamine salts), diabetes (metformin). These represent the biggest disease burdens globally.\n- WHY THIS MATTERS FOR AI: These drugs target well-understood mechanisms with huge datasets (millions of patient records, thousands of compounds tested). This is where AI/QSAR models have the most training data and highest impact.")
+
+    # ===== Q5: Route of administration =====
+    n += 1
+    make_quiz_question_slide(prs, 5,
+        "What percentage of all medications are administered orally (by mouth)?",
+        ["~30%",
+         "~50%",
+         "~60%",
+         "~80%"],
+        n,
+        notes="This question highlights why oral bioavailability (Lipinski's Rule of Five) matters so much in drug design.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 5,
+        "What percentage of all medications are administered orally (by mouth)?",
+        ["~30%",
+         "~50%",
+         "~60%",
+         "~80%"],
+        3,  # D = ~80%
+        "✓ ~80-90% of all medications are taken orally. This is why Lipinski's Rule of Five\n(MW ≤ 500, LogP ≤ 5, HBD ≤ 5, HBA ≤ 10) is so central to drug design — it predicts oral absorption.",
+        n,
+        notes="CITATION: Lipinski et al. (1997) 'Experimental and computational approaches to estimate solubility and permeability in drug discovery.' Adv. Drug Deliv. Rev. 23:3-25. Also: Homayun et al. (2019) 'Challenges and Recent Progress in Oral Drug Delivery.' Pharmaceutics 11(3):129.\n\nEXPLAIN IN DETAIL:\n- The oral route dominates because it is the simplest, cheapest, and most convenient for patients. Patient compliance is highest for oral drugs.\n- But oral drugs face major hurdles: they must survive stomach acid (pH 1-3), be absorbed through the intestinal wall, survive first-pass metabolism in the liver, and reach the target tissue at sufficient concentration.\n- This is why Lipinski's Rule of Five (Ro5) is so important: it defines the physicochemical properties that predict oral absorption. We will learn this on Day 2.\n- Other routes: injection (~10-20%, for drugs that can't survive the gut or need rapid action — e.g., insulin, antibodies like Humira), topical (~2-5%, skin creams), transdermal (<2%, patches like nicotine/fentanyl), inhalation (asthma inhalers), intrathecal (into spinal fluid for CNS drugs).\n- IMPORTANT FOR AI: Most QSAR models predict properties relevant to oral drugs (solubility, permeability, LogP). If your target is a CNS drug, you also need blood-brain barrier (BBB) penetration — an additional filter beyond Ro5.")
+
+    # ===== Q6: Animal vs human pharma market =====
+    n += 1
+    make_quiz_question_slide(prs, 6,
+        "How does the global veterinary drug market compare to the human pharmaceutical market?",
+        ["Veterinary is about 50% of human pharma",
+         "Veterinary is about 25% of human pharma",
+         "Veterinary is about 10% of human pharma",
+         "Veterinary is about 3% of human pharma"],
+        n,
+        notes="Students often overestimate the veterinary market. This question provides perspective on market sizes.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 6,
+        "How does the global veterinary drug market compare to the human pharmaceutical market?",
+        ["Veterinary is about 50% of human pharma",
+         "Veterinary is about 25% of human pharma",
+         "Veterinary is about 10% of human pharma",
+         "Veterinary is about 3% of human pharma"],
+        3,  # D = ~3%
+        "✓ The veterinary pharmaceutical market (~$53B) is only about 3% of the human pharmaceutical market (~$1.58 trillion). However, veterinary drug discovery is growing fast, especially for companion animals (pets).",
+        n,
+        notes="CITATION: Straits Research (2024) 'Veterinary Pharmaceutical Drugs Market Size.' Reports veterinary pharma at ~$53B in 2024. IQVIA/Statista (2024) reports human pharma at ~$1.58 trillion.\n\nEXPLAIN IN DETAIL:\n- Human pharmaceutical market (2024): ~$1.58 trillion. This is one of the largest industries on Earth.\n- Veterinary pharmaceutical market (2024): ~$53 billion. About 3.3% of human pharma.\n- BUT veterinary pharma is growing faster (~8-9% CAGR vs. ~5-6% for human pharma), driven by the pet care boom — people increasingly treat pets like family members and spend more on their healthcare.\n- The veterinary market breaks down into: livestock/production animals (~55%) vs. companion animals/pets (~45%). The pet segment is growing fastest.\n- INTERESTING OVERLAP: Many drugs work in both humans and animals! Ivermectin (antiparasitic), gabapentin (pain), fluoxetine (anxiety in dogs), and many antibiotics are used across species. The 'One Health' concept recognizes that human, animal, and environmental health are interconnected.\n- CONNECTION TO THE COURSE: The David Willson mRNA vaccine story (Day 1 slide 7) is a veterinary application. AI drug discovery methods apply equally to both markets. Some companies (like Invetx/Dechra) are using AI specifically for veterinary drug discovery.\n- REGULATORY DIFFERENCE: FDA Center for Veterinary Medicine (CVM) handles animal drugs. Approval is generally faster and cheaper than for human drugs, making it potentially a good entry point for AI-discovered drugs.")
+
+    # ===== Q7: Drug that saved most lives =====
+    n += 1
+    make_quiz_question_slide(prs, 7,
+        "Which drug is estimated to have saved the most human lives in history?",
+        ["Insulin",
+         "Penicillin",
+         "Chloroquine",
+         "Oral Rehydration Salts (ORS)"],
+        n,
+        notes="This is a thought-provoking question. All four have saved millions. Let students debate.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 7,
+        "Which drug is estimated to have saved the most human lives in history?",
+        ["Insulin",
+         "Penicillin",
+         "Chloroquine",
+         "Oral Rehydration Salts (ORS)"],
+        1,  # B = Penicillin
+        "✓ Penicillin — estimated to have saved over 200 million lives since its discovery.\nDiscovered by Alexander Fleming (1928), first clinical use 1941. Antibiotics collectively prevent ~200K deaths/year in the US alone. ORS has saved ~70 million lives (primarily children with diarrheal disease).",
+        n,
+        notes="CITATION: Science History Institute: 'To date, penicillin has saved an estimated 200 million lives worldwide.' Guinness World Records lists Penicillium as the 'most life-saving fungi.'\n\nEXPLAIN IN DETAIL:\n- Penicillin was discovered by Alexander Fleming in 1928 when he noticed that Penicillium mold killed bacteria on a petri dish. But it wasn't developed into a usable drug until Howard Florey and Ernst Boris Chain purified it in 1940-41 (all three shared the 1945 Nobel Prize in Physiology or Medicine).\n- Before penicillin, a simple scratch could be lethal if it got infected. Bacterial pneumonia, wound infections, strep throat — all were potential death sentences. Penicillin transformed medicine.\n- HOW IT WORKS: Penicillin inhibits bacterial cell wall synthesis by blocking transpeptidase (penicillin-binding proteins, PBPs). Bacteria can't maintain their cell wall → they lyse and die. Human cells don't have cell walls, so penicillin is selectively toxic to bacteria.\n- ORS is also an incredible answer — it has saved ~70 million lives by treating dehydration from diarrheal diseases, primarily in children in developing countries. It's the simplest 'drug' imaginable: water + salt + sugar.\n- Chloroquine has saved tens of millions from malaria. Insulin has saved millions of Type 1 diabetics since 1922.\n- KEY TAKEAWAY: The most impactful drugs are often simple molecules with well-understood mechanisms. AI can help find the NEXT penicillin by screening billions of compounds against novel bacterial targets — especially important given rising antibiotic resistance (see Stokes et al. 2020, Cell — halicin discovery).")
+
+    # ===== Q8: Average time for drug development =====
+    n += 1
+    make_quiz_question_slide(prs, 8,
+        "On average, how long does it take to develop a new drug from initial discovery to FDA approval?",
+        ["3-5 years",
+         "6-8 years",
+         "10-15 years",
+         "20-25 years"],
+        n,
+        notes="This sets up the motivation for the entire course: why we need AI to speed up drug discovery.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 8,
+        "On average, how long does it take to develop a new drug from initial discovery to FDA approval?",
+        ["3-5 years",
+         "6-8 years",
+         "10-15 years",
+         "20-25 years"],
+        2,  # C = 10-15 years
+        "✓ 10-15 years on average (median ~12 years). Costs ~$2.6 billion per approved drug.\nThis is why AI is so valuable: Insilico Medicine reached Phase II in ~30 months using AI for both target identification and drug design.",
+        n,
+        notes="CITATION: DiMasi et al. (2016) 'Innovation in the pharmaceutical industry: New estimates of R&D costs.' J. Health Economics 47:20-33. Reports $2.558B out-of-pocket ($2.87B capitalized). Also: BIO/Informa/QLS (2021) 'Clinical Development Success Rates 2011-2020' for the ~7.9% overall success rate.\n\nEXPLAIN IN DETAIL:\n- The breakdown: Target ID & Validation (1-2 years) → Lead Discovery & Optimization (2-3 years) → Preclinical (1-2 years) → Phase I safety (1-2 years) → Phase II efficacy (2-3 years) → Phase III large-scale (3-4 years) → FDA Review (1-2 years).\n- Total: 10-15 years. Average cost per approved drug: ~$2.6 billion. This includes the cost of ALL the failed drugs along the way (>90% failure rate).\n- WHY AI MATTERS: Insilico Medicine's ISM001-055 (Rentosertib) went from project start to Phase IIa enrollment in ~30 months — compressing the first 5-6 years of the pipeline. CITATION: Ren et al. (2024) Nature Biotechnology. doi:10.1038/s41587-024-02143-0.\n- BUT: AI primarily accelerates the EARLY stages (target ID, virtual screening, lead optimization). Clinical trials still take 5-10 years because you have to test in humans and that takes time for safety reasons.\n- The $2.6B figure is controversial — some argue it's inflated by opportunity cost calculations. But even conservative estimates put the cost at >$1B per approved drug.\n- KEY MESSAGE FOR THE COURSE: AI won't eliminate the need for clinical trials. But it can dramatically reduce the cost and time of the preclinical stages, and improve the success rate by better predicting which drugs will fail.")
+
+    # ===== Q9: First 'magic bullet' drug =====
+    n += 1
+    make_quiz_question_slide(prs, 9,
+        "Paul Ehrlich coined the concept of a 'magic bullet' — a drug that selectively targets disease. What was the first magic bullet drug?",
+        ["Aspirin (1897) — targeting pain/inflammation",
+         "Salvarsan (1910) — targeting syphilis bacteria",
+         "Penicillin (1941) — targeting bacterial infections",
+         "Methotrexate (1947) — targeting cancer cells"],
+        n,
+        notes="This question introduces the concept of TARGETED therapy — the foundation of modern rational drug design and what AI tries to optimize.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 9,
+        "What was the first 'magic bullet' drug?",
+        ["Aspirin (1897) — targeting pain/inflammation",
+         "Salvarsan (1910) — targeting syphilis bacteria",
+         "Penicillin (1941) — targeting bacterial infections",
+         "Methotrexate (1947) — targeting cancer cells"],
+        1,  # B = Salvarsan
+        "✓ Salvarsan (arsphenamine, compound 606) — discovered by Paul Ehrlich & Sahachiro Hata in 1909, clinical use 1910. First synthetic drug designed to selectively kill a pathogen (Treponema pallidum, syphilis). Ehrlich tested 605 compounds before finding the right one!",
+        n,
+        notes="CITATION: Ehrlich, P. (1913) 'Address in Pathology on Chemotherapeutics: Scientific Principles, Methods and Results.' The Lancet 182:445-451. Also: Strebhardt & Ullrich (2008) 'Paul Ehrlich's magic bullet concept: 100 years of progress.' Nature Rev. Cancer 8:473-480.\n\nEXPLAIN IN DETAIL:\n- Paul Ehrlich (1854-1915) is the father of chemotherapy. He proposed the 'Zauberkugel' (magic bullet) concept: a chemical that selectively kills disease-causing organisms without harming the patient.\n- He systematically tested hundreds of arsenic-based compounds against Treponema pallidum (the syphilis bacterium). Compound number 606 worked — hence the name 'Salvarsan' ('that which saves by arsenic').\n- This was the FIRST example of rational, systematic drug screening — the precursor to modern high-throughput screening (HTS) and virtual screening. Ehrlich tested 606 compounds manually. Today, AI can screen billions of virtual compounds in silico.\n- The concept of the 'magic bullet' is the FOUNDATION of targeted drug design: find a molecule that binds specifically to a disease target (receptor, enzyme, ion channel) without hitting 'off-targets' that cause side effects.\n- Ehrlich won the 1908 Nobel Prize in Physiology or Medicine for his work on immunity. His chemotherapy work came after the Nobel Prize.\n- CONNECTION TO AI: Modern drug discovery is essentially Ehrlich's approach scaled up with AI. Instead of testing 606 compounds by hand, we use QSAR models and GNNs to predict which of 10^60 possible molecules will be the best 'magic bullet' for a given target. Same concept, exponentially more powerful.")
+
+    # ===== Q10: Therapeutic area =====
+    n += 1
+    make_quiz_question_slide(prs, 10,
+        "Which therapeutic area currently has the most new drug approvals per year (FDA)?",
+        ["Cardiovascular disease",
+         "Infectious disease",
+         "Oncology (cancer)",
+         "Neurology / CNS disorders"],
+        n,
+        notes="Final question. This shows where the industry is currently investing the most.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 10,
+        "Which therapeutic area currently has the most new drug approvals per year (FDA)?",
+        ["Cardiovascular disease",
+         "Infectious disease",
+         "Oncology (cancer)",
+         "Neurology / CNS disorders"],
+        2,  # C = Oncology
+        "✓ Oncology — ~25-30% of all new FDA approvals in 2023-2024 were cancer drugs.\n50 novel drugs approved by FDA in 2024, with oncology leading by a wide margin. Neurology/CNS is second. Cardiovascular was historically dominant but now has fewer novel approvals.",
+        n,
+        notes="CITATION: FDA CDER (2024) 'Novel Drug Approvals for 2024' — 50 novel drugs approved. Also: Mullard (2025) 'FDA approvals.' Nature Rev. Drug Discov. (annual review).\n\nEXPLAIN IN DETAIL:\n- Oncology dominates new drug approvals because: (1) cancer is a leading cause of death globally, (2) precision medicine/genomics has enabled targeted therapies, (3) immune checkpoint inhibitors (like Keytruda) revolutionized treatment, (4) FDA has accelerated approval pathways for cancer drugs (breakthrough therapy designation, accelerated approval).\n- In 2024: ~13-15 of 50 novel FDA approvals were oncology drugs. Neurology/CNS was second with ~6-8 approvals.\n- HISTORICAL SHIFT: In the 1990s-2000s, cardiovascular drugs dominated (statins, ACE inhibitors, ARBs). But most cardiovascular targets are now well-served by generics, so pharma has shifted investment to oncology where there's more unmet need and higher prices.\n- CNS drugs have the HIGHEST failure rate of any therapeutic area (~97% failure rate in clinical trials for Alzheimer's drugs). This is because: the blood-brain barrier (BBB) blocks most drugs, brain biology is poorly understood, and clinical endpoints are harder to measure.\n- WHY AI MATTERS: AI is particularly valuable for oncology (massive genomics datasets, precision medicine) and for CNS (where traditional approaches have failed, AI might find new targets and BBB-penetrant molecules). Both are active areas of AI drug discovery research.\n- CONNECTION TO THE COURSE: In Day 3, we discuss AlphaFold structures for CNS targets (GPCRs, ion channels) and how AI can predict BBB penetration (Day 2 QSAR models). The challenge of CNS drug discovery motivates better AI methods.")
+
+    # --- Closing slide ---
+    n += 1
+    make_section_divider(prs, "Ready for the Course? Let's Dive In! 🚀", n,
+        notes="TIMING: End of quiz.\n\nRecap: We've covered drug history, market sizes, targets, timelines, and therapeutic areas. All of these topics will come up again during the 4-day course. Now let's start with the Day 1 lecture!",
+        subtitle="Now you know more about drugs than most people — time to learn how AI designs them!")
+
+    os.makedirs("quiz_intro", exist_ok=True)
+    prs.save("quiz_intro/slides.pptx")
+    print(f"  Quiz: {n} slides → quiz_intro/slides.pptx")
+
+
 # ===== MAIN =====
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.path.abspath(__file__)) if os.path.dirname(os.path.abspath(__file__)) else ".")
     print("=" * 60)
     print("  AI for Drug Discovery — Slide Generator")
-    print("  4 Teaching Days + Exam")
+    print("  4 Teaching Days + Exam + Quiz")
+    print("  Quiz:           Introductory Drug Discovery Quiz")
     print("  Day 1 (15 Apr): Introduction, Pipeline, Projects — 6 units")
     print("  Day 2 (22 Apr): Molecular ML, QSAR, Evaluation — 8 units")
     print("  Day 3 (5 May):  Deep Learning, GNNs, AlphaFold — 8 units")
     print("  Day 4 (19 May): Ethics, Physiology, Workshop — 4 units")
     print("  Exam  (27 May): Presentations / Posters")
     print("=" * 60)
+    generate_quiz()
     generate_day1()
     generate_day2()
     generate_day3()
