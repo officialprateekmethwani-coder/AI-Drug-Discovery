@@ -166,7 +166,7 @@ def generate_day1():
         "AI for Drug Discovery",
         "From molecules to medicine — how AI is rewriting the rules",
         1, "AI for Drug Discovery", date_str="15 April 2026",
-        notes="TIMING: 0-15 min (Unit 1 start)\n\nWelcome everyone! Start with a round of introductions — name, background, what interests you about AI and/or drug discovery. This is essential since we only have 4 teaching days together.\n\n=== ABOUT YOUR INSTRUCTOR ===\nDr. Étienne Serbe-Kamp is a neuroscientist whose research focuses on physiology and function of neural circuits in the Drosophila (fruit fly) visual system. Key publications:\n- 'Multilevel visual motion opponency in Drosophila' (Nature Neuroscience, 2023) — GluClα-mediated inhibition in direction-selective circuits\n- 'Voltage to Calcium Transformation Enhances Direction Selectivity in Drosophila T4 Neurons' (J. Neurosci., 2023)\n- 'Comprehensive Characterization of the Major Presynaptic Elements to the Drosophila OFF Motion Detector' (Neuron, 2016) — this is a PHYSIOLOGY paper: used calcium imaging, electrophysiology, and optogenetics to characterize the functional properties of neurons providing input to T5 motion detectors\n- 'A Directional Tuning Map of Drosophila Elementary Motion Detectors' (Nature, 2013)\n\nIMPORTANT: The 2016 Neuron paper is about PHYSIOLOGY of cells — measuring their functional responses using calcium imaging, whole-cell patch clamp, and optogenetics. Dr. Serbe-Kamp is currently working on connectomics with the MESH repository (separate project).\n\nHe is also Co-Director of Summer Fellowships at Backyard Brains, developing open-source neuroscience tools (SpikerBox/SpikerBot). Recent citizen science work: 'A Library of Electrophysiological Responses in Plants' (Plant Signaling & Behavior, 2024).\n\nWhy a neuroscientist teaching drug discovery? The tools are the same! The pipeline (signal → features → model → prediction) is identical whether you study neural circuits, molecular properties, or physiological drug effects. And many important drug targets are ion channels and receptors that Dr. Serbe-Kamp studies.")
+        notes="TIMING: 0-15 min (Unit 1 start)\n\nWelcome everyone! Start with a round of introductions — name, background, what interests you about AI and/or drug discovery. This is essential since we only have 4 teaching days together.\n\n=== ABOUT YOUR INSTRUCTOR ===\nDr. Étienne Serbe-Kamp is a neuroscientist whose research focuses on physiology and function of neural circuits in the Drosophila (fruit fly) visual system. Key publications:\n- Ammer, Serbe-Kamp et al. (2023) 'Multilevel visual motion opponency in Drosophila.' Nature Neuroscience 26:1894-1905 — showed that GluClα-mediated inhibition underlies direction-opponent responses at all levels of the motion circuit\n- Serbe-Kamp et al. (2023) 'Voltage to Calcium Transformation Enhances Direction Selectivity in Drosophila T4 Neurons.' J. Neurosci. 43:2497-2514 — demonstrated a nonlinear voltage-to-calcium transformation that enhances direction selectivity\n- Serbe et al. (2016) 'Comprehensive Characterization of the Major Presynaptic Elements to the Drosophila OFF Motion Detector.' Neuron 89:829-841 — this is a PHYSIOLOGY paper: used calcium imaging (GCaMP), whole-cell patch-clamp electrophysiology, and optogenetics (CsChrimson, GtACR1) to functionally characterize the neurons providing input to T5 motion detectors\n- Maisak, Haag, Ammer, Serbe et al. (2013) 'A Directional Tuning Map of Drosophila Elementary Motion Detectors.' Nature 500:212-216\n\nIMPORTANT: The 2016 Neuron paper is about PHYSIOLOGY of cells — measuring their functional responses using calcium imaging, whole-cell patch clamp, and optogenetics. Dr. Serbe-Kamp is currently working on connectomics with the MESH repository (separate project).\n\nHe is also Co-Director of Summer Fellowships at Backyard Brains, developing open-source neuroscience tools (SpikerBox/SpikerBot). Recent work:\n- Madariaga, [...], Serbe-Kamp, Marzullo (2024) 'A library of electrophysiological responses in plants.' Plant Signaling & Behavior 19(1):2310977\n- Serbe-Kamp et al. (2023) 'Open Citizen Science: fostering open knowledge with participation.' Research Ideas and Outcomes 9:e96476\n\nWhy a neuroscientist teaching drug discovery? The tools are the same! The pipeline (signal → features → model → prediction) is identical whether you study neural circuits, molecular properties, or physiological drug effects. And many important drug targets are ion channels and receptors that Dr. Serbe-Kamp studies.")
 
     # --- Slide 2: Course Overview & Schedule ---
     n += 1
@@ -202,7 +202,7 @@ def generate_day1():
          "",
          "\"The most expensive experiment in science is a failed clinical trial.\""],
         n,
-        notes="TIMING: 25-35 min\n\nLet the numbers sink in. Ask: does anyone know how much a Phase III trial costs? ($50-100M+). Point out the key theme: no matter how good your AI model is at predicting molecular properties, the FINAL validation is always physiological — does the drug actually change cell/tissue/organ function?\n\nThis is why physiology matters for drug design: electrophysiology (patch-clamp, extracellular recording) is the gold standard for ion channel drugs. Calcium imaging measures receptor activation. These are EXACTLY the techniques in Dr. Serbe-Kamp's 2016 Neuron paper and 2023 J.Neurosci. paper.\n\nThe Backyard Brains SpikerBox/SpikerBot offer a DIY version of these physiological readouts — making the final step of drug testing accessible.")
+        notes="TIMING: 25-35 min\n\nCITATION CHECK: DiMasi, Grabowski & Hansen (2016) 'Innovation in the pharmaceutical industry: New estimates of R&D costs.' J. Health Economics 47:20-33. The $2.6B figure is the commonly rounded version of their $2.558B out-of-pocket estimate ($2.87B capitalized, in 2013 dollars). The ~7.9% Phase I-to-approval success rate comes from BIO/Informa Pharma Intelligence/QLS Advisors (2021) 'Clinical Development Success Rates 2011-2020.'\n\nLet the numbers sink in. Ask: does anyone know how much a Phase III trial costs? ($50-100M+). Point out the key theme: no matter how good your AI model is at predicting molecular properties, the FINAL validation is always physiological — does the drug actually change cell/tissue/organ function?\n\nThis is why physiology matters for drug design: electrophysiology (patch-clamp, extracellular recording) is the gold standard for ion channel drugs. Calcium imaging measures receptor activation. These are EXACTLY the techniques in Dr. Serbe-Kamp's 2016 Neuron paper (Serbe et al., Neuron 89:829-841) and 2023 J.Neurosci. paper (Serbe-Kamp et al., J. Neurosci. 43:2497-2514).\n\nThe Backyard Brains SpikerBox/SpikerBot offer a DIY version of these physiological readouts — making the final step of drug testing accessible. SpikerBox ref: Marzullo & Gage (2012) PLoS ONE 7(3):e30837.")
 
     # --- Slide 4: Traditional Pipeline ---
     n += 1
@@ -234,13 +234,14 @@ def generate_day1():
          "Clinical Trial Optimization — Patient stratification, endpoint prediction",
          "Repurposing — Find new uses for existing drugs",
          "",
-         "AI can reduce timelines by 2-4 years and costs by 30-50% (McKinsey, 2021)",
+         "AI can compress timelines by years and reduce costs significantly",
+         "  McKinsey/MGI (2020): 'The Bio Revolution' report + 2022 analyses",
          "",
-         "Case study: Insilico Medicine ISM001-055",
-         "  First AI-designed drug to reach Phase II (2023)",
-         "  Target to preclinical in 18 months (vs. 4-5 years) at ~$2.6M (vs. $100M+)"],
+         "Case study: Insilico Medicine ISM001-055 (Rentosertib)",
+         "  First AI-designed drug to reach Phase IIa (enrolled Apr 2023)",
+         "  Target to Phase II in ~30 months (vs. 4-5 years typical)"],
         n,
-        notes="TIMING: 45-55 min (end of Unit 1)\n\nGo through each bullet with examples. The Insilico Medicine case (Ren et al. 2024, Chemical Science) is landmark: AI identified a novel target (TNIK for IPF) AND designed the molecule. End-to-end AI-driven discovery.\n\nNeuroscience connection: AI on the Drosophila connectome identifies new neural targets. Virtual screening for BBB-penetrant CNS drugs. AI predicts ion channel selectivity. BenevolentAI identified baricitinib for COVID-19.\n\nTransition: Let's look at the most famous AI success story in biology...")
+        notes="TIMING: 45-55 min (end of Unit 1)\n\nCITATION: The McKinsey figures come from McKinsey Global Institute 'The Bio Revolution' (May 2020) and the follow-up 'How AI could revolutionize drug discovery' (McKinsey, 2022). The exact '2-4 years' and '30-50%' numbers are synthesized from these analyses — they are estimates, not precise measurements. Be honest about this with students.\n\nCITATION: Insilico Medicine ISM001-055 (Rentosertib). Published as: Ren et al. (2024) 'A small-molecule TNIK inhibitor targets fibrosis in preclinical and clinical models.' Nature Biotechnology. doi:10.1038/s41587-024-02143-0. The drug is a first-in-class TNIK inhibitor for idiopathic pulmonary fibrosis (IPF). Project started ~late 2020, reached Phase IIa enrollment in April 2023 (~30 months). Phase IIa results (71 patients, NCT05938920) were positive, announced September 2024. NOTE: Published in Nature Biotechnology, NOT Chemical Science.\n\nGo through each bullet with examples. The Insilico case is landmark: AI identified a novel target (TNIK) AND designed the molecule. End-to-end AI-driven discovery.\n\nNeuroscience connection: AI on the Drosophila connectome identifies new neural targets. Virtual screening for BBB-penetrant CNS drugs. AI predicts ion channel selectivity. BenevolentAI identified baricitinib for COVID-19.\n\nTransition: Let's look at the most famous AI success story in biology...")
 
     # --- Slide 6: AlphaFold ---
     n += 1
@@ -259,7 +260,7 @@ def generate_day1():
          "",
          "Student project option: reproduce AlphaFold figures for a drug target!"],
         n,
-        notes="TIMING: 55-65 min (Unit 2 start)\n\nJumper et al. (2021) Nature 596:583-589. Won the 2024 Nobel Prize for Hassabis and Jumper. AlphaFold3 (Abramson et al. 2024) extends to protein-ligand complexes.\n\nNeuroscience connection: GluCl (from Dr. Serbe-Kamp's Drosophila research, Cys-loop receptor superfamily) can be modeled. GABA-A receptors, GPCRs (serotonin, dopamine receptors), all benefit.\n\nStudent project: pick a neuroscience drug target, retrieve its AlphaFold structure, analyze binding sites, and compare to experimental structures. They can reproduce key figures from the Jumper et al. paper or apply it to novel targets.")
+        notes="TIMING: 55-65 min (Unit 2 start)\n\nCITATION: Jumper et al. (2021) 'Highly accurate protein structure prediction with AlphaFold.' Nature 596:583-589. doi:10.1038/s41586-021-03819-2. Won the 2024 Nobel Prize in Chemistry for Demis Hassabis and John Jumper (shared with David Baker for computational protein design).\n\nCITATION: AlphaFold3: Abramson et al. (2024) 'Accurate structure prediction of biomolecular interactions with AlphaFold 3.' Nature 630:493-500. doi:10.1038/s41586-024-07487-w. Extends to protein-ligand, protein-DNA, protein-RNA complexes.\n\nNeuroscience connection: GluCl (from Dr. Serbe-Kamp's Drosophila research, Cys-loop receptor superfamily) can be modeled. GABA-A receptors, GPCRs (serotonin 5-HT2A, dopamine D2 receptors), all benefit. About 34% of all FDA-approved drugs target GPCRs (Saikia et al. 2019, Curr. Drug Targets 20:522-539).\n\nStudent project: pick a neuroscience drug target, retrieve its AlphaFold structure, analyze binding sites, and compare to experimental structures. They can reproduce key figures from the Jumper et al. paper or apply it to novel targets.")
 
     # --- Slide 7: David Willson mRNA story ---
     n += 1
@@ -310,10 +311,10 @@ def generate_day1():
          "  Extracellular recording → drug effects on neural firing patterns",
          "  SpikerBox/SpikerBot → accessible version of these same measurements!",
          "",
-         "Databases: ChEMBL (>2.4M compounds), PubChem (>110M), BindingDB",
+         "Databases: ChEMBL (~2.5M compounds), PubChem (>110M), BindingDB",
          "This is where Dr. Serbe-Kamp's physiology expertise meets drug discovery"],
         n,
-        notes="TIMING: 90-100 min\n\nSpend 5-7 min. IC50 analogy: how much drug to shut down 50% of the target? Lower = more potent.\n\n=== PHYSIOLOGY AS DRUG READOUT — KEY THEME ===\nThis is the central connection between Dr. Serbe-Kamp's research and drug discovery:\n\n1. PATCH-CLAMP ELECTROPHYSIOLOGY: Gold standard for ion channel drugs. Measure current through channels, add drug, measure IC50. This is exactly what Dr. Serbe-Kamp's 2016 Neuron paper used — whole-cell recordings + optogenetics to characterize T5 neuron inputs. For hERG cardiac safety testing: patch-clamp HEK293 cells, measure block IC50.\n\n2. CALCIUM IMAGING: Dr. Serbe-Kamp's 2023 J.Neurosci. paper used two-photon calcium imaging in Drosophila T4 neurons. Same technique used in drug screening (FLIPR assays for GPCR screens).\n\n3. EXTRACELLULAR RECORDING: The SpikerBox records extracellular spikes from neurons/muscles. Apply a drug (e.g., lidocaine = Nav blocker) and watch the action potentials disappear. This IS drug effect measurement!\n\nThe SpikerBox/SpikerBot democratize the final step of drug testing: measuring physiological effects.")
+        notes="TIMING: 90-100 min\n\nSpend 5-7 min. IC50 analogy: how much drug to shut down 50% of the target? Lower = more potent.\n\nCITATION: ChEMBL: Gaulton et al. (2017) 'The ChEMBL database in 2017.' Nucleic Acids Res. 45(D1):D945-D954. Latest release (ChEMBL 35, Dec 2024) contains ~2.5M compounds.\n\n=== PHYSIOLOGY AS DRUG READOUT — KEY THEME ===\nThis is the central connection between Dr. Serbe-Kamp's research and drug discovery:\n\n1. PATCH-CLAMP ELECTROPHYSIOLOGY: Gold standard for ion channel drugs. Measure current through channels, add drug, measure IC50. This is exactly what Dr. Serbe-Kamp's 2016 Neuron paper used — whole-cell recordings + optogenetics to characterize T5 neuron inputs (Serbe et al. 2016, Neuron 89:829-841). For hERG cardiac safety testing: patch-clamp HEK293 cells, measure block IC50.\n\n2. CALCIUM IMAGING: Dr. Serbe-Kamp's 2023 J.Neurosci. paper (43:2497-2514) used two-photon calcium imaging in Drosophila T4 neurons. Same technique used in drug screening (FLIPR assays for GPCR screens).\n\n3. EXTRACELLULAR RECORDING: The SpikerBox records extracellular spikes from neurons/muscles. Apply a drug (e.g., lidocaine = Nav blocker) and watch the action potentials disappear. This IS drug effect measurement! Ref: Marzullo & Gage (2012) PLoS ONE 7(3):e30837.\n\nThe SpikerBox/SpikerBot democratize the final step of drug testing: measuring physiological effects.")
 
     # --- Slide 11: Physiology as Drug Readout ---
     n += 1
@@ -350,18 +351,18 @@ def generate_day1():
         ["The SpikerBot (Backyard Brains) — record AND stimulate real neurons",
          "  Dr. Serbe-Kamp is Co-Director of Summer Fellowships at Backyard Brains",
          "",
-         "Ion channels are major drug targets (~18% of all approved drugs):",
+         "Ion channels are important drug targets (Santos et al. 2017: ~6% of efficacy targets):",
          "  Nav (antiepileptics), GABA-A (anxiolytics), nAChR (addiction), hERG (safety)",
          "  GluCl channels (from Dr. Serbe-Kamp's fly research) = ivermectin target!",
          "",
-         "Hodgkin-Huxley model (1952, Nobel Prize 1963):",
+         "Hodgkin-Huxley model (1952; Nobel Prize in Physiology/Medicine 1963):",
          "  Simulate how drugs alter ion channel gating → predict physiological effects",
          "  We simulate this in the Day 1 notebook!",
          "",
          "The computational SpikerBox: simulate neural signals computationally,",
          "  then validate with real recordings — bridging AI and physiology"],
         n,
-        notes="TIMING: 112-125 min (Unit 3 start)\n\nSpend 7-8 min. Cover the SpikerBot hardware, ion channel pharmacology, and the Hodgkin-Huxley model.\n\n=== DR. SERBE-KAMP'S RESEARCH ===\nKey publications (PHYSIOLOGY focus):\n1. Maisak, Haag, Ammer, Serbe et al. (2013, Nature 500:212-216) — directional tuning map of T4/T5 neurons\n2. Serbe et al. (2016, Neuron 89:829-841) — PHYSIOLOGY paper: calcium imaging, electrophysiology, optogenetics characterizing T5 inputs\n3. Haag, Arenz, Serbe-Kamp et al. (2023, Nature Neurosci. 26:1894-1903) — GluClα mediates motion opponency\n4. Serbe-Kamp et al. (2023, J. Neurosci. 43:2497-2514) — voltage-to-calcium transformation\n\nThe 2016 Neuron paper is about PHYSIOLOGY: functional characterization using calcium imaging, whole-cell recordings, and optogenetics. NOT connectomics. Dr. Serbe-Kamp currently works on connectomics with MESH.\n\n=== GluCl / IVERMECTIN CONNECTION ===\nGluCl is in the Cys-loop receptor superfamily (same as GABA-A). Ivermectin locks GluCl open → Cl- influx → paralysis in parasites. 2015 Nobel Prize (Ōmura & Campbell). Dr. Serbe-Kamp's 2023 Nat.Neurosci. paper found GluClα mediates inhibition in Drosophila motion circuits.\n\n=== HODGKIN-HUXLEY MODEL ===\nC_m * dV/dt = -g_Na*m³h*(V-E_Na) - g_K*n⁴*(V-E_K) - g_L*(V-E_L) + I_ext\nDrug effects = modifying conductance parameters. We simulate this in the practical.")
+        notes="TIMING: 112-125 min (Unit 3 start)\n\nSpend 7-8 min. Cover the SpikerBot hardware, ion channel pharmacology, and the Hodgkin-Huxley model.\n\n=== DR. SERBE-KAMP'S RESEARCH ===\nKey publications (PHYSIOLOGY focus):\n1. Maisak, Haag, Ammer, Serbe et al. (2013, Nature 500:212-216) — directional tuning map of T4/T5 neurons. The first paper to show that T4 and T5 cells are the elementary motion detectors of the fly visual system.\n2. Serbe et al. (2016, Neuron 89:829-841) — PHYSIOLOGY paper: calcium imaging (GCaMP6f, two-photon), whole-cell patch-clamp electrophysiology, and optogenetics (CsChrimson, GtACR1) to characterize T5 motion detector inputs. This is NOT connectomics.\n3. Ammer, Serbe-Kamp et al. (2023, Nature Neurosci. 26:1894-1905) — GluClα mediates motion-opponent inhibition at all levels of the Drosophila motion pathway\n4. Serbe-Kamp et al. (2023, J. Neurosci. 43:2497-2514) — demonstrated that nonlinear voltage-to-calcium transformation in T4 neurons sharpens directional tuning\n\nThe 2016 Neuron paper is about PHYSIOLOGY: functional characterization using calcium imaging, whole-cell recordings, and optogenetics. NOT connectomics. Dr. Serbe-Kamp currently works on connectomics with MESH.\n\n=== GluCl / IVERMECTIN CONNECTION ===\nGluCl is a glutamate-gated chloride channel in the Cys-loop receptor superfamily (same family as GABA-A, glycine receptors, nAChR). Ivermectin locks GluCl open → Cl⁻ influx → hyperpolarization → paralysis in parasites. 2015 Nobel Prize in Physiology or Medicine (Satoshi Ōmura & William C. Campbell) for the discovery of avermectin/ivermectin. Dr. Serbe-Kamp's 2023 Nat.Neurosci. paper (Ammer, Serbe-Kamp et al., 26:1894-1905) found GluClα mediates inhibition in Drosophila motion circuits — same channel family, different organism, different function.\n\n=== HODGKIN-HUXLEY MODEL ===\nCITATION: Hodgkin & Huxley (1952) 'A quantitative description of membrane current and its application to conduction and excitation in nerve.' J. Physiol. 117:500-544. Won the 1963 Nobel Prize in Physiology or Medicine (shared with John Eccles).\nEquation: C_m * dV/dt = -g_Na*m³h*(V-E_Na) - g_K*n⁴*(V-E_K) - g_L*(V-E_L) + I_ext\nDrug effects = modifying conductance parameters (g_Na, g_K). For example:\n- Lidocaine (Nav blocker): reduce g_Na → fewer/no action potentials\n- 4-aminopyridine (Kv blocker): reduce g_K → broader action potentials\n- Tetrodotoxin (TTX, pufferfish toxin): completely blocks Nav → no firing\nWe simulate this in the Day 1 practical!\n\n=== SPIKERBOX ===\nCITATION: Marzullo & Gage (2012) 'The SpikerBox: A Low Cost, Open-Source BioAmplifier for Increasing Public Participation in Neuroscience Inquiry.' PLoS ONE 7(3):e30837. Note: published in PLoS ONE, not Advances in Physiology Education.")
 
     # --- Slide 14: Introduction to RDKit ---
     n += 1
@@ -565,7 +566,7 @@ def generate_day2():
     # --- Slide 3: SMILES Deep Dive ---
     n += 1
     make_section_divider(prs, "SMILES: Deep Dive", n,
-        notes="TIMING: 12-15 min\n\nTransition to SMILES syntax. Weininger (1988) paper.",
+        notes="TIMING: 12-15 min\n\nTransition to SMILES syntax. Weininger (1988) 'SMILES, a Chemical Language and Information System. 1. Introduction to Methodology and Encoding Rules.' J. Chem. Inf. Comput. Sci. 28:31-36.",
         subtitle="Weininger (1988), J. Chem. Inf. Comput. Sci. 28:31-36")
 
     # --- Slide 4: SMILES Syntax ---
@@ -628,7 +629,7 @@ def generate_day2():
          "",
          "In RDKit: AllChem.GetMorganFingerprintAsBitVect(mol, radius=2, nBits=2048)"],
         n,
-        notes="TIMING: 32-40 min\n\nSpend 5 min. Barcode analogy. Morgan/ECFP captures local atom neighborhoods at increasing radius. ECFP4 (radius=2, 2048 bits) is the standard. Rogers & Hahn 2010 is the foundational paper.")
+        notes="TIMING: 32-40 min\n\nSpend 5 min. Barcode analogy. Morgan/ECFP captures local atom neighborhoods at increasing radius. ECFP4 (radius=2, 2048 bits) is the standard. CITATION: Rogers & Hahn (2010) 'Extended-Connectivity Fingerprints.' J. Chem. Inf. Model. 50:742-754. This is the foundational paper that formalized ECFP as Morgan fingerprints.")
 
     # --- Slide 8: Morgan Algorithm ---
     n += 1
@@ -669,7 +670,7 @@ def generate_day2():
          "",
          "RDKit: 200+ descriptors  |  Mordred: >1800 descriptors"],
         n,
-        notes="TIMING: 50-60 min\n\n7 min. Lipinski et al. (1997) Adv. Drug Deliv. Rev. 23:3-25 (~14,000 citations). For CNS drugs, BBB adds constraints. Pardridge (2005) NeuroRx 2:3-14.\n\nThe serotonin/dopamine BBB example is powerful: explains why Parkinson's patients take L-DOPA, not dopamine. This is a PERFECT ML task: predict BBB permeability from descriptors.")
+        notes="TIMING: 50-60 min\n\n7 min. CITATION: Lipinski et al. (1997) 'Experimental and computational approaches to estimate solubility and permeability in drug discovery and development settings.' Adv. Drug Deliv. Rev. 23(1-3):3-25. One of the most cited papers in medicinal chemistry. For CNS drugs, BBB adds constraints. Pardridge (2005) 'The blood-brain barrier: Bottleneck in brain drug development.' NeuroRx 2:3-14.\n\nThe serotonin/dopamine BBB example is powerful: explains why Parkinson's patients take L-DOPA, not dopamine. This is a PERFECT ML task: predict BBB permeability from descriptors.")
 
     # --- Slide 10: QSAR ---
     n += 1
@@ -708,9 +709,9 @@ def generate_day2():
          "Built-in regularization",
          "Handles missing values",
          "Dominant in Kaggle competitions",
-         "Sheridan (2016, JCIM): XGBoost often > RF for QSAR"],
+         "Sheridan (2016, JCIM 56:2353-2360): XGBoost modestly > RF for QSAR"],
         n,
-        notes="TIMING: 68-78 min\n\n7 min. RF: ensemble of independent trees. XGBoost: sequential boosting. Chen & Guestrin 2016 won KDD Best Paper. For tabular data (which molecular features are), XGBoost is still king.\n\nKey message: ALWAYS try RF and XGBoost as baselines before jumping to deep learning. They often match or beat GNNs on small datasets.")
+        notes="TIMING: 68-78 min\n\n7 min. RF: ensemble of independent trees. XGBoost: sequential boosting. CITATION: Chen & Guestrin (2016) 'XGBoost: A Scalable Tree Boosting System.' KDD '16, pp. 785-794. Won Best Paper at KDD 2016. Breiman (2001) 'Random forests.' Machine Learning 45:5-32 defined Random Forest. For tabular data (which molecular features are), XGBoost is still king.\n\nKey message: ALWAYS try RF and XGBoost as baselines before jumping to deep learning. They often match or beat GNNs on small datasets.")
 
     # --- Slide 12: Break ---
     n += 1
@@ -725,7 +726,7 @@ def generate_day2():
         ["Open: day2_molecular_ml/Day2_Practical_QSAR.ipynb",
          "",
          "Dataset: Delaney solubility (1,128 molecules, logS values)",
-         "  Delaney (2004), JCICS 44:1000-1005",
+         "  Delaney (2004), J. Chem. Inf. Comput. Sci. 44:1000-1005",
          "",
          "Steps:",
          "  1. Load dataset, parse SMILES with RDKit",
@@ -769,7 +770,7 @@ def generate_day2():
         "The Hall of Shame: When Models Lie",
         "Example 1: hERG toxicity model — 95% accuracy on random split. On novel scaffolds: 60%.\n\nExample 2: Published AUC-ROC 0.97. Remove duplicate compounds: 0.72.\n\nExample 3: Scaffold split vs random — AUROC dropped from 0.92 to 0.75.\n\nExample 4 (Neuroscience): A GABA-A binding model looked great, but it learned to recognize the benzodiazepine scaffold, not actual binding features. On novel chemotypes: near-random.\n\nLesson: ALWAYS validate properly.\n\nRef: Wallach & Heifets (2018) — 'Most Ligand-Based Benchmarks Reward Memorization'",
         n,
-        notes="TIMING: 148-155 min\n\n5 min cautionary tales. Wallach & Heifets 2018 showed many published models memorize molecular series.\n\nGABA-A example: GABA-A is same Cys-loop family as GluCl (Dr. Serbe-Kamp's research). A dataset dominated by benzodiazepines (all sharing 1,4-benzodiazepine core) will train models that recognize scaffolds, not binding mechanisms. On random split: great (benzodiazepines in both sets). On scaffold split: fails for novel chemotypes (neurosteroids, barbiturates, Z-drugs).")
+        notes="TIMING: 148-155 min\n\n5 min cautionary tales. CITATION: Wallach & Heifets (2018) 'Most Ligand-Based Classification Benchmarks Reward Memorization Rather than Generalization.' JCIM 58:916-932. Showed many published models memorize molecular series rather than learning generalizable chemical features.\n\nGABA-A example: GABA-A is same Cys-loop family as GluCl (Dr. Serbe-Kamp's research). A dataset dominated by benzodiazepines (all sharing 1,4-benzodiazepine core) will train models that recognize scaffolds, not binding mechanisms. On random split: great (benzodiazepines in both sets). On scaffold split: fails for novel chemotypes (neurosteroids, barbiturates, Z-drugs).")
 
     # --- Slide 17: Scaffold Bias ---
     n += 1
@@ -789,7 +790,7 @@ def generate_day2():
          "  Changing one methyl → chlorine can change IC50 by 1000×",
          "  These are the hardest cases for ML!"],
         n,
-        notes="TIMING: 155-163 min\n\n5 min. Draw Bemis-Murcko framework: strip molecule to ring systems + linkers. If train and test share scaffolds, the model memorizes scaffolds. Wu et al. 2018 (MoleculeNet) made scaffold splitting the standard.")
+        notes="TIMING: 155-163 min\n\n5 min. Draw Bemis-Murcko framework: strip molecule to ring systems + linkers. If train and test share scaffolds, the model memorizes scaffolds. CITATION: Wu et al. (2018) 'MoleculeNet: A Benchmark for Molecular Machine Learning.' Chemical Science 9:513-530. Made scaffold splitting the standard for evaluation.")
 
     # --- Slide 18: Metrics ---
     n += 1
@@ -840,7 +841,7 @@ def generate_day2():
          "",
          "EU AI Act: medical AI = high-risk = requires transparency"],
         n,
-        notes="TIMING: 172-177 min\n\n3 min. The Jimenez-Luna 2020 paper is the best review for drug discovery interpretability. If a model says a molecule is toxic but can't explain why, the chemist will be skeptical. If it can say 'the nitro group at position 3 drives the toxicity prediction,' the chemist engages.")
+        notes="TIMING: 172-177 min\n\n3 min. CITATION: Jiménez-Luna et al. (2020) 'Drug discovery with explainable artificial intelligence.' Nature Machine Intelligence 2:573-584. The best review for drug discovery interpretability. If a model says a molecule is toxic but can't explain why, the chemist will be skeptical. If it can say 'the nitro group at position 3 drives the toxicity prediction,' the chemist engages.")
 
     # --- Slide 21: SHAP ---
     n += 1
@@ -862,7 +863,7 @@ def generate_day2():
          "",
          "For fingerprints: important bit → decode to substructure → chemistry insight"],
         n,
-        notes="TIMING: 177-185 min\n\n5 min. Shapley value: each feature is a 'player' in a prediction 'game'. TreeSHAP (Lundberg et al. 2020, Nature MI) is exact and fast for RF/XGBoost.\n\nFor molecular fingerprints: if bit 847 is most important and corresponds to a pyridine ring, we learn actual chemistry. RDKit GetMorganFingerprintBitInfo() decodes bits.")
+        notes="TIMING: 177-185 min\n\n5 min. Shapley value: each feature is a 'player' in a prediction 'game'. CITATION: Lundberg & Lee (2017) 'A Unified Approach to Interpreting Model Predictions.' NeurIPS 30:4765-4774. TreeSHAP (Lundberg et al. 2020, Nature MI 2:56-67) is exact and fast for RF/XGBoost.\n\nFor molecular fingerprints: if bit 847 is most important and corresponds to a pyridine ring, we learn actual chemistry. RDKit GetMorganFingerprintBitInfo() decodes bits.")
 
     # --- Slide 22: Applicability Domain ---
     n += 1
@@ -875,7 +876,7 @@ def generate_day2():
          "  Descriptor range: are features within training bounds?",
          "  Conformal prediction: distribution-free prediction intervals",
          "",
-         "Sahigara et al. (2012), Molecules 17:4791-4810",
+         "Sahigara et al. (2012), Molecules 17(5):4791-4810",
          "",
          "In practice: flag out-of-domain predictions as low confidence",
          "A confident wrong prediction is worse than an honest 'I don't know'"],
@@ -1062,9 +1063,9 @@ def generate_day3():
     make_content_slide(prs,
         "Common GNN Architectures",
         ["GCN — Graph Convolutional Network (Kipf & Welling 2017, ICLR)",
-         "  Simple, effective, ~12,000 citations",
+         "  Simple, effective, widely adopted (~56,000+ citations as of 2026)",
          "",
-         "GAT — Graph Attention Network (Velickovic et al. 2018, ICLR)",
+         "GAT — Graph Attention Network (Veličković et al. 2018, ICLR)",
          "  Learns attention weights: some neighbors matter more",
          "",
          "MPNN — Message Passing Neural Network (Gilmer et al. 2017, ICML)",
@@ -1077,7 +1078,7 @@ def generate_day3():
          "",
          "Key insight: architecture matters LESS than data quality + featurization"],
         n,
-        notes="TIMING: 37-44 min\n\n5 min overview. GCN is simple and effective. MPNN unifies the field. Chemprop (Yang et al. 2019) is the best out-of-the-box molecular GNN — use it for projects!")
+        notes="TIMING: 37-44 min\n\n5 min overview.\nCITATION: GCN: Kipf & Welling (2017) 'Semi-Supervised Classification with Graph Convolutional Networks.' ICLR 2017. ~56,000 citations as of 2026 — one of the most influential ML papers.\nCITATION: GAT: Veličković et al. (2018) 'Graph Attention Networks.' ICLR 2018. Learns attention weights so not all neighbors contribute equally.\nCITATION: MPNN: Gilmer et al. (2017) 'Neural Message Passing for Quantum Chemistry.' ICML 2017, pp. 1263-1272. The unifying framework — shows GCN, GAT, and others are all special cases of message passing.\nCITATION: Chemprop/D-MPNN: Yang et al. (2019) JCIM 59:3370-3388. Best out-of-the-box molecular GNN — use it for projects!")
 
     # --- Slide 7: Break ---
     n += 1
@@ -1094,7 +1095,7 @@ def generate_day3():
          "  Chemprop: state-of-the-art on MoleculeNet benchmarks",
          "",
          "Neuroscience:",
-         "  Drosophila connectome (FlyWire: 140K neurons, 50M synapses) → graph!",
+         "  Drosophila connectome (FlyWire: ~139K neurons, ~54.5M synapses) → graph!",
          "  GNNs predict neuron types from connectivity patterns",
          "  Brain imaging graphs: EEG/fMRI → GNN for disease classification",
          "",
@@ -1103,7 +1104,7 @@ def generate_day3():
          "  Currently working on connectomics graph data with MESH repository",
          "  Same GNN architecture works on molecules AND brain circuits!"],
         n,
-        notes="TIMING: 59-69 min (Unit 3 start)\n\n7 min. Stokes et al. 2020 Cell: neural network on 2,335 molecules → screened Broad repurposing library → discovered halicin.\n\n=== CONNECTOMICS & PHYSIOLOGY ===\nThe Drosophila brain (Dorkenwald et al. 2024, Nature): ~140K neurons, ~50M synapses = the ultimate graph dataset.\n\nDr. Serbe-Kamp's 2016 Neuron paper: used PHYSIOLOGY (calcium imaging, electrophysiology, optogenetics) to characterize T5 neuron inputs. This is FUNCTIONAL characterization, not connectomics.\n\nDr. Serbe-Kamp CURRENTLY works on connectomics with the MESH repository — this is his ongoing research.\n\nThe connection: physiology tells you WHAT neurons do (functional), connectomics tells you HOW they're wired (structural). Both are graph problems. Same GNN architectures apply.")
+        notes="TIMING: 59-69 min (Unit 3 start)\n\n7 min. CITATION: Stokes et al. (2020) 'A Deep Learning Approach to Antibiotic Discovery.' Cell 180:688-702. Neural network on 2,335 molecules → screened Broad repurposing library → discovered halicin.\n\n=== CONNECTOMICS & PHYSIOLOGY ===\nCITATION: Dorkenwald et al. (2024) 'Neuronal wiring diagram of an adult brain.' Nature 634:124-138. The Drosophila brain (FlyWire): ~139K neurons, ~54.5M synapses = the ultimate graph dataset.\n\nDr. Serbe-Kamp's 2016 Neuron paper: used PHYSIOLOGY (calcium imaging, electrophysiology, optogenetics) to characterize T5 neuron inputs. This is FUNCTIONAL characterization, not connectomics.\n\nDr. Serbe-Kamp CURRENTLY works on connectomics with the MESH repository — this is his ongoing research.\n\nThe connection: physiology tells you WHAT neurons do (functional), connectomics tells you HOW they're wired (structural). Both are graph problems. Same GNN architectures apply.")
 
     # --- Slide 9: Cross-Domain GNNs ---
     n += 1
@@ -1183,12 +1184,12 @@ def generate_day3():
          "  2. Recurrent Neural Networks (RNN) on SMILES strings",
          "  3. Generative Adversarial Networks (GAN)",
          "  4. Reinforcement Learning — optimize for desired properties",
-         "  5. Diffusion Models — state-of-the-art (Hoogeboom et al. 2022)",
+         "  5. Diffusion Models — state-of-the-art (Hoogeboom et al., ICML 2022)",
          "",
          "SELFIES (Krenn et al. 2020): 100% valid molecular strings!",
          "  Every string decodes to a valid molecule → ideal for generation"],
         n,
-        notes="TIMING: 135-148 min\n\n8 min. Gómez-Bombarelli et al. 2018 was the landmark paper: encode molecules to latent space, decode back. Modify the latent representation to change properties.\n\nSELFIES is important: with SMILES, randomly generated strings are usually invalid. SELFIES guarantees validity — every string is a valid molecule.\n\nDiffusion models (from image generation: DALL-E, Stable Diffusion) are now adapted for molecules.")
+        notes="TIMING: 135-148 min\n\n8 min. CITATION: Gómez-Bombarelli et al. (2018) 'Automatic Chemical Design Using a Data-Driven Continuous Representation of Molecules.' ACS Central Science 4:268-276. This was the landmark paper: encode molecules to latent space, decode back. Modify the latent representation to change properties.\n\nSELFIES is important: with SMILES, randomly generated strings are usually invalid. SELFIES guarantees validity — every string is a valid molecule.\n\nDiffusion models (from image generation: DALL-E, Stable Diffusion) are now adapted for molecules.")
 
     # --- Slide 15: Multi-objective Optimization ---
     n += 1
@@ -1233,14 +1234,14 @@ def generate_day3():
          "  Serotonin receptors (5-HT2A: psychedelics, antidepressants)",
          "  Dopamine receptors (D2: antipsychotics)  |  nAChR (addiction)"],
         n,
-        notes="TIMING: 157-167 min\n\n7 min. AlphaFold2 accuracy matches experimental methods. Nobel Prize 2024 for Hassabis and Jumper.\n\nAlphaFold3 is the game-changer for drug design: predicts protein-ligand complexes directly.\n\nNeuroscience drug targets: ALL major families benefit:\n- Ion channels (hERG, Nav, GluCl, GABA-A): membrane proteins that were hard to crystallize\n- GPCRs (serotonin, dopamine, opioid receptors): ~34% of all FDA-approved drugs target GPCRs\n- Transporters (SERT, DAT): targets for SSRIs, methylphenidate\n\nStudent project: pick one of these targets, retrieve AlphaFold structure, analyze binding site.")
+        notes="TIMING: 157-167 min\n\n7 min. CITATION: Jumper et al. (2021) 'Highly accurate protein structure prediction with AlphaFold.' Nature 596:583-589. doi:10.1038/s41586-021-03819-2. AlphaFold2 accuracy matches experimental methods (GDT >90 on CASP14). 2024 Nobel Prize in Chemistry awarded to Demis Hassabis and John Jumper (shared with David Baker for computational protein design).\n\nCITATION: Abramson et al. (2024) 'Accurate structure prediction of biomolecular interactions with AlphaFold 3.' Nature 630:493-500. doi:10.1038/s41586-024-07487-w. AlphaFold3 is the game-changer for drug design: predicts protein-ligand complexes directly. Uses a diffusion-based architecture (different from AF2's end-to-end Evoformer approach).\n\nNeuroscience drug targets: ALL major families benefit:\n- Ion channels (hERG, Nav, GluCl, GABA-A): membrane proteins that were extremely hard to crystallize. AlphaFold structures opened up structure-based drug design for these targets.\n- GPCRs (serotonin 5-HT2A, dopamine D2, opioid receptors): ~34% of all FDA-approved drugs target GPCRs (Saikia et al. 2019, Curr. Drug Targets 20:522-539). AlphaFold structures complement cryo-EM structures.\n- Transporters (SERT, DAT): targets for SSRIs (fluoxetine/Prozac), methylphenidate (Ritalin)\n\nStudent project: pick one of these targets, retrieve AlphaFold structure from uniprot.org → AlphaFold DB, analyze binding site, compare to experimental PDB structure.")
 
     # --- Slide 18: Molecular Docking ---
     n += 1
     make_content_slide(prs,
         "Molecular Docking & Binding Prediction",
         ["Molecular docking: fit a molecule into a protein binding site",
-         "  AutoDock Vina, GNINA, DiffDock (Corso et al. 2022)",
+         "  AutoDock Vina, GNINA, DiffDock (Corso et al. 2023, ICLR)",
          "",
          "Scoring functions: predict binding affinity from pose",
          "  Physics-based: force fields  |  Empirical: trained on data",
@@ -1255,7 +1256,7 @@ def generate_day3():
          "",
          "Step 5 = physiological validation = what the SpikerBox does!"],
         n,
-        notes="TIMING: 167-175 min\n\n5 min. The virtual screening workflow ends with EXPERIMENTAL VALIDATION. For ion channel drugs, this means electrophysiology. This connects back to the physiology-as-readout theme.\n\nDiffDock (Corso et al. 2022) uses diffusion models for docking — deep learning applied to pose prediction. State-of-the-art.")
+        notes="TIMING: 167-175 min\n\n5 min. The virtual screening workflow ends with EXPERIMENTAL VALIDATION. For ion channel drugs, this means electrophysiology. This connects back to the physiology-as-readout theme.\n\nCITATION: DiffDock: Corso et al. (2023) 'DiffDock: Diffusion Steps, Twists, and Turns for Molecular Docking.' ICLR 2023. (arXiv preprint: 2022, arXiv:2210.01776.) Uses diffusion models for molecular docking — generates multiple plausible binding poses and scores them. State-of-the-art for blind docking (no prior knowledge of binding site).")
 
     # --- Slide 19: Break ---
     n += 1
@@ -1302,7 +1303,7 @@ def generate_day3():
          "Computational cost: RF trains in seconds, GNN in hours",
          "Neuroscience angle: small circuit (60 neurons) → RF. Full fly brain (140K) → GNN"],
         n,
-        notes="TIMING: 245-255 min\n\n7-min discussion. RF wins on small data, when interpretability is critical, or when compute is limited. GNN wins on large data. Yang et al. 2019: Chemprop beat RF on 7/8 MoleculeNet tasks, but RF won on 1.\n\nNeuroscience analogy: small T5 circuit (~60 neurons) → hand-crafted features + RF. Full 140K-neuron connectome → GNN essential.")
+        notes="TIMING: 245-255 min\n\n7-min discussion. RF wins on small data, when interpretability is critical, or when compute is limited. GNN wins on large data. CITATION: Yang et al. (2019) 'Analyzing Learned Molecular Representations for Property Prediction.' JCIM 59:3370-3388. Chemprop (D-MPNN) beat RF on 7/8 MoleculeNet tasks, but RF won on 1.\n\nNeuroscience analogy: small T5 circuit (~60 neurons) → hand-crafted features + RF. Full 140K-neuron connectome → GNN essential.")
 
     # --- Slide 23: Takeaways ---
     n += 1
@@ -1472,7 +1473,7 @@ def generate_day4():
     n += 1
     make_content_slide(prs,
         "Ion Channel Pharmacology: Where AI Meets the SpikerBox",
-        ["Ion channels = ~18% of all drug targets (Santos et al. 2017)",
+        ["Ion channels = ~6% of primary drug targets (Santos et al. 2017, Nat. Rev. Drug Discov. 16:19-34)",
          "",
          "Critical ion channel drug targets:",
          "  Nav: antiepileptics (carbamazepine), local anesthetics (lidocaine)",
@@ -1486,9 +1487,9 @@ def generate_day4():
          "  DIY: SpikerBox (extracellular recording, ~$100)",
          "  Computational: Hodgkin-Huxley simulation (Day 1 notebook!)",
          "",
-         "Dr. Serbe-Kamp's GluClα research (2023 Nat.Neurosci.) → ivermectin target"],
+         "GluClα research: Ammer, Serbe-Kamp et al. (2023, Nat. Neurosci. 26:1894-1905) → ivermectin target"],
         n,
-        notes="TIMING: 57-67 min\n\n7 min. Santos et al. (2017) Nature Rev. Drug Discov. 16:19-34: comprehensive map of drug targets.\n\n=== THE GluCl / IVERMECTIN CONNECTION ===\nGluCl is a glutamate-gated chloride channel in the Cys-loop receptor superfamily (same family as GABA-A, glycine receptors, nAChR). Ivermectin locks GluCl open → Cl⁻ influx → hyperpolarization → paralysis in parasites.\n\n2015 Nobel Prize (Ōmura & Campbell) for ivermectin discovery.\n\nDr. Serbe-Kamp's 2023 Nature Neuroscience paper (Haag, Arenz, Serbe-Kamp et al.) found GluClα mediates direction-opponent inhibition in the Drosophila visual system. Same channel family, different organism, different function.\n\n=== hERG SAFETY ===\nhERG (human Ether-à-go-go Related Gene) channel is MANDATORY for drug safety. Block of hERG can cause QT prolongation → cardiac arrhythmia → sudden death. EVERY drug candidate must be tested. The ICH S7B guideline requires this.\n\nAI predicts hERG block from molecular structure (QSAR). Physiology validates it (patch-clamp).\n\n=== DIY APPROACH ===\nSpikerBox: apply lidocaine to cockroach leg → Nav block → no action potentials. This IS drug testing at the most fundamental level. Making it accessible is the BYB mission.")
+        notes="TIMING: 57-67 min\n\n7 min. CITATION: Santos et al. (2017) 'A comprehensive map of molecular drug targets.' Nature Rev. Drug Discov. 16:19-34. Note: Santos reports ion channels as ~6% of primary efficacy targets, NOT 18%. The 18% figure is sometimes cited but is incorrect — it likely conflates different target categories. GPCRs are ~34% (the largest family). Ion channels remain critically important despite the smaller percentage because of safety (hERG) and neurological disease applications.\n\n=== THE GluCl / IVERMECTIN CONNECTION ===\nGluCl is a glutamate-gated chloride channel in the Cys-loop receptor superfamily (same family as GABA-A, glycine receptors, nAChR). Ivermectin locks GluCl open → Cl⁻ influx → hyperpolarization → paralysis in parasites.\n\n2015 Nobel Prize (Ōmura & Campbell) for ivermectin discovery.\n\nDr. Serbe-Kamp's 2023 Nature Neuroscience paper (Ammer, Serbe-Kamp et al., Nature Neurosci. 26:1894-1905) found GluClα mediates direction-opponent inhibition in the Drosophila visual system. Same channel family, different organism, different function.\n\n=== hERG SAFETY ===\nhERG (human Ether-à-go-go Related Gene) channel is MANDATORY for drug safety. Block of hERG can cause QT prolongation → cardiac arrhythmia → sudden death. EVERY drug candidate must be tested. CITATION: Redfern et al. (2003) 'Relationships between preclinical cardiac electrophysiology, clinical QT interval prolongation and torsade de pointes.' Cardiovasc. Res. 58:32-45. The ICH S7B guideline requires hERG testing.\n\nAI predicts hERG block from molecular structure (QSAR). Physiology validates it (patch-clamp).\n\n=== DIY APPROACH ===\nSpikerBox: apply lidocaine to cockroach leg → Nav block → no action potentials. This IS drug testing at the most fundamental level. Making it accessible is the BYB mission.")
 
     # --- Slide 10: Serbe-Kamp Physiology ---
     n += 1
