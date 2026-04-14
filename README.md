@@ -1,26 +1,27 @@
 # AI for Drug Discovery
 
-**University Course — 34 Teaching Hours | 7 Weeks + 1 Project Week**
-**Instructor: Dr. Étienne Serbe-Kamp** — Neuroscientist, Drosophila visual circuits, Backyard Brains
+**Compact Course — 26 Teaching Units | 4 Teaching Days + Exam**
+**Instructor: Dr. Étienne Serbe-Kamp** — Neuroscientist, Drosophila visual circuits & physiology, Backyard Brains
 
 ## Course Overview
 
 This repository contains all teaching materials for the "AI for Drug Discovery" course, including PowerPoint presentations with detailed presenter notes and hands-on Jupyter notebooks for Google Colab.
 
-The course uniquely bridges **neuroscience** and **drug discovery**, leveraging the instructor's research background in Drosophila visual motion detection, EM connectomics, and electrophysiology (Backyard Brains / SpikerBot). Neuroscience examples (neurotransmitter drug targets, ion channel pharmacology, connectomics as graph data) are woven throughout to show that the same AI/ML methods apply across biological domains.
+The course uniquely bridges **neuroscience** and **drug discovery**, leveraging the instructor's research background in Drosophila visual motion detection, cellular physiology (calcium imaging, electrophysiology, optogenetics), and open-source neuroscience tools (Backyard Brains SpikerBox/SpikerBot). A key theme throughout the course is **physiology as the final readout of drug action** — the same physiological techniques Dr. Serbe-Kamp uses in his research are the gold standard for measuring drug effects on neurons and ion channels.
 
-## Course Structure
+**Important note on Dr. Serbe-Kamp's 2016 Neuron paper**: This paper ("Comprehensive Characterization of the Major Presynaptic Elements to the Drosophila OFF Motion Detector", Serbe et al., 2016) is a **physiology paper** — it used calcium imaging, electrophysiology, and optogenetics to characterize the functional responses of neurons. Dr. Serbe-Kamp's **current** connectomics work is with the MESH repository (separate project).
 
-| Week | Topic | Teaching Hours |
-|------|-------|---------------|
-| 1 | Introduction & Drug Discovery Pipeline | 5 TH |
-| 2 | Molecular Representation & Baseline ML | 5 TH |
-| 3 | Model Evaluation & Interpretability | 5 TH |
-| 4 | Deep Learning & Graph Neural Networks | 5 TH |
-| 5 | Generative AI for Molecule Design | 5 TH |
-| 6 | Protein Targets & Binding Prediction | 4.5 TH |
-| 7 | Ethics, Regulation & Project Workshop | 4.5 TH |
-| 8 | **Project Exam** (Presentation + Code) | — |
+## Course Schedule
+
+| Day | Date | Units | Hours | Topic |
+|-----|------|-------|-------|-------|
+| 1 | 15 April 2026 | 6 | 4.5 h | Introduction, Drug Discovery Pipeline, AI Overview, **Project Proposals** |
+| 2 | 22 April 2026 | 8 | 6 h | Molecular Representation, QSAR, RF/XGBoost, Evaluation, SHAP |
+| 3 | 5 May 2026 | 8 | 6 h | Deep Learning, GNNs, Generative AI, AlphaFold, Protein Targets |
+| 4 | 19 May 2026 | 4 | 3 h | Ethics, Physiology as Drug Readout, Project Finalization |
+| **Exam** | **27 May 2026** | — | — | **Group Presentations / Posters** |
+
+*1 unit = 45 minutes. Every day includes breaks and hands-on practical sessions.*
 
 ## Repository Structure
 
@@ -28,100 +29,86 @@ The course uniquely bridges **neuroscience** and **drug discovery**, leveraging 
 generate_slides.py                              # Script to regenerate all .pptx files
 requirements_slides.txt                         # Python dependencies for slide generation
 
-week1_introduction/
-  ├── slides.pptx                               # Lecture slides (20 slides)
-  └── Week1_Practical.ipynb                     # Practical: Explore molecules with RDKit + Hodgkin-Huxley simulation + GluCl/ivermectin model
+day1_introduction/
+  ├── slides.pptx                               # Day 1 lecture slides (23 slides)
+  └── Day1_Practical.ipynb                      # Practical: RDKit + Hodgkin-Huxley simulation
 
-week2_molecular_representation/
-  ├── slides.pptx                               # Lecture slides (20 slides)
-  └── Week2_Practical.ipynb                     # Practical: Predict solubility (RF/XGBoost) + Dose-response + GluCl/ivermectin simulation
+day2_molecular_ml/
+  ├── slides.pptx                               # Day 2 lecture slides (28 slides)
+  ├── Day2_Practical_QSAR.ipynb                 # Practical 1: QSAR with RF & XGBoost
+  └── Day2_Practical_Evaluation.ipynb           # Practical 2: Scaffold splits, SHAP
 
-week3_evaluation/
-  ├── slides.pptx                               # Lecture slides (16 slides)
-  └── Week3_Practical.ipynb                     # Practical: Scaffold splits, SHAP + ECG/QT interval simulation
+day3_deep_learning/
+  ├── slides.pptx                               # Day 3 lecture slides (24 slides)
+  └── Day3_Practical_GNN.ipynb                  # Practical: GNN with DeepChem
 
-week4_deep_learning_gnn/
-  ├── slides.pptx                               # Lecture slides (16 slides)
-  └── Week4_Practical.ipynb                     # Practical: GNN with DeepChem + Drosophila connectome graph + SpikerBot neural motifs
+day4_ethics_physiology/
+  └── slides.pptx                               # Day 4 lecture slides (17 slides)
+
+publications/                                   # Upload PDFs for students
+  ├── README.md                                 # Full publication list organized by topic
+  ├── instructor/                               # Dr. Serbe-Kamp's publications
+  ├── drug_discovery_ai/                        # Core AI drug discovery papers
+  ├── molecular_ml/                             # Fingerprints, QSAR, evaluation
+  ├── gnns_deep_learning/                       # GNN and deep learning papers
+  ├── connectomics_neuroscience/                # Connectomics & brain mapping
+  ├── neuropharmacology/                        # Ion channels, drug targets
+  ├── ethics_regulation/                        # AI ethics and regulatory papers
+  └── project_references/                       # Additional project-specific papers
 ```
+
+## Student Projects (Exam: 27 May 2026)
+
+Groups of 3–4 students choose from 7 proposed projects or propose their own:
+
+### Hardware / Physiology Projects (Poster format — collect your own data)
+1. **Computational SpikerBox** — Simulate/record neural signals, classify spike patterns with ML, model drug effects on ion channels
+2. **SpikerBot** — Program stimulation patterns, record physiological responses, model dose-response relationships
+3. **BYB Human Signals** — Record EMG/ECG/EEG, apply ML classification, relate to pharmacological effects
+4. **Eye-Tracking** — Visual processing + ML on gaze data, connect to CNS drug effects on attention/saccades
+5. **VR Setup** — VR-based neuro experiments, behavioral data + ML, connect to drug effects on perception
+
+### Computational Projects (Presentation format — reproduce/explain published work)
+6. **Classical QSAR** — Build QSAR model for a neuroscience drug target (GABA-A, 5-HT, dopamine D2, hERG) from ChEMBL
+7. **AlphaFold Structure** — Predict a neuroscience target structure, analyze binding sites, reproduce key figures
+
+**Grading**: Implementation 40% | Scientific reasoning 25% | Evaluation 20% | Presentation 15%
+
+## Key Theme: Physiology as Drug Readout
+
+A central thread of this course is that **physiology is the final readout of drug action**:
+
+1. **In silico** (AI): QSAR, GNN, docking predict binding affinity → Days 2-3
+2. **In vitro** (cell): electrophysiology, calcium imaging show functional effects → Dr. Serbe-Kamp's 2016 Neuron paper
+3. **Tissue/organ**: cardiac QT, neural circuits → BYB ECG, EMG recordings
+4. **Organism**: behavioral outcomes → eye-tracking, VR experiments
+
+The BYB SpikerBox/SpikerBot make step 2 accessible — "DIY drug readout." Students can measure real physiological effects of ion channel drugs.
 
 ## Neuroscience Integration
 
-Each week integrates neuroscience examples alongside drug discovery:
-
-- **Week 1**: Neurotransmitter drug SMILES (serotonin, dopamine, GABA), ion channel pharmacology, GluCl/ivermectin as drug target, Hodgkin-Huxley biophysical model, SpikerBot demonstrations
-- **Week 2**: CNS drug property requirements (BBB penetration), neuroscience dose-response curves, GluCl activation simulation, insecticide pharmacology
-- **Week 3**: Electrophysiology experimental rigor as parallel to ML evaluation, GABA-A scaffold bias, ECG/QT interval drug safety, neuroscience SHAP examples
-- **Week 4**: Drosophila connectome as graph data (FlyWire: 140K neurons, 50M synapses), GNNs on brain connectivity, neural circuit graphs alongside molecular graphs
+- **Day 1**: Instructor physiology background, neurotransmitter SMILES, ion channel pharmacology, GluCl/ivermectin, Hodgkin-Huxley model, SpikerBot
+- **Day 2**: CNS drug properties (BBB penetration), GABA-A scaffold bias, neuroscience SHAP examples
+- **Day 3**: Drosophila connectome as graph data, GNNs on brain connectivity, AlphaFold for neuro targets
+- **Day 4**: Physiology as drug readout, BYB gear demonstrations, drug safety testing (hERG)
 
 ## How to Use
 
 ### Presentations
-All `.pptx` files include **detailed presenter/speaker notes** with extensive background information, timing suggestions, neuroscience context, and references to Dr. Serbe-Kamp's research publications.
+All `.pptx` files include **detailed presenter/speaker notes** with timing, background info, neuroscience context, and references.
 
-To regenerate the slides:
+To regenerate:
 ```bash
 pip install -r requirements_slides.txt
 python generate_slides.py
 ```
 
 ### Notebooks
-All notebooks are designed for **Google Colab** — just upload and run. They install their own dependencies. Every line of code is commented with detailed explanations.
+All notebooks are designed for **Google Colab** — just upload and run.
 
-## Assessment (Week 8)
+### Publications
+Upload PDFs into the `publications/` subfolders. See `publications/README.md` for the full organized list.
 
-**Group Project (3-4 students)** — Choose one:
-1. QSAR prediction model (e.g., CNS drug target activity)
-2. GNN-based activity prediction (molecular or connectomics)
-3. Generative molecule design
-4. Binding affinity modeling
+## Publications List
 
-**Grading**: Implementation 40% | Scientific reasoning 25% | Evaluation 20% | Presentation 15%
-
-## Important Publications List
-
-### Instructor's Publications (Serbe-Kamp)
-1. Haag, Arenz, **Serbe-Kamp** et al. (2023). Multilevel visual motion opponency in Drosophila. *Nature Neuroscience* 26:1894-1903
-2. **Serbe-Kamp** et al. (2023). Voltage to Calcium Transformation Enhances Direction Selectivity in Drosophila T4 Neurons. *J. Neurosci.* 43:2497-2514
-3. **Serbe** et al. (2016). Comprehensive Characterization of the Major Presynaptic Elements to the Drosophila OFF Motion Detector. *Neuron* 89:829-841
-4. Maisak, Haag, Ammer, **Serbe** et al. (2013). A Directional Tuning Map of Drosophila Elementary Motion Detectors. *Nature* 500:212-216
-5. **Serbe-Kamp** et al. (2024). A Library of Electrophysiological Responses in Plants. *Plant Signaling & Behavior*
-6. **Serbe-Kamp** et al. (2023). Open Citizen Science: Fostering Open Knowledge with Participation.
-
-### Core Drug Discovery & AI References
-7. DiMasi, J.A. et al. (2016). Innovation in the pharmaceutical industry. *J. Health Economics* 47:20-33
-8. Stokes, J.M. et al. (2020). A Deep Learning Approach to Antibiotic Discovery. *Cell* 180:688-702
-9. Jumper, J. et al. (2021). Highly accurate protein structure prediction with AlphaFold. *Nature* 596:583-589
-10. Ren, F. et al. (2024). ISM001-055: AI-designed drug for IPF. *Chemical Science*
-
-### Molecular ML & Cheminformatics
-11. Rogers, D. & Hahn, M. (2010). Extended-Connectivity Fingerprints. *JCIM* 50:742-754
-12. Wu, Z. et al. (2018). MoleculeNet: A Benchmark for Molecular Machine Learning. *Chemical Science* 9:513-530
-13. Yang, K. et al. (2019). Analyzing Learned Molecular Representations for Property Prediction. *JCIM* 59:3370-3388
-14. Lundberg, S.M. & Lee, S. (2017). A Unified Approach to Interpreting Model Predictions. *NeurIPS*
-15. Wallach, I. & Heifets, A. (2018). Most Ligand-Based Benchmarks Reward Memorization. *JCIM* 58:916-932
-
-### GNNs & Deep Learning
-16. Gilmer, J. et al. (2017). Neural Message Passing for Quantum Chemistry. *ICML*
-17. Kipf, T.N. & Welling, M. (2017). Semi-Supervised Classification with Graph Convolutional Networks. *ICLR*
-
-### Connectomics & Neuroscience
-18. Dorkenwald, S. et al. (2024). Neuronal wiring diagram of an adult brain. *Nature* 634:124-138
-19. Schlegel, P. et al. (2024). Whole-brain annotation and multi-connectome cell typing. *Nature* 634:139-152
-20. Takemura, S. et al. (2013). A visual motion detection circuit suggested by Drosophila connectomics. *Nature* 500:175-181
-
-### Neuropharmacology & Ion Channels
-21. Hodgkin, A.L. & Huxley, A.F. (1952). A quantitative description of membrane current. *J. Physiol.* 117:500-544
-22. Santos, R. et al. (2017). A comprehensive map of molecular drug targets. *Nature Rev. Drug Discov.* 16:19-34
-23. Marzullo, T.C. & Gage, G.J. (2012). The SpikerBox. *Advances in Physiology Education* 36:2-14
-24. Redfern, W.S. et al. (2003). Relationships between preclinical cardiac electrophysiology and QT prolongation. *Cardiovasc. Res.* 58:32-45
-25. Pardridge, W.M. (2005). The blood-brain barrier. *NeuroRx* 2:3-14
-
-### Neuroscience GNNs
-26. Bessadok, A. et al. (2022). Graph Neural Networks in Network Neuroscience. *Med. Image Anal.* 76:102333
-
-### Classic Cheminformatics
-27. Weininger, D. (1988). SMILES. *J. Chem. Inf. Comput. Sci.* 28:31-36
-28. Lipinski, C.A. et al. (1997). Rule of Five. *Adv. Drug Deliv. Rev.* 23:3-25
-29. Bemis, G.W. & Murcko, M.A. (1996). The Properties of Known Drugs. *J. Med. Chem.* 39:2887-2893
-30. Gaulton, A. et al. (2017). The ChEMBL database. *Nucleic Acids Res.* 45:D986-D994
+See [`publications/README.md`](publications/README.md) for the complete list of 34 publications organized by topic.
