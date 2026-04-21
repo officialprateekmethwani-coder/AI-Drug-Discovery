@@ -3475,28 +3475,1370 @@ WHAT STUDENTS SHOULD DO BETWEEN NOW AND DAY 3:
 
 
 
-# ===== MAIN =====
+# ===== MAIN — see bottom of file =====
+
+
+# =====================================================================
+# QUIZ 3  Physiology, Neuroscience & SpikerBox
+# =====================================================================
+def generate_quiz_physiology():
+    prs = new_prs()
+    n = 0
+
+    n += 1
+    make_title_slide(prs,
+        "Physiology & Neuroscience Quiz",
+        "Action potentials, ion channels, Hodgkin-Huxley, neural circuits, physiological drug readouts",
+        1, "AI for Drug Discovery", date_str="22 April 2026",
+        notes="Use this quiz at the END of the Day 2 physiology intro, or at the start of the afternoon. 10 questions, ~20 minutes. Tests whether students absorbed the morning physiology material. Questions go from basic vocabulary to mechanistic drug pharmacology.")
+
+    # Q1
+    n += 1
+    make_quiz_question_slide(prs, 1,
+        "What is the resting membrane potential of a typical neuron?",
+        ["+40 mV (inside more positive than outside)",
+         "0 mV (no difference across membrane)",
+         "-70 mV (inside more negative than outside)",
+         "-200 mV (very strongly negative)"],
+        n, notes="Basic vocabulary. Most CS students won't know this. Use the answer to explain the ion gradient concept.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 1,
+        "What is the resting membrane potential of a typical neuron?",
+        ["+40 mV (inside more positive than outside)",
+         "0 mV (no difference across membrane)",
+         "-70 mV (inside more negative than outside)",
+         "-200 mV (very strongly negative)"],
+        2,
+        "Correct: -70 mV. Inside of a resting neuron is ~70 millivolts more negative than outside.\nMaintained by the Na+/K+ ATPase pump: 3 Na+ out, 2 K+ in per ATP. K+ leaks out through resting K+ channels. When an AP fires, membrane rapidly depolarizes to +40 mV, then repolarizes.",
+        n,
+        notes="""WHY -70 mV?
+The Na+/K+ pump moves 3 Na+ OUT and 2 K+ IN per ATP cycle. Net result: positive charge accumulates outside. K+ channels are also open at rest — K+ flows out (concentration gradient), leaving negative charge inside.
+Resting K+ channels make the membrane selectively permeable to K+ at rest. This brings the membrane toward E_K (about -90 mV). The pump and the leak together settle at ~-70 mV.
+
+DRUG RELEVANCE: local anesthetics, antiepileptics, and cardiac drugs all target the channels that control the resting potential and the action potential. Understanding the baseline helps you understand what the drug is changing.""")
+
+    # Q2
+    n += 1
+    make_quiz_question_slide(prs, 2,
+        "During the RISING phase of an action potential, which ion flows INTO the neuron?",
+        ["K+ (potassium) — driven by its concentration gradient",
+         "Cl- (chloride) — driven inward by electrical gradient",
+         "Na+ (sodium) — through voltage-gated Na+ channels",
+         "Ca2+ (calcium) — through L-type calcium channels"],
+        n, notes="Tests mechanism of action potential. Na+ drives the rising phase. Ca2+ enters at synaptic terminals but is NOT the main depolarising ion.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 2,
+        "During the RISING phase of an action potential, which ion flows INTO the neuron?",
+        ["K+ (potassium) — driven by its concentration gradient",
+         "Cl- (chloride) — driven inward by electrical gradient",
+         "Na+ (sodium) — through voltage-gated Na+ channels",
+         "Ca2+ (calcium) — through L-type calcium channels"],
+        2,
+        "Correct: Na+ (sodium). Voltage-gated Na+ channels (Nav) open at threshold (~-55 mV).\nNa+ is 145 mM outside, 12 mM inside: BOTH concentration gradient AND electrical gradient (negative inside) drive Na+ in. Membrane shoots from -70 mV to +40 mV in < 1 ms.",
+        n,
+        notes="""THE RISING PHASE MECHANISM:
+Step 1: stimulus depolarises past -55 mV threshold
+Step 2: voltage-gated Nav snap open. The S4 helix in each domain acts as a voltage sensor — positively charged arginines move in the electric field when voltage changes, pulling the channel gate open.
+Step 3: Na+ floods in. Two driving forces (thermodynamic): (a) concentration gradient: 145 mM outside vs 12 mM inside = 12x higher outside; (b) electrical gradient: inside is -70 mV, Na+ (positive ion) is pulled toward negative interior.
+Step 4: membrane shoots to +40 mV (close to E_Na = +55 mV) in < 1 ms.
+
+WHY NOT Ca2+? Ca2+ DOES enter at synaptic terminals to trigger neurotransmitter release. But this uses Cav2.1/2.2 channels, not the Nav channels of the axon. In cardiac muscle, Ca2+ does drive the plateau phase of the cardiac action potential. But in neurons, Na+ drives the spike.
+
+DRUG TARGETS (Nav):
+- Lidocaine/bupivacaine: local anesthetics. Block Nav. No spike = no pain signal.
+- Carbamazepine/phenytoin: anticonvulsants. Block Nav preferentially in rapidly-firing neurons (use-dependent block). Reduce seizure frequency.
+- Tetrodotoxin (TTX): from pufferfish. Extremely potent Nav blocker. Research tool. Deadly at nanomolar concentrations.""")
+
+    # Q3
+    n += 1
+    make_quiz_question_slide(prs, 3,
+        "What did Hodgkin & Huxley model in their Nobel Prize-winning 1952 work?",
+        ["The structure of DNA in nerve cells",
+         "The mathematical equations describing action potential generation in squid axons",
+         "The first computer simulation of the human brain",
+         "The discovery of synaptic vesicles by electron microscopy"],
+        n, notes="Historical context. Students may confuse with Watson & Crick (DNA, 1953).")
+
+    n += 1
+    make_quiz_answer_slide(prs, 3,
+        "What did Hodgkin & Huxley model in their Nobel Prize-winning 1952 work?",
+        ["The structure of DNA in nerve cells",
+         "The mathematical equations describing action potential generation in squid axons",
+         "The first computer simulation of the human brain",
+         "The discovery of synaptic vesicles by electron microscopy"],
+        1,
+        "Correct: Hodgkin & Huxley (1952) wrote 4 coupled ODEs describing action potential generation using voltage-clamp data from squid giant axons.\n1963 Nobel Prize in Physiology or Medicine. First quantitative biological model of cellular excitability. Still the foundation of all computational neuroscience.",
+        n,
+        notes="""HISTORICAL CONTEXT:
+Alan Hodgkin and Andrew Huxley (Cambridge, UK) asked: HOW does a nerve impulse work mathematically? They chose the squid giant axon (Loligo) because it is 1 mm in diameter — 1000x larger than a human axon — easy to impale with metal wire electrodes. They could also perfuse the inside with different salt solutions.
+
+VOLTAGE CLAMP: They invented (with Cole & Marmont) the voltage clamp. A feedback amplifier holds the membrane voltage at a set value and measures the current needed to do so. Since V is constant, the current directly reflects channel conductance: I = g(V-E).
+
+KEY EXPERIMENTS:
+1. Replace Na+ outside with choline (impermeant) → the fast inward current disappears. Confirms it is Na+.
+2. Replace K+ inside with Cs+ (blocks K+ channels) → the slow outward current disappears. Confirms it is K+.
+3. Fit empirical equations to the kinetics of each conductance: m³h for Na+, n⁴ for K+.
+
+THE MODEL: 5 papers published in J. Physiology in 1952. The last paper (Hodgkin & Huxley 1952d) gives the full quantitative model and shows it correctly predicts: (1) action potential shape and amplitude, (2) threshold phenomenon, (3) refractory period, (4) accommodation. All from 4 equations fit to voltage clamp data.
+
+IMPACT: Every neuron model since 1952 uses HH-style conductance equations. The NEURON simulator (used by most computational neuroscientists) is essentially HH + cable theory. Understanding HH = understanding all modern computational neuroscience.""")
+
+    # Q4
+    n += 1
+    make_quiz_question_slide(prs, 4,
+        "What does the SpikerBox (Backyard Brains) record?",
+        ["The electrical activity of individual genes during transcription",
+         "Extracellular neural spikes (~100-500 µV) from nearby neurons or muscles",
+         "Blood oxygen levels using near-infrared spectroscopy",
+         "The force of muscle contractions using strain gauges"],
+        n, notes="Tests SpikerBox understanding from the physiology intro slides.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 4,
+        "What does the SpikerBox (Backyard Brains) record?",
+        ["The electrical activity of individual genes during transcription",
+         "Extracellular neural spikes (~100-500 µV) from nearby neurons or muscles",
+         "Blood oxygen levels using near-infrared spectroscopy",
+         "The force of muscle contractions using strain gauges"],
+        1,
+        "Correct: Extracellular neural spikes — tiny voltage deflections (~100-500 µV) caused by action potentials in nearby neurons/muscles.\nA metal electrode near a neuron picks up the ionic current loop of the spike. Amplified ~1000x. Can be heard as 'pops' through a speaker. Drug experiment: add lidocaine → spikes disappear.",
+        n,
+        notes="""HOW EXTRACELLULAR RECORDING WORKS:
+When a neuron fires, Na+ flows IN at the spike site. This creates a current loop: Na+ enters the cell, creating a 'current sink' — a region where positive charge is being absorbed from the extracellular space. The extracellular fluid has to supply this Na+, meaning current flows TOWARD the spike site from adjacent regions (source-to-sink).
+
+An electrode placed near the neuron detects this current loop as a voltage fluctuation. The signal is tiny (~100-500 microvolts = 0.1-0.5 mV vs. 1.5 V in a AA battery = 3000-15000x smaller).
+
+THE SPIKERBOX ELECTRONICS:
+- Amplification: ~60 dB (x1000) to bring signal to audible/displayable range
+- Bandpass filter: 300-3000 Hz. This passes spike-frequency content, rejects: (a) motion artifact (very low freq), (b) electrode noise (very high freq), (c) 50/60 Hz power line interference (notch filter)
+- Output: audio jack (you literally HEAR the spikes as pops!) or USB to computer
+
+DRUG EXPERIMENT (classic demonstration):
+1. Set up cockroach leg preparation (remove one leg, keep alive with saline)
+2. Record baseline spontaneous activity (see spikes every few seconds)
+3. Add lidocaine (0.1-1 mg/mL): Na+ channels blocked → spikes slow, then stop
+4. Wash with saline: spikes return (lidocaine diffuses away)
+5. This IS a dose-response experiment — you could measure IC50!
+
+CONNECTION TO QSAR: The measurement you just did (how much lidocaine blocks 50% of spikes?) gives an IC50 value. This is EXACTLY what QSAR models predict from molecular structure. The SpikerBox is the physiological validation of an AI prediction.""")
+
+    # Q5
+    n += 1
+    make_quiz_question_slide(prs, 5,
+        "What is the main function of GABA (gamma-aminobutyric acid) in the adult brain?",
+        ["Main EXCITATORY neurotransmitter — promotes action potential firing",
+         "Main INHIBITORY neurotransmitter — reduces neuronal firing via Cl- influx",
+         "An oxygen carrier molecule in glial cells",
+         "A hormone released from the pituitary that controls sleep"],
+        n, notes="GABA vs. glutamate is fundamental. Tests NT knowledge from SMILES practice slides.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 5,
+        "What is the main function of GABA (gamma-aminobutyric acid) in the adult brain?",
+        ["Main EXCITATORY neurotransmitter — promotes action potential firing",
+         "Main INHIBITORY neurotransmitter — reduces neuronal firing via Cl- influx",
+         "An oxygen carrier molecule in glial cells",
+         "A hormone released from the pituitary that controls sleep"],
+        1,
+        "Correct: GABA is the main INHIBITORY neurotransmitter. GABA-A receptor = Cl- channel.\nGABA binds → channel opens → Cl- flows in → membrane hyperpolarizes → less likely to fire.\nDrugs: diazepam (Valium), alcohol, propofol all potentiate GABA-A. Same Cys-loop superfamily as GluCl (ivermectin target in flies!).",
+        n,
+        notes="""GABA-A RECEPTOR STRUCTURE AND MECHANISM:
+GABA-A is a pentameric (5-subunit) ligand-gated ion channel. The 5 subunits (2α + 2β + 1γ most commonly) surround a central pore. The pore is selective for Cl-. Two GABA molecules bind simultaneously (one at each α-β interface). Binding → conformational change → pore opens → Cl- flows in.
+
+WHY DOES Cl- ENTRY INHIBIT THE NEURON?
+Cl- has a reversal potential (E_Cl) near or more negative than the resting potential (~-70 to -75 mV). When GABA-A opens:
+- If V > E_Cl: Cl- flows IN (makes inside more negative = hyperpolarization)
+- If V = E_Cl: no net Cl- flow (but the conductance increase still "short-circuits" excitatory currents — a mechanism called "shunting inhibition")
+Net result: harder to depolarize the neuron to threshold.
+
+DRUG BINDING SITES ON GABA-A:
+1. GABA binding site (α-β interface): endogenous ligand
+2. Benzodiazepine site (α-γ interface): diazepam, lorazepam, alprazolam. POTENTIATE GABA-A: increases frequency of channel opening when GABA is present. Cannot open channel without GABA → reason BZDs are safer than barbiturates.
+3. Barbiturate site (β subunit transmembrane domain): phenobarbital. At high concentrations, opens channel WITHOUT GABA. Explains narrow therapeutic window and high overdose risk.
+4. Neurosteroid site (transmembrane): allopregnanolone, alphaxalone, propofol.
+5. Alcohol site: poorly defined, possibly multiple sites.
+
+CYS-LOOP CONNECTION TO IVERMECTIN:
+The Cys-loop superfamily includes GABA-A, glycine receptor (GlyR), nAChR, 5-HT3, AND GluCl (invertebrate glutamate-gated Cl- channel). Ivermectin opens GluCl in worms/insects → sustained Cl- influx → paralysis. GluCl doesn't exist in vertebrates (we have GlyR instead, which ivermectin also modulates but less potently). This pharmacological specificity is why ivermectin is safe for humans at antiparasitic doses.""")
+
+    # Q6
+    n += 1
+    make_quiz_question_slide(prs, 6,
+        "In fly (Drosophila) motion vision, what is the role of T4 neurons?",
+        ["Detect overall brightness levels in the visual field",
+         "Detect ON-motion (a brightening edge moving in one of 4 directions)",
+         "Process color information from UV-sensitive photoreceptors",
+         "Send feedback signals from the brain back to the eye"],
+        n, notes="Tests fly motion vision knowledge from the physiology intro.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 6,
+        "In fly (Drosophila) motion vision, what is the role of T4 neurons?",
+        ["Detect overall brightness levels in the visual field",
+         "Detect ON-motion (a brightening edge moving in one of 4 directions)",
+         "Process color information from UV-sensitive photoreceptors",
+         "Send feedback signals from the brain back to the eye"],
+        1,
+        "Correct: T4 neurons are elementary motion detectors for ON-motion (brightening edges).\n4 subtypes: front-to-back, back-to-front, upward, downward. T5 neurons do the same for OFF-motion (darkening edges). Together they feed into LPTCs for whole-field optic flow. Requires GluCl-mediated inhibition (Ammer, Serbe-Kamp et al. 2023, Nat. Neurosci.).",
+        n,
+        notes="""THE T4/T5 CIRCUIT IN DETAIL:
+Photoreceptors → Lamina (L1-L5) → Medulla → T4/T5 → Lobula Plate Tangential Cells (LPTCs)
+
+WHAT IS AN ELEMENTARY MOTION DETECTOR?
+An EMD detects motion in one direction. The classic Reichardt detector model: take two adjacent photoreceptor inputs, delay one, multiply (correlate) the two signals. If the bright edge moves from left to right, it hits receptor A first, then B slightly later. If you delay signal A and then multiply A×B, the multiplication is large only when both signals are coincident — which happens when the edge is moving left-to-right. Moving right-to-left gives a small or negative output.
+
+T4 neurons implement something like this Reichardt detector using circuits with excitatory (AMPA-type glutamate) and inhibitory (GluCl) inputs from specific medulla neurons.
+
+GluCl ROLE (Ammer, Serbe-Kamp et al. 2023):
+T5 neurons receive direction-opponent inhibition through GluCl channels. This inhibition is crucial for DIRECTION SELECTIVITY — without it, T5 responds to motion in all directions equally (loses selectivity). The specific circuit: Mi9 (inhibitory medulla neuron) → T5 via GluCl. Mi9 responds to motion in the NULL direction. By providing inhibitory input through GluCl when the null direction is present, T5's response to null direction is suppressed → direction selectivity.
+
+FOR DRUG DISCOVERY:
+This circuit shows how a specific ion channel (GluCl) at a specific synapse (Mi9→T5) implements a specific computation (direction selectivity). Blocking GluCl with ivermectin eliminates this computation. This is the same logic as: blocking Nav with lidocaine eliminates pain signaling. Understanding which computation depends on which ion channel helps predict drug effects on behavior.""")
+
+    # Q7
+    n += 1
+    make_quiz_question_slide(prs, 7,
+        "Why is electron microscopy (EM) essential for connectomics (mapping neural circuits)?",
+        ["EM is faster than light microscopy for large tissue volumes",
+         "EM works on living tissue while light microscopy requires fixation",
+         "Synapses (20-40 nm) are below the ~200 nm resolution limit of light",
+         "EM can image fluorescent proteins that light microscopes cannot detect"],
+        n, notes="Tests understanding of EM from the morning physiology slides.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 7,
+        "Why is electron microscopy (EM) essential for connectomics (mapping neural circuits)?",
+        ["EM is faster than light microscopy for large tissue volumes",
+         "EM works on living tissue while light microscopy requires fixation",
+         "Synapses (20-40 nm) are below the ~200 nm resolution limit of light",
+         "EM can image fluorescent proteins that light microscopes cannot detect"],
+        2,
+        "Correct: Synapses are ~20-40 nm wide — far below the diffraction limit of visible light (~200 nm).\nElectrons have wavelength ~0.001 nm → 200x better resolution. EM can resolve individual synaptic vesicles (40 nm), cell membranes (5 nm thick), and postsynaptic densities. Essential for identifying every synapse in a neural circuit.",
+        n,
+        notes="""THE PHYSICS BEHIND THE RESOLUTION LIMIT:
+Abbe diffraction limit: minimum resolvable feature ≈ λ / (2 × NA)
+- Visible light: λ = 400-700 nm, NA ≤ 1.4 (oil immersion) → resolution ~140-250 nm
+- Electrons at 80 kV: de Broglie wavelength ≈ 0.004 nm → theoretical resolution ~0.002 nm, practical ~0.1-5 nm for biological specimens
+
+WHY DO WE NEED TO SEE SYNAPSES?
+A synapse is the connection between two neurons. It has:
+- Presynaptic terminal: ~1 µm in diameter, contains 100s of synaptic vesicles (40 nm each, filled with NT)
+- Synaptic cleft: 20 nm gap
+- Postsynaptic density: a protein scaffold holding receptors, ~30 nm thick
+
+With light microscopy you can see a synaptic bouton (the ~1 µm terminal) but you CANNOT see: whether a synapse is present (vs. just axon passing by), the type of synapse (excitatory vs. inhibitory — different ultrastructure), or the number of vesicles (which correlates with synaptic strength).
+
+With EM you see all of this.
+
+CONNECTOMICS WORKFLOW:
+1. Fix tissue in glutaraldehyde (cross-links proteins) + osmium tetroxide (stains membranes with heavy metal → electron-dense = dark)
+2. Embed in epoxy resin (hard plastic)
+3. Ultramicrotome slices tissue into 30-50 nm sections (thinner than most bacteria!)
+4. Image each section: scanning EM (SEM) in backscatter mode, or transmission EM (TEM). Each section = one 2D image, ~terabyte per mm³.
+5. AI (CNNs for semantic segmentation) identifies cell membrane boundaries in each slice
+6. 3D reconstruction: stack slices → connect membranes → 3D neuron shapes
+7. Synapse detection: look for presynaptic specialization (T-bar in fly, active zone density) opposite postsynaptic density
+8. Build graph: nodes=neurons, edges=synapses with weights=synapse count
+
+AI'S ROLE: Steps 5-7 are automated by AI. The FlyWire connectome (2024) used deep learning (flood-filling networks) to segment 139,000 neurons. Without AI, this would take a human lifetime.""")
+
+    # Q8
+    n += 1
+    make_quiz_question_slide(prs, 8,
+        "Why do opioids (morphine, fentanyl) cause pinpoint pupils (miosis)?",
+        ["Opioids block sympathetic pupil dilation receptors",
+         "Opioids directly constrict the iris sphincter muscle",
+         "Opioids activate the Edinger-Westphal nucleus (parasympathetic) → pupil constriction",
+         "Opioids reduce retinal photoreceptor sensitivity"],
+        n, notes="Connects eye-tracking pharmacology to the opioid mechanism. Classic clinical sign used by police and paramedics.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 8,
+        "Why do opioids (morphine, fentanyl) cause pinpoint pupils (miosis)?",
+        ["Opioids block sympathetic pupil dilation receptors",
+         "Opioids directly constrict the iris sphincter muscle",
+         "Opioids activate the Edinger-Westphal nucleus (parasympathetic) → pupil constriction",
+         "Opioids reduce retinal photoreceptor sensitivity"],
+        2,
+        "Correct: Opioids activate µ-opioid receptors on the Edinger-Westphal (EW) nucleus.\nEW → ciliary ganglion → sphincter pupillae → miosis (small pupils). Tolerance does NOT develop to miosis (unlike analgesia, euphoria). Pinpoint pupils + respiratory depression = opioid overdose triad.",
+        n,
+        notes="""AUTONOMIC CONTROL OF THE PUPIL:
+The pupil is controlled by two antagonistic muscles:
+1. SPHINCTER PUPILLAE (constrictor): ring of smooth muscle. Parasympathetically controlled. CN III → Edinger-Westphal nucleus → ciliary ganglion → sphincter → MIOSIS (small pupil)
+2. DILATOR PUPILLAE: radial smooth muscle. Sympathetically controlled. Hypothalamus → cervical sympathetic → superior cervical ganglion → dilator → MYDRIASIS (large pupil)
+
+OPIOID MECHANISM:
+µ-opioid receptors (MOR) are GPCRs (Gi-coupled). In the Edinger-Westphal nucleus, opioids activate MOR → decrease cAMP → hyperpolarise neurons → increases their output. Wait — but opioids typically INHIBIT neurons? 
+
+Here's the complexity: MOR activation in EW neurons DISINHIBITS the EW output. The EW has GABA interneurons that inhibit the EW projection neurons. Opioids suppress these interneurons → EW projection neurons become MORE active → more parasympathetic tone → more sphincter contraction → miosis.
+
+WHY DOESN'T TOLERANCE DEVELOP TO MIOSIS?
+Good question! Tolerance to opioid effects (analgesia, euphoria, respiratory depression) develops quickly — probably due to receptor desensitization and downregulation. But EW miosis is mediated through a different downstream signaling pathway that apparently doesn't desensitize as quickly. This means miosis is a reliable indicator of opioid PRESENCE even in chronic users.
+
+CLINICAL USE:
+- Paramedics: pinpoint pupils + unconscious + slow breathing = opioid overdose → give naloxone (opioid antagonist)
+- Police: pinpoint pupils can indicate current opioid use
+- Anesthesiologists: monitor pupil size during surgery to gauge depth of anesthesia and opioid dosing
+
+AI + PUPILLOMETRY FOR DRUG DISCOVERY:
+Tracking pupil diameter over time (pupillary light reflex or spontaneous fluctuations) creates a time-series that encodes autonomic nervous system state. AI can classify: (1) current drug state (opioid vs. stimulant vs. sober), (2) dosage estimation, (3) predict side effects. This is a non-invasive, continuous physiological measure — ideal for AI classification models.""")
+
+    # Q9
+    n += 1
+    make_quiz_question_slide(prs, 9,
+        "Which is the correct order of events at a chemical synapse?",
+        ["NT release → Ca2+ entry → receptor activation → vesicle fusion",
+         "AP arrives → Ca2+ enters (Cav) → vesicle fuses → NT released → receptor binds",
+         "Receptor activation → AP generated → Ca2+ exits → vesicle forms",
+         "Ca2+ exits → vesicle fuses → NT uptake → receptor blocked"],
+        n, notes="Tests understanding of synaptic transmission sequence. Many drug targets are at specific steps of this process.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 9,
+        "Which is the correct order of events at a chemical synapse?",
+        ["NT release → Ca2+ entry → receptor activation → vesicle fusion",
+         "AP arrives → Ca2+ enters (Cav) → vesicle fuses → NT released → receptor binds",
+         "Receptor activation → AP generated → Ca2+ exits → vesicle forms",
+         "Ca2+ exits → vesicle fuses → NT uptake → receptor blocked"],
+        1,
+        "Correct: AP arrives at terminal → Cav channels open → Ca2+ in → synaptotagmin senses Ca2+ → SNARE proteins fuse vesicle → NT released → diffuses across 20 nm cleft → binds postsynaptic receptors.\nBotox cleaves SNARE proteins = blocks step 3. SSRIs block NT reuptake after step 5.",
+        n,
+        notes="""SYNAPTIC TRANSMISSION STEP BY STEP:
+
+1. ACTION POTENTIAL ARRIVES at axon terminal (bouton):
+The AP propagates down the axon (saltatory in myelinated axons). The bouton membrane depolarizes.
+
+2. VOLTAGE-GATED Ca2+ CHANNELS (Cav) OPEN:
+Cav2.1 (P/Q-type) and Cav2.2 (N-type) are the main subtypes at fast synapses. Ca2+ is 1-2 mM outside, ~100 nM inside → 10,000-20,000x gradient! AND electrical gradient (negative inside) also pulls Ca2+ in. Ca2+ flows rapidly. Near-channel concentration spikes to ~100 µM transiently.
+
+3. Ca2+ BINDS SYNAPTOTAGMIN:
+Synaptotagmin is a Ca2+ sensor protein on synaptic vesicle membranes. It has two C2 domains that bind Ca2+. When Ca2+ binds, synaptotagmin changes conformation and interacts with SNARE proteins.
+
+4. SNARE COMPLEX ZIPS UP → VESICLE FUSES:
+SNARE proteins: VAMP/synaptobrevin (on vesicle), syntaxin (on plasma membrane), SNAP-25 (on plasma membrane). The SNARE complex forms a 4-helix bundle that zips from the N-terminus toward the C-terminus, pulling the vesicle membrane and plasma membrane together until they fuse. NT is released into the cleft.
+
+5. NT DIFFUSES AND BINDS RECEPTORS:
+The cleft is only 20 nm — diffusion takes microseconds. NT binds postsynaptic ionotropic (ion channel) or metabotropic (GPCR) receptors.
+
+6. NT CLEARANCE:
+(a) Reuptake transporters: SERT (serotonin), DAT (dopamine), NET (norepinephrine), GAT1 (GABA). Bring NT back into presynaptic terminal. These are the main SSRI/SNRI/cocaine targets.
+(b) Enzymatic degradation: AChE cleaves ACh → choline + acetate. MAO-A/B degrade dopamine, serotonin. These are drug targets too (rivastigmine for Alzheimer's, selegiline for Parkinson's/depression).
+(c) Diffusion away from cleft (spillover to extrasynaptic receptors).
+
+DRUG TARGETS AT EACH STEP:
+- Step 2 (Cav): Ziconotide (Prialt) = Cav N-type blocker, for severe pain. Ca2+ channel blockers (verapamil, amlodipine) = cardiac.
+- Step 4 (SNARE): Botulinum toxin A: cleaves SNAP-25. Botulinum toxin B: cleaves VAMP. Both prevent vesicle fusion → no NT release → paralysis. Used medically (spasticity, dystonia, cosmetic wrinkles).
+- Step 5 (receptors): vast target space (see all of drug discovery!)
+- Step 6 (reuptake): SSRIs (fluoxetine, sertraline, escitalopram), SNRIs (venlafaxine), cocaine, amphetamine, MDMA.""")
+
+    # Q10
+    n += 1
+    make_quiz_question_slide(prs, 10,
+        "What is the main benefit of the Computational SpikerBox for drug discovery?",
+        ["It costs millions and is only available at top research institutes",
+         "It records from human brain organoids for direct clinical relevance",
+         "It simulates Hodgkin-Huxley in software — test drug effects on ion channels in silico first",
+         "It replaces ChEMBL as the source of molecular activity data"],
+        n, notes="Tests understanding of the in silico → in vitro → in vivo pipeline and the role of simulation.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 10,
+        "What is the main benefit of the Computational SpikerBox for drug discovery?",
+        ["It costs millions and is only available at top research institutes",
+         "It records from human brain organoids for direct clinical relevance",
+         "It simulates Hodgkin-Huxley in software — test drug effects on ion channels in silico first",
+         "It replaces ChEMBL as the source of molecular activity data"],
+        2,
+        "Correct: Free HH simulator — instantly test what happens if Nav is 80% blocked, or Kv is prolonged.\nThe 3i pipeline: AI predicts IC50 (in silico) → HH simulation predicts physiological consequence (in silico) → SpikerBox validates with real neural tissue (in vitro) → then animal models (in vivo). Each step filters candidates, reducing cost.",
+        n,
+        notes="""THE 3i PIPELINE:
+
+IN SILICO (computer simulation):
+Step 1: QSAR/GNN model predicts: 'compound X has predicted IC50 = 50 nM for Nav1.2'
+Step 2: Computational SpikerBox / HH simulation: 'If I set g_Na to 20% of baseline (80% block), what happens to firing?'
+- Maybe the neuron stops firing completely → potential anesthetic/anticonvulsant
+- Maybe it only reduces firing frequency → less side effects
+- Maybe nothing changes → channel not important at this neuron's firing frequency
+- Maybe the neuron fires MORE (paradoxical, but happens with some partial blockers)
+Cost: essentially zero. Can test 1000 compounds in minutes.
+
+IN VITRO (glass = laboratory, not whole animal):
+After filtering with in-silico, take the 10-50 best candidates.
+Test on: cockroach SpikerBox, cultured neurons, patch-clamp electrophysiology.
+Measure: real IC50 for neural firing. Compare to QSAR prediction.
+Cost: ~$100-10,000 per compound depending on assay.
+
+IN VIVO (living animal):
+Only the 2-5 best in-vitro candidates go to animal models.
+Efficacy: does the drug reduce seizures / pain / arrhythmia in mice/rats?
+Safety: does it cause cardiac arrhythmia, sedation, weight change?
+Cost: ~$50,000-500,000 per compound.
+
+CLINICAL TRIALS:
+Only 1 in 5000 in-silico candidates typically makes it to clinical trials.
+But with better AI + better in-silico filtering, this ratio is improving.
+Insilico Medicine used AI to design a new drug (ISM001-055 for IPF) in 18 months (vs. typical 5-6 years).
+
+THE COMPUTATIONAL SPIKERBOX'S ROLE:
+It's the bridge between 'we predict this blocks Nav' (QSAR) and 'we validated this blocks neural firing' (SpikerBox). By letting you run the HH model interactively (drag a slider for g_Na from 0% to 100%), you build intuition about which ion channel contributions matter at which voltage and firing frequency. This intuition improves your interpretation of QSAR predictions.""")
+
+    # Closing
+    n += 1
+    make_section_divider(prs, "Neuroscience Unlocked! Ready for Drug Discovery AI? 🧪⚡", n,
+        notes="End of Quiz 3 (Physiology). Students should now have a solid working vocabulary of action potential physiology, HH model, SpikerBox, neurotransmitters, fly vision, EM, eye-tracking pharmacology, and synaptic transmission. Transition to the HH explainer deck, or directly to the molecular ML content.",
+        subtitle="Action potentials, HH, GABA, synaptic transmission, SpikerBox, T4/T5, EM, opioid pupils — check!")
+
+    os.makedirs("quiz_physiology", exist_ok=True)
+    prs.save("quiz_physiology/slides.pptx")
+    print(f"  Quiz 3 (Physiology): {n} slides -> quiz_physiology/slides.pptx")
+
+
+
+# =====================================================================
+# HODGKIN-HUXLEY EXPLAINER DECK
+# Plain-language walk through of the HH equations, gating variables,
+# channel extensions, and drug targets
+# =====================================================================
+def generate_hh_explainer():
+    prs = new_prs()
+    n = 0
+
+    n += 1
+    make_title_slide(prs,
+        "The Hodgkin-Huxley Model — A Complete Guide",
+        "Understanding the equations of the action potential, channel extensions, and drug targets",
+        1, "AI for Drug Discovery", date_str="22 April 2026",
+        notes="""WHO IS THIS DECK FOR?
+This deck is for instructors or students who want to understand the Hodgkin-Huxley model deeply. It assumes basic calculus (what a derivative is) and basic chemistry (ions, concentrations, gradients). No prior neuroscience required.
+
+WHAT IS COVERED:
+1. Biological context: the neuron as an electrical circuit
+2. The 4 HH ODEs — each explained line by line
+3. Gating variables m, h, n — physical meaning and kinetics
+4. How voltage-clamp experiments led to the model
+5. Channel extensions: A-current (Kv4), Cav (Ca2+ channels), Ih (HCN), persistent Nav
+6. Synaptic conductances: AMPA, NMDA, GABA-A
+7. Multicompartment models and cable theory
+8. Drug targets at every level
+9. Python code snippets (numpy / scipy ODE solver)
+10. Connection to QSAR: why HH helps interpret predictions
+
+HOW TO USE:
+Work through this deck alongside the Day 2 physiology intro. The presenter notes contain the full explanation of every concept. The slides show the key equations and terms.""")
+
+    # --- 1. The neuron as a circuit ---
+    n += 1
+    make_content_slide(prs,
+        "The Neuron as an Electrical Circuit",
+        ["The HH model treats a patch of membrane as an electrical circuit:",
+         "  Membrane (lipid bilayer) = CAPACITOR (stores charge)",
+         "  Ion channels (Nav, Kv, leak) = RESISTORS in parallel",
+         "  Ion pumps (Na+/K+ ATPase) = BATTERIES (maintain gradients)",
+         "  Cytoplasm = conducting WIRE along the axon",
+         "",
+         "Key parameters:",
+         "  Cm = membrane capacitance = 1 µF/cm² (universal for all neurons)",
+         "  g_Na, g_K, g_L = maximum conductances (how many open channels)",
+         "  E_Na, E_K, E_L = reversal potentials (the 'battery voltages')",
+         "",
+         "Kirchhoff's current law: total current in = total current out",
+         "  Cm × dV/dt = external current - sum of ionic currents"],
+        n,
+        notes="""THE MEMBRANE CAPACITOR:
+A capacitor stores charge by separating two conductors with an insulator. The cell membrane is exactly this: conducting cytoplasm | insulating lipid bilayer (5 nm) | conducting extracellular fluid. Membrane capacitance = 1 µF/cm². This is a universal constant — all biological membranes have ~1 µF/cm² regardless of cell type or species.
+
+What does Cm = 1 µF/cm² mean physically? Q = Cm × V. If V changes by 100 mV (as in an action potential), the charge that moved is: ΔQ = 1 µF/cm² × 0.1 V = 0.1 µC/cm² = 1e-7 C/cm². Since one Na+ ion carries 1.6e-19 C, this is 0.1e-6 / 1.6e-19 = 6.25e11 ions/cm² = ~625,000 ions/µm². Sounds like a lot, but the bulk Na+ concentration barely changes (the gradient is maintained).
+
+THE ION CHANNEL CONDUCTANCES:
+Conductance g (unit: Siemens = A/V = 1/Ohm). Current through a channel type: I = g × (V - E_reversal). E_reversal is the reversal potential (the voltage where no net current flows despite the channel being open). For Na+: E_Na ≈ +55 mV. For K+: E_K ≈ -90 mV. If V = -70 mV and Na+ channels open: driving force = V - E_Na = -70 - 55 = -125 mV. Current = g_Na × (-125 mV) = large inward current.
+
+THE NERNST POTENTIAL (battery voltage):
+E_ion = (RT/zF) × ln([ion]_out / [ion]_in)
+At 37°C: RT/F = 26.7 mV
+E_Na = 26.7 × ln(145/12) = 26.7 × 2.5 = +66 mV (approximated as +55 mV in HH)
+E_K = 26.7 × ln(4/155) = 26.7 × (-3.65) = -97 mV (approximated as -77 mV in HH)
+E_L = -54.4 mV (empirical, includes all non-Nav/Kv channels)
+
+KIRCHHOFF'S CURRENT LAW:
+The sum of all currents at a node = 0. Currents flowing into the membrane patch:
+- Injected current I_ext (from electrode or previous compartment)
+- Capacitive current I_cap = Cm × dV/dt (charges/discharges the capacitor)
+- Ionic currents (Na+, K+, leak, etc.)
+Setting sum = 0: Cm × dV/dt + I_Na + I_K + I_L = I_ext
+→ Cm × dV/dt = I_ext - I_Na - I_K - I_L""")
+
+    # --- 2. The 4 HH equations ---
+    n += 1
+    make_content_slide(prs,
+        "The Four Hodgkin-Huxley Equations",
+        ["Equation 1 — Membrane voltage V (in mV):",
+         "  Cm × dV/dt = I_ext - g_Na×m³h×(V-E_Na) - g_K×n⁴×(V-E_K) - g_L×(V-E_L)",
+         "",
+         "Equation 2 — Na+ activation gate m (0 ≤ m ≤ 1):",
+         "  dm/dt = αm(V)×(1-m) - βm(V)×m",
+         "",
+         "Equation 3 — Na+ inactivation gate h (0 ≤ h ≤ 1):",
+         "  dh/dt = αh(V)×(1-h) - βh(V)×h",
+         "",
+         "Equation 4 — K+ activation gate n (0 ≤ n ≤ 1):",
+         "  dn/dt = αn(V)×(1-n) - βn(V)×n",
+         "",
+         "Parameters: g_Na=120, g_K=36, g_L=0.3 mS/cm² | Cm=1 µF/cm²",
+         "E_Na=+55, E_K=-77, E_L=-54.4 mV | V_rest=-65 mV"],
+        n,
+        notes="""EQUATION 1 — MEMBRANE VOLTAGE:
+Cm × dV/dt = I_ext - g_Na×m³h×(V-E_Na) - g_K×n⁴×(V-E_K) - g_L×(V-E_L)
+
+Breaking it down:
+- Cm × dV/dt: rate of change of voltage × capacitance = the capacitive current. This is how fast the membrane is charging up or discharging.
+- I_ext: injected current (from an electrode, or from a neighboring compartment in a cable model). This is the "input" that drives the neuron.
+- g_Na×m³h: the instantaneous Na+ conductance. m³ means THREE activation gates must be open. h is the inactivation gate (must also be open = not inactivated). g_Na = 120 mS/cm² is the maximum possible Na+ conductance (when all channels are open).
+- g_K×n⁴: instantaneous K+ conductance. FOUR activation gates (n⁴). g_K = 36 mS/cm².
+- g_L = 0.3 mS/cm² is the leak conductance (constant — it doesn't change with voltage).
+
+Why m³ and n⁴?
+Hodgkin & Huxley fit the kinetics empirically. The Na+ activation data fitted best with a third-order process (three independent gates). We now know why: the Nav channel has 4 domains, each with a voltage sensor (S4 helix), but not all 4 need to move simultaneously. The effective kinetics appear as m³. The K+ channel (Kv) has 4 identical subunits, each contributing one gate → n⁴.
+
+EQUATION 2 — Na+ ACTIVATION GATE (m):
+dm/dt = αm(V)×(1-m) - βm(V)×m
+
+Physical meaning:
+- m = fraction of activation gates that are in the OPEN state (ranges 0 to 1)
+- (1-m) = fraction that are CLOSED
+- αm(V) = rate constant for OPENING (per ms), depends on voltage
+- βm(V) = rate constant for CLOSING (per ms), depends on voltage
+- dm/dt = (rate of opening × currently closed) - (rate of closing × currently open)
+
+At steady state (dm/dt = 0):
+m∞(V) = αm / (αm + βm)   [steady-state open probability]
+τm(V) = 1 / (αm + βm)     [time constant of equilibration]
+
+Empirical functions (Hodgkin & Huxley 1952, adjusted for V shifted by -65 mV):
+αm(V) = 0.1 × (V+40) / (1 - exp(-(V+40)/10))  [if V ≠ -40 mV]
+βm(V) = 4 × exp(-(V+65)/18)
+At -65 mV: m∞ ≈ 0.05 (5% of channels activated), τm ≈ 0.4 ms
+At +20 mV: m∞ ≈ 0.99 (99% activated), τm ≈ 0.1 ms  ← very fast!
+
+EQUATION 3 — Na+ INACTIVATION GATE (h):
+Same structure, BUT:
+- h = fraction of inactivation gates in the NON-INACTIVATED (= permissive) state
+- h DECREASES when the cell is depolarized (inactivation gates CLOSE at depolarized voltages)
+- At rest (-65 mV): h∞ ≈ 0.60 (most channels not inactivated)
+- At +20 mV: h∞ ≈ 0.02 (almost all inactivated)  ← slow process, τh ≈ 8 ms
+The refractory period: after the spike, h is near 0 (inactivated). Even though m wants to be near 1, h × m³ ≈ 0 → no Na+ current → neuron cannot fire again until h recovers.
+
+αh(V) = 0.07 × exp(-(V+65)/20)
+βh(V) = 1 / (exp(-(V+35)/10) + 1)
+
+EQUATION 4 — K+ ACTIVATION GATE (n):
+Same structure as m, but:
+- n opens more slowly than m (τn ≈ 1-5 ms vs τm ≈ 0.1-0.5 ms)
+- n⁴ means ALL FOUR gates must be open for K+ current
+- n∞(V): sigmoidal, half-activated at about -15 mV
+- At rest: n∞ ≈ 0.32 → n⁴ ≈ 0.01 (very little K+ current at rest)
+- After spike peak (+40 mV): n∞ ≈ 0.75 → n⁴ ≈ 0.32 (repolarizing K+ current)
+
+αn(V) = 0.01 × (V+55) / (1 - exp(-(V+55)/10))
+βn(V) = 0.125 × exp(-(V+65)/80)
+
+COUPLING: All 4 equations are coupled. V drives m, h, n. m, h, n determine the conductances that drive V. This is a nonlinear dynamical system — its behavior (single spikes, burst firing, oscillations) depends on the parameters.""")
+
+    # --- 3. Gating variables explained ---
+    n += 1
+    make_content_slide(prs,
+        "Gating Variables m, h, n — Physical Meaning",
+        ["Each gating variable represents a protein conformation probability:",
+         "",
+         "  m = Na+ channel activation gate (OPEN = 1)",
+         "     Fast opening on depolarization (τm ~ 0.1-0.5 ms)",
+         "     m∞(V): sigmoidal, half-activated at ~-40 mV",
+         "",
+         "  h = Na+ channel inactivation gate (PERMISSIVE = 1, INACTIVATED = 0)",
+         "     Slow closing on depolarization (τh ~ 5-10 ms at spike peak)",
+         "     h∞(V): sigmoidal but DECREASING — starts near 1 at rest",
+         "     Causes refractory period: h → 0 after spike → must recover",
+         "",
+         "  n = K+ channel activation gate (OPEN = 1)",
+         "     Intermediate speed (τn ~ 1-5 ms)",
+         "     n∞(V): sigmoidal, half-activated at ~-15 mV",
+         "",
+         "All three: two-state Markov chain. α = opening rate, β = closing rate",
+         "Steady-state: x∞ = α/(α+β)  |  Time constant: τx = 1/(α+β)"],
+        n,
+        notes="""PHYSICAL INTERPRETATION OF m, h, n:
+
+These are not just mathematical variables — they have direct physical meaning as probabilities of conformational states of individual protein gates.
+
+THE m GATE (Na+ activation):
+Real structure: each Nav channel has 4 voltage-sensing domains (I-IV). Each has a positively-charged S4 helix that moves outward when the membrane depolarizes (positive charges move toward the outside = toward the positive side). When ~3 of the 4 S4 helices have moved, the channel activation gate opens (there is actually a physical gate — the S6 helices form the bottom of the pore, they move apart to open).
+
+m³ in HH: three independent gates each with probability m. For the channel to be open, all three must be open → probability m×m×m = m³.
+
+In reality there are 4 subunits in Nav (each contributing a voltage sensor), but the S4 of domain IV is slower and couples to the inactivation gate, so the effective kinetics is m³ not m⁴. (More modern models use m³ or sometimes different formulations.)
+
+THE h GATE (Na+ inactivation):
+Physical structure: a cytoplasmic loop (the "ball-and-chain" or "hinged lid") that physically blocks the open pore from the inside. At rest (-70 mV), the ball is floating freely and the pore is open to current (assuming m is also open). After depolarization (during the spike), the ball moves into the pore and plugs it — fast inactivation (the "ball" mechanism).
+
+Slower inactivation (C-type, P/C) involves the outer mouth of the pore collapsing.
+
+h = 1 means the inactivation gate is NOT blocking the pore (permissive). h = 0 means the pore is blocked (inactivated). So h = 1 at rest → h = 0 during sustained depolarization.
+
+REFRACTORY PERIOD MECHANISM (important!):
+During the rising phase: m shoots to ~1 (fast), h is still ~0.6 (slow to change)
+At the peak: m starts to decrease (Na+ channels inactivate — now h falls rapidly)
+During falling phase: K+ n⁴ is large (K+ flows out), m is falling, h is near 0
+After repolarization: h slowly recovers (τh at -70 mV ≈ 5-10 ms)
+During recovery: the cell cannot fire (absolute refractory) or needs larger stimulus (relative refractory)
+
+This refractory period limits maximum firing rate to ~100-500 Hz in most neurons.
+
+THE n GATE (K+ activation):
+Kv channels (voltage-gated K+) have 4 identical subunits, each with a voltage sensor (S4 helix). n represents the probability that ONE subunit's voltage sensor is in the activated (open) conformation. All 4 must be activated → n⁴.
+
+n opens more slowly than m: at the same voltage step, n lags behind m by ~1-2 ms. This delay means K+ current (n⁴) rises while the Na+ current (m³h) is already declining. The K+ current then repolarizes the membrane.
+
+DRUG TARGETING OF GATING:
+Local anesthetics (lidocaine, bupivacaine): bind inside the Nav pore when the channel is OPEN or INACTIVATED. They preferentially bind the inactivated state → stabilise h=0 → slower recovery from inactivation → use-dependent block (more block at higher firing rates). This is why they preferentially block rapidly-firing pain neurons.
+TEA (tetraethylammonium): blocks Kv channels (blocks n⁴ channels). Used in research to isolate Na+ currents by blocking K+ currents. Not used clinically (too non-selective).
+4-AP (4-aminopyridine): also Kv blocker. Clinically approved for multiple sclerosis (Ampyra) — improves walking by increasing AP duration in demyelinated axons.""")
+
+    # --- 4. The action potential walkthrough ---
+    n += 1
+    make_content_slide(prs,
+        "The Action Potential Step-by-Step (HH Simulation)",
+        ["t=0 ms: V = -65 mV, m=0.05, h=0.60, n=0.32",
+         "  → m³h = 0.05³×0.60 = 0.0001 (tiny Na+ current)",
+         "  → n⁴ = 0.32⁴ = 0.01 (small K+ current)",
+         "  → Resting: balanced currents",
+         "",
+         "t=0.1 ms: I_ext steps up → V depolarises to -55 mV",
+         "  → m∞(-55) ≈ 0.20 → m starts rising (τm ~ 0.3 ms)",
+         "",
+         "t=0.5 ms: m ≈ 0.8, V ≈ +20 mV (SPIKE PEAK)",
+         "  → m³ = 0.51, h still ≈ 0.50 → I_Na huge (inward)",
+         "  → n still rising slowly → I_K not yet large",
+         "",
+         "t=1.0 ms: h → 0.05 (inactivated), n → 0.70",
+         "  → Na+ current collapses, K+ current dominates → REPOLARIZATION",
+         "",
+         "t=2.0 ms: V undershoots to -80 mV (after-hyperpolarisation, AHP)",
+         "  → n still elevated (slow to close) → extra K+ out",
+         "",
+         "t=5+ ms: h recovers → n closes → V returns to -65 mV"],
+        n,
+        notes="""HH SIMULATION WALKTHROUGH — NUMERICAL EXAMPLE:
+
+This slide traces a single action potential through the HH equations numerically. Knowing the sequence helps you debug a simulation and understand drug effects.
+
+RESTING STATE (t=0):
+V = -65 mV (HH original uses this; some textbooks use -70 mV — just a shift convention)
+m = m∞(-65) ≈ 0.05: only 5% of Na+ activation gates open
+h = h∞(-65) ≈ 0.60: 60% of Na+ channels not inactivated
+n = n∞(-65) ≈ 0.32: 32% of K+ gates open
+
+Na+ conductance: g_Na × m³h = 120 × (0.05)³ × 0.60 = 120 × 0.000125 × 0.60 = 0.009 mS/cm²
+K+ conductance: g_K × n⁴ = 36 × (0.32)⁴ = 36 × 0.0105 = 0.38 mS/cm²
+Leak: g_L = 0.3 mS/cm² (constant)
+
+At rest: total current = 0 (V is at a fixed point of the dynamical system). The numbers above are the steady-state solution.
+
+THE THRESHOLD (t ≈ 0.1 ms):
+When V reaches about -55 mV (the threshold), m∞(-55) ≈ 0.20. The m gate begins opening rapidly (τm ≈ 0.3 ms). If the driving current is large enough to bring V to -55 mV faster than m can open, threshold is crossed.
+
+Positive feedback loop (regenerative): V rises → m opens → more Na+ in → V rises more → m opens more... This is the all-or-nothing principle. Once past threshold, the spike fires to completion regardless.
+
+THE SPIKE PEAK (t ≈ 0.5-0.8 ms):
+V ≈ +30 to +40 mV (close to E_Na = +55 mV but not reaching it because inactivation and K+ current start kicking in)
+m ≈ 0.90 (almost fully activated)
+h ≈ 0.45 (starting to fall — slow τh at these voltages ≈ 5 ms)
+n ≈ 0.50 (rising — τn at +30 mV ≈ 1-2 ms)
+
+Na+ current: 120 × (0.90)³ × 0.45 = 120 × 0.73 × 0.45 = 39 mS/cm² × (V-E_Na) = 39 × (30-55) = -975 µA/cm² (huge inward current)
+
+THE FALL (t ≈ 1-2 ms):
+h → 0.05 (most channels inactivated)
+n → 0.70 (K+ gates open)
+Na+ current: 120 × (0.90)³ × 0.05 = ~4 mS/cm² (now much smaller — inactivation dominated)
+K+ current: 36 × (0.70)⁴ = 36 × 0.24 = 8.6 mS/cm² × (V-E_K) with V now at 0: = 8.6 × (0-(-77)) = 663 µA/cm² (large outward = repolarizing)
+
+THE UNDERSHOOT / AHP (t ≈ 2-3 ms):
+V dips to -80 mV (below rest). Why? n is still elevated (τn at -65 mV ≈ 5 ms). Extra K+ conductance hyperpolarises toward E_K (-77 mV). This is the absolute refractory period (h still near 0 AND V below rest — both prevent a new spike).
+
+RECOVERY (t > 5 ms):
+h recovers at -80 mV (τh ≈ 5-10 ms at these voltages)
+n closes (τn ≈ 5 ms at rest)
+V returns to -65 mV
+After ~10 ms: cell can fire again (relative refractory → absolute refractory → recovered)
+
+PYTHON CODE (scipy ODE solver):
+from scipy.integrate import odeint
+import numpy as np
+
+def hh_odes(y, t, I_ext=0):
+    V, m, h, n = y
+    # rate functions
+    am = 0.1*(V+40)/(1-np.exp(-(V+40)/10)) if abs(V+40)>1e-7 else 1.0
+    bm = 4*np.exp(-(V+65)/18)
+    ah = 0.07*np.exp(-(V+65)/20)
+    bh = 1/(np.exp(-(V+35)/10)+1)
+    an = 0.01*(V+55)/(1-np.exp(-(V+55)/10)) if abs(V+55)>1e-7 else 0.1
+    bn = 0.125*np.exp(-(V+65)/80)
+    # conductances
+    gNa, gK, gL = 120, 36, 0.3
+    ENa, EK, EL = 55, -77, -54.4
+    Cm = 1.0
+    # currents
+    INa = gNa * m**3 * h * (V - ENa)
+    IK  = gK  * n**4     * (V - EK)
+    IL  = gL             * (V - EL)
+    # ODEs
+    dV = (I_ext - INa - IK - IL) / Cm
+    dm = am*(1-m) - bm*m
+    dh = ah*(1-h) - bh*h
+    dn = an*(1-n) - bn*n
+    return [dV, dm, dh, dn]
+
+t = np.arange(0, 50, 0.01)   # 50 ms, 0.01 ms steps
+y0 = [-65, 0.05, 0.60, 0.32] # initial conditions
+sol = odeint(hh_odes, y0, t, args=(10,))  # I_ext=10 µA/cm²
+V = sol[:, 0]  # membrane voltage trace
+This is essentially what the Day 1 notebook implements.""")
+
+    # --- 5. Channel Extensions: A-current ---
+    n += 1
+    make_content_slide(prs,
+        "Extension 1: The A-Current (Kv4, I_A)",
+        ["The original HH model has: I_Na (Nav), I_K (Kv), I_L (leak)",
+         "Real neurons have many more channel types. Extensions ADD currents.",
+         "",
+         "I_A (A-type K+ current, Kv4.1/4.2/4.3):",
+         "  I_A = g_A × a³ × b × (V - E_K)",
+         "  a = activation gate (fast, like m)",
+         "  b = inactivation gate (fast — completely inactivates within ~50 ms)",
+         "",
+         "Biophysical role:",
+         "  Activates near rest (-70 to -60 mV) — low threshold",
+         "  Transiently delays the FIRST spike after hyperpolarisation",
+         "  Controls inter-spike interval and firing rate",
+         "  'Anti-burst' function: prevents rapid re-firing",
+         "",
+         "Drug relevance: Kv4 blockers (4-AP, fampridine) slow K+ repolarisation",
+         "  Clinical: fampridine (Ampyra) for MS — improves walking",
+         "  Problem: 4-AP also blocks hERG (cardiac risk!)"],
+        n,
+        notes="""THE A-CURRENT — WHAT IT IS AND WHY IT MATTERS:
+
+The A-current was first described by Connor & Stevens (1971) in molluscan neurons. It is a TRANSIENT outward K+ current — it turns on quickly when the membrane depolarizes, then inactivates within 10-100 ms, even if the membrane stays depolarized.
+
+GATING VARIABLES (similar to m/h in HH):
+a (activation): fast, voltage-dependent. Half-activated at ~-45 mV. τa ~ 1-5 ms.
+b (inactivation): fast. Half-inactivated at ~-80 mV. τb ~ 10-100 ms.
+At rest (-70 mV): b is near 1 (not inactivated). a is near 0 (not activated).
+
+THE CRITICAL FEATURE:
+After hyperpolarization (e.g., during the AHP at -80 mV):
+- b recovers fully (b → 1)
+- When the neuron is subsequently depolarized, a activates quickly at low voltages
+- This creates a transient outward K+ current that slows the rate of depolarization
+- The neuron takes longer to reach threshold → delayed first spike
+
+This mechanism controls how often a neuron fires. In neurons where I_A is strong, repeated stimuli generate spikes at a slow, regular rate. In neurons where I_A is weak, they burst fire (rapid succession of spikes).
+
+CABLE THEORY NOTE:
+I_A is particularly important in dendrites (the input branches of neurons). Kv4 channels are densely expressed in hippocampal and cortical pyramidal cell dendrites. They regulate how much of a synaptic input reaches the cell body (somatic depolarization). Drugs that block Kv4 in dendrites → larger EPSPs → more excitable neurons.
+
+CLINICAL RELEVANCE:
+Fampridine (4-aminopyridine, Ampyra): FDA-approved for multiple sclerosis. MS causes demyelination (loss of myelin sheath). Demyelinated axons conduct action potentials poorly — the AP amplitude decays as it travels. By blocking K+ channels (including A-type), fampridine prolongs the AP → more Na+ enters → AP is larger and travels further. Clinically: improves walking speed in ~35% of MS patients.
+
+DRUG DESIGN CHALLENGE:
+4-AP also blocks hERG (Kv11.1, cardiac K+ channel). hERG block → cardiac arrhythmia. For fampridine, the dose is low enough that cardiac risk is manageable. But designing SELECTIVE Kv4 blockers that don't touch hERG is a major medicinal chemistry challenge (and a potential QSAR project!).
+
+HH EXTENSION CODE:
+# Add I_A to the HH model
+def ia_current(V, a, b, gA=20, EK=-77):
+    return gA * a**3 * b * (V - EK)
+
+def a_inf(V): return 1/(1+np.exp(-(V+50)/20))
+def tau_a(V): return 0.5 + 2/(1+np.exp((V+50)/15))
+def b_inf(V): return 1/(1+np.exp((V+80)/6))
+def tau_b(V): return 10 + 80/(1+np.exp(-(V+70)/10))
+
+# Add da/dt and db/dt to the ODE system
+da = (a_inf(V) - a) / tau_a(V)
+db = (b_inf(V) - b) / tau_b(V)""")
+
+    # --- 6. Calcium channels ---
+    n += 1
+    make_content_slide(prs,
+        "Extension 2: Voltage-Gated Calcium Channels (Cav)",
+        ["Ca2+ is the universal second messenger in the nervous system",
+         "  Triggers: NT release, muscle contraction, gene expression",
+         "  Intracellular Ca2+ at rest: ~100 nM | Extracellular: ~2 mM",
+         "  → 20,000x gradient PLUS electrical gradient → huge driving force",
+         "",
+         "HH extension: I_Ca = g_Ca × m² × h_Ca × (V - E_Ca)",
+         "  E_Ca ≈ +140 mV (high because of the extreme concentration gradient)",
+         "",
+         "Cav subtypes and drug targets:",
+         "  Cav1 (L-type): heart, muscle, dendrites",
+         "    → Ca2+ channel blockers (nifedipine, verapamil) for hypertension/angina",
+         "  Cav2.1 (P/Q-type): presynaptic NT release",
+         "    → Omega-agatoxin (spider toxin) research tool",
+         "  Cav2.2 (N-type): presynaptic, pain pathways",
+         "    → Ziconotide (Prialt) for severe pain (cone snail venom)",
+         "  Cav3 (T-type): pacemaking, low-threshold oscillations",
+         "    → Ethosuximide for absence epilepsy"],
+        n,
+        notes="""CALCIUM AS A SECOND MESSENGER:
+The term 'second messenger' refers to molecules inside cells that relay and amplify signals from the 'first messengers' (hormones, neurotransmitters). Ca2+ is used as a second messenger in virtually every cell type.
+
+WHY IS Ca2+ SPECIAL?
+At rest, cytoplasmic Ca2+ = ~100 nM (nanomolar). Extracellular Ca2+ = ~2 mM = 2,000,000 nM. The gradient is 20,000-fold. Any time a Ca2+ channel opens, a large Ca2+ current flows in. This large amplitude makes Ca2+ an excellent signal molecule — even a brief channel opening causes a detectable local concentration rise.
+
+CALCIUM-DEPENDENT PROCESSES:
+1. NT release: synaptotagmin detects Ca2+ → SNARE fusion → vesicle exocytosis
+2. Muscle contraction: Ca2+ binds troponin C → exposes actin binding sites for myosin
+3. Gene expression: Ca2+/calmodulin → CaM kinase II → CREB phosphorylation → gene transcription (long-term memory consolidation!)
+4. Cell death: excessive Ca2+ influx → mitochondrial damage → apoptosis or necrosis (relevant for stroke, neurodegeneration)
+
+CAV SUBTYPES:
+L-type (Cav1.1-1.4): Long-lasting, Large conductance. In cardiac muscle: drives the plateau phase of cardiac AP. In smooth muscle: causes vasoconstriction (blood pressure control). In neurons: somatodendritic; regulates gene expression.
+- Blockers: dihydropyridines (nifedipine, amlodipine) = arterial vasodilators = antihypertensives/antianginals. Phenylalkylamines (verapamil) = cardiac (slow heart rate, antiarrhythmic). Benzothiazepines (diltiazem) = mixed.
+
+P/Q-type (Cav2.1): Present and tightly coupled to SNARE proteins at most central synapses. Required for fast NT release.
+- Toxin: ω-agatoxin IVA (funnel-web spider) blocks Cav2.1. Research tool.
+- Clinical: mutations in Cav2.1 cause familial hemiplegic migraine (FHM) and spinocerebellar ataxia type 6 (SCA6).
+
+N-type (Cav2.2): Present at presynaptic terminals especially in dorsal horn (pain processing). Also in sympathetic neurons.
+- Blocker: ziconotide (Prialt, ω-conotoxin MVIIA from cone snail Conus magus). FDA-approved for severe chronic pain (intrathecal infusion). Very potent (IC50 ~ pM). Cannot be given IV (blocks neuromuscular junction globally). One of the most potent analgesics known.
+
+T-type (Cav3.1, 3.2, 3.3): Transient, Tiny, Low-threshold. Activates at low voltages (~-60 mV), inactivates quickly, contributes to rhythmic oscillations (pacemaking) in thalamic neurons, SA node of heart.
+- Blocker: ethosuximide (Zarontin) = first-line for absence epilepsy. Absence seizures involve pathological thalamocortical oscillations; T-type Cav in thalamic neurons drives these oscillations. Block T-type → reduce oscillations → fewer absence seizures.
+
+HH EXTENSION CODE:
+# L-type Ca2+ channel (simplified, after Huguenard 1996)
+def ica_current(V, mCa, hCa, gCa=0.5, ECa=140):
+    return gCa * mCa**2 * hCa * (V - ECa)
+
+# Note: ECa is dynamic because Ca2+ is a second messenger
+# Full model uses Ca2+ concentration ODE:
+# d[Ca]_i/dt = -I_Ca / (2*F*vol) - ([Ca]_i - [Ca]_rest) / tau_Ca""")
+
+    # --- 7. Ih (HCN channels) ---
+    n += 1
+    make_content_slide(prs,
+        "Extension 3: The Ih Current (HCN Channels)",
+        ["HCN = Hyperpolarization-activated Cyclic Nucleotide-gated channel",
+         "  Carries: mixed Na+/K+ current (both flow, net reversal ~-30 mV)",
+         "  ACTIVATED by HYPERPOLARIZATION (opposite of most channels!)",
+         "",
+         "HH extension: I_h = g_h × q × (V - E_h)",
+         "  q = activation gate, opens when V < -60 mV (slow, τq ~ 50-500 ms)",
+         "  E_h ≈ -30 mV (depolarizing at rest)",
+         "  q∞(V): activation at -60 to -120 mV",
+         "",
+         "Functions in neurons:",
+         "  'Pacemaker current': drives rhythmic firing in SA node, thalamus, DRG",
+         "  'Sag potential': after hyperpolarization, Ih activates → depolarising 'sag'",
+         "  Stabilises resting potential (prevents runaway hyperpolarization)",
+         "  Modulated by cAMP: β-adrenergic stimulation → faster heart rate",
+         "",
+         "Drug relevance: Ivabradine (Coralan) = selective If (cardiac HCN) blocker",
+         "  Reduces heart rate WITHOUT reducing contractility",
+         "  FDA-approved for heart failure and stable angina"],
+        n,
+        notes="""HCN CHANNELS — THE BACKWARDS CHANNEL:
+
+Most ion channels open when the membrane DEPOLARIZES. HCN channels are unique: they open when the membrane HYPERPOLARIZES. After a hyperpolarising input or the AHP following a spike, V dips below -60 mV → HCN opens → Na+ and K+ both flow → net current is slightly inward (depolarising) → pushes the membrane back toward rest.
+
+THE FOUR HCN SUBTYPES:
+HCN1: fast kinetics, expressed in cortex, hippocampus (CA1 dendrites), DRG. τ ~ 50-100 ms at -100 mV.
+HCN2: slower, widely expressed, strongly modulated by cAMP. τ ~ 200-500 ms.
+HCN3: slowest, limited expression.
+HCN4: dominant in SA node of heart, very slow. τ ~ 500-5000 ms. The cardiac pacemaker current (If = 'funny current').
+
+CYCLIC NUCLEOTIDE MODULATION:
+HCN channels have a cyclic nucleotide binding domain (CNBD) on the intracellular C-terminus. When cAMP binds, it SHIFTS the activation curve to more positive voltages (channels open more easily). This is how the sympathetic nervous system speeds up the heart: norepinephrine → β1-adrenergic receptor → Gs protein → adenylyl cyclase → more cAMP → HCN4 activates more → faster pacemaking → heart rate up.
+
+PARASYMPATHETIC (vagus): acetylcholine → M2 muscarinic → Gi → less cAMP → HCN4 activates less → slower heart rate.
+
+IVABRADINE (Coralan, Procoralan):
+The first selective If blocker. Mechanism: binds inside the HCN4 pore from the cytoplasmic side when the channel is open. Clinically: reduces resting heart rate by ~10-15 bpm without reducing contractility (unlike beta-blockers) and without affecting blood pressure.
+FDA approvals: (1) Heart failure with reduced ejection fraction (HFrEF) when heart rate ≥ 70 bpm and patient can't tolerate beta-blockers. (2) Stable angina (European approval).
+Side effects: visual phosphenes (brief light flashes) because HCN1 in retinal photoreceptors is also blocked.
+
+NEUROLOGICAL RELEVANCE:
+HCN2 mutations cause epilepsy. HCN1 mutations cause early-onset epileptic encephalopathy. Lamotrigine, gabapentin, and some other anticonvulsants may partially modulate HCN.
+
+SAG POTENTIAL (signature of HCN activity):
+If you inject a hyperpolarizing current pulse into a neuron with Ih: V first hyperpolarizes, then gradually sags back toward rest (even while the pulse is still on). This 'sag' is the signature of active Ih. When the pulse ends, V briefly depolarizes above rest (rebound depolarization) as Ih turns off. This can trigger a rebound spike (used in thalamic relay neurons for generating sleep spindles).
+
+HH EXTENSION CODE:
+def ih_current(V, q, gh=0.02, Eh=-30):
+    return gh * q * (V - Eh)
+
+def q_inf(V):   return 1/(1+np.exp((V+75)/5.5))   # opens at -60 to -100 mV
+def tau_q(V):   return 200 + 300/(1+np.exp((V+72)/4))  # very slow, 200-500 ms""")
+
+    # --- 8. Persistent Nav ---
+    n += 1
+    make_content_slide(prs,
+        "Extension 4: Persistent Na+ Current (I_NaP)",
+        ["A small fraction of Nav channels never inactivate:",
+         "  I_NaP = g_NaP × p∞(V) × (V - E_Na)",
+         "  p = activation (no inactivation gate)",
+         "  g_NaP ~ 0.1 - 1% of g_Na (small but crucial!)",
+         "  Activates at subthreshold voltages: -70 to -55 mV",
+         "",
+         "Why it matters despite being small:",
+         "  Amplifies subthreshold depolarizations",
+         "  Creates bistability (two stable states: rest and depolarised plateau)",
+         "  Enables plateau potentials and persistent depolarised states",
+         "  Critical for: motor pattern generation, intrinsic oscillations",
+         "",
+         "Pathological roles:",
+         "  Excessive I_NaP → hyperexcitability → epilepsy",
+         "  SCN8A gain-of-function mutations → high I_NaP → severe epilepsy",
+         "  ALS: I_NaP amplifies inputs to motor neurons",
+         "",
+         "Drug target: riluzole (Rilutek) — I_NaP blocker",
+         "  FDA-approved for ALS — extends life by ~3 months",
+         "  Reduces I_NaP → less motor neuron hyperexcitability"],
+        n,
+        notes="""PERSISTENT SODIUM CURRENT — SMALL BUT MIGHTY:
+
+The original HH model assumes ALL Nav channels completely inactivate (h → 0 on sustained depolarization). In reality, a small fraction (~0.5-2%) of Nav channels in most neurons never fully inactivate — they remain open (or rapidly reopen) even during sustained depolarization.
+
+MECHANISTIC BASIS:
+The persistent component comes from:
+1. Late openings of the transient Nav channel (the inactivation gate occasionally fails to close → 'window current' within a voltage range where m∞(V) × h∞(V) > 0, typically -70 to -55 mV)
+2. A distinct isoform (Nav1.6 has prominent I_NaP in many neurons)
+3. Phosphorylation-dependent modulation of Nav inactivation
+
+THE WINDOW CURRENT:
+In the HH model, the 'window current' is the steady-state Na+ conductance at intermediate voltages where both m∞ and h∞ are nonzero. At -60 mV: m∞ ≈ 0.08, h∞ ≈ 0.55 → m³h ≈ 0.0003. Small but nonzero. This contributes a small inward current at subthreshold voltages.
+
+WHY A SMALL CURRENT MAKES A BIG DIFFERENCE:
+At subthreshold voltages (-70 to -55 mV), the net membrane resistance is very high (few channels open). A tiny current has a large voltage effect (V = I × R; high R means high ΔV for same I). I_NaP at -65 mV might be only 0.05 µA/cm² but the input resistance is ~50 MΩ → this creates mV-scale depolarization that amplifies synaptic inputs.
+
+BISTABILITY:
+With sufficient I_NaP, the neuron can have two stable resting states:
+1. Normal rest: -65 mV (I_NaP small)
+2. Depolarised plateau: -40 to -30 mV (I_NaP large, balanced by K+ currents)
+Transitions between these states are triggered by brief stimuli. This underlies 'plateau potentials' in spinal motor neurons (relevant to locomotion) and some pathological depolarized states.
+
+RILUZOLE (ALS DRUG):
+Riluzole was the first FDA-approved drug for ALS (1995). Mechanism: blocks I_NaP (and to a lesser extent, the transient Nav current). ALS motor neurons have increased I_NaP → excessive activity → glutamate excitotoxicity → cell death. By reducing I_NaP, riluzole reduces motor neuron hyperexcitability and glutamate release.
+Effect: extends survival by ~2-3 months on average. Not a cure, but the first disease-modifying treatment for ALS.
+
+RILUZOLE QSAR:
+Riluzole is a benzothiazole compound. SMILES: Nc1nc2c(s1)cc(OCC(F)(F)F)cc2.
+The 2-amino group and the thiazole ring are critical for Nav block. The CF3-OCH2 group provides metabolic stability and appropriate lipophilicity for CNS penetration (LogP ≈ 1.5, MW = 234 Da — fits all CNS rules).
+
+HH EXTENSION CODE:
+def inap_current(V, gNaP=0.1, ENa=55):
+    p_inf = 1/(1+np.exp(-(V+50)/3))  # activates ~-60 mV, no inactivation
+    return gNaP * p_inf * (V - ENa)""")
+
+    # --- 9. Synaptic conductances ---
+    n += 1
+    make_content_slide(prs,
+        "Extension 5: Synaptic Conductances",
+        ["Synaptic inputs = transient conductance changes driven by NT release",
+         "  I_syn = g_syn(t) × (V - E_syn)",
+         "  g_syn(t) follows an alpha-function or double-exponential shape",
+         "",
+         "Key synaptic conductances (each is a separate HH-style current):",
+         "  AMPA (glutamate, excitatory): E_syn ≈ 0 mV, fast (τ ~ 5 ms)",
+         "    → Fast excitatory EPSPs. AMPA antagonists: CNQX, perampanel (anti-epileptic)",
+         "  NMDA (glutamate, excit.): E_syn ≈ 0 mV, slow (τ ~ 100 ms) + Mg2+ block",
+         "    → Mg2+ block removed at depolarised V — Hebbian learning/LTP",
+         "    → NMDA antagonists: ketamine (anesthetic, antidepressant), memantine (Alzheimer's)",
+         "  GABA-A (inhibitory): E_syn ≈ -70 mV, fast (τ ~ 10 ms)",
+         "    → Fast inhibition. Modulated by BZDs, alcohol, propofol",
+         "  GABA-B (inhibitory, GPCR): E_syn ≈ -90 mV, slow (τ ~ 200 ms)",
+         "    → Baclofen agonist (spasticity treatment)",
+         "",
+         "Double-exponential: g(t) = g_max × (exp(-t/τ1) - exp(-t/τ2)) / normalisation"],
+        n,
+        notes="""SYNAPTIC CONDUCTANCES IN THE HH FRAMEWORK:
+
+When a presynaptic neuron fires and releases NT, the postsynaptic neuron experiences a transient change in conductance. This is added to the HH equations as an additional current term:
+
+I_total = I_Na + I_K + I_L + I_A + I_Ca + I_h + I_NaP + I_AMPA + I_NMDA + I_GABAA + I_GABAB + ...
+
+Each synaptic current has the form: I_syn = g_syn(t) × (V - E_syn)
+where g_syn(t) is a time-dependent conductance that rises and decays (modelling the NT binding/unbinding kinetics).
+
+THE ALPHA FUNCTION (HH style): g(t) = g_max × (t/τ) × exp(1-t/τ) for t > 0
+Simple, one time constant. Peak at t = τ.
+
+DOUBLE EXPONENTIAL (more biophysical): g(t) = g_max × (exp(-t/τ_decay) - exp(-t/τ_rise)) / norm
+Rise time constant τ_rise (fast, NT binding). Decay time constant τ_decay (slow, NT unbinding + channel gating).
+
+AMPA RECEPTORS:
+AMPA (α-amino-3-hydroxy-5-methyl-4-isoxazolepropionic acid receptor): fast excitatory. Opens Na+/K+ channel (E_rev ≈ 0 mV). τ_rise ~ 0.5 ms, τ_decay ~ 3-5 ms.
+How CS students can think about it: AMPA provides the fast, transient excitatory input. Like a brief clock pulse to a flip-flop.
+Drug targets:
+- CNQX (6-cyano-7-nitroquinoxaline-2,3-dione): competitive AMPA antagonist. Research tool.
+- Perampanel (Fycompa): non-competitive AMPA antagonist. FDA-approved anticonvulsant (focal seizures). Reduces fast excitation in hyperactive circuits.
+
+NMDA RECEPTORS:
+NMDA (N-methyl-D-aspartate receptor): slow excitatory. Opens Ca2+/Na+/K+ channel (E_rev ≈ 0 mV). But: requires TWO conditions simultaneously to open: (1) glutamate must be bound AND (2) membrane must be depolarized. Why? At rest, Mg2+ blocks the pore from the outside. When V is depolarized, Mg2+ is expelled. This voltage-dependent block makes NMDA a COINCIDENCE DETECTOR: input (glutamate) AND depolarization must occur together.
+
+Mg2+ block modelling: g_NMDA = g_max × (exp(-t/τ) - ...) × 1/(1 + [Mg]/3.57 × exp(-V/16.13))
+
+SIGNIFICANCE FOR LEARNING AND MEMORY:
+LTP (long-term potentiation) = the cellular mechanism of learning. When both pre AND postsynaptic neurons fire together, NMDA opens, Ca2+ enters, activates CaM kinase II → AMPA receptors inserted → synapse strengthened → Hebbian learning ('fire together, wire together').
+
+DRUG TARGETS OF NMDA:
+Ketamine: non-competitive open-channel NMDA blocker. At low doses: anesthetic. At sub-anesthetic doses: rapid antidepressant (mechanism still debated, but NMDA block → disinhibition → BDNF release → synaptogenesis). IV ketamine and intranasal esketamine (Spravato) FDA-approved for treatment-resistant depression.
+Memantine: low-affinity NMDA blocker. FDA-approved for moderate-to-severe Alzheimer's. Hypothesis: in Alzheimer's, excessive Glu release → chronic NMDA activation → Ca2+ excitotoxicity → neuron death. Memantine blocks this while allowing normal synaptic signaling.
+Phencyclidine (PCP, 'angel dust'): potent NMDA blocker. High abuse potential, causes psychosis. Historically: first demonstration that NMDA block causes schizophrenia-like symptoms → 'glutamate hypothesis of schizophrenia'.
+
+GABA-A (ionotropic, fast inhibition):
+E_syn = -70 to -75 mV (near resting potential). Fast: τ_rise ~ 0.5 ms, τ_decay ~ 5-25 ms. Cl- flows in → hyperpolarizes OR shunts excitatory currents.
+
+GABA-B (metabotropic, slow inhibition):
+GPCR (Gi-coupled). Activates GIRK (G-protein-inwardly-rectifying K+) channels. K+ flows out → hyperpolarization near E_K (~-90 mV). Very slow: onset 50-100 ms, duration 100-500 ms. 
+Baclofen: GABA-B agonist. Used for: muscle spasticity (MS, spinal cord injury), alcohol withdrawal, trigeminal neuralgia. Intrathecal baclofen pump for severe spasticity.
+
+HH EXTENSION CODE:
+def ampa_current(V, t_syn, gAMPA=0.5, E_AMPA=0, tau_r=0.5, tau_d=5):
+    if t_syn < 0:
+        return 0
+    norm = tau_d*tau_r/(tau_d-tau_r)
+    g = gAMPA * norm * (np.exp(-t_syn/tau_d) - np.exp(-t_syn/tau_r))
+    return max(0, g) * (V - E_AMPA)""")
+
+    # --- 10. Multicompartment and cable theory ---
+    n += 1
+    make_content_slide(prs,
+        "Extension 6: Cable Theory & Multicompartment Models",
+        ["The single-compartment HH assumes isopotential membrane — all one voltage",
+         "Real neurons have dendrites (up to 1 mm long!) — voltage DECAYS with distance",
+         "",
+         "Cable equation: Cm × dV/dt = λ² × d²V/dx² - V/τm + I_ext/rm",
+         "  λ = space constant = sqrt(rm × ri / ra) — how far signal travels",
+         "  τm = Cm × rm = membrane time constant",
+         "  ri = internal resistance, ra = axial resistance",
+         "",
+         "Multicompartment models: discretise the dendrite into N compartments",
+         "  Each compartment is an HH model connected to neighbours by resistors",
+         "  Large models: >1000 compartments (Purkinje cell, layer 5 pyramidal)",
+         "  Software: NEURON simulator, Brian2, NetPyNE",
+         "",
+         "Drug effects in multicompartment context:",
+         "  Nav block in axon hillock → no spike propagation",
+         "  Kv4 block in dendrites → larger distal EPSPs (synaptic amplification)",
+         "  NMDA-dependent Ca2+ in dendrites → local spike initiation"],
+        n,
+        notes="""WHY SINGLE-COMPARTMENT HH IS NOT ENOUGH FOR REAL NEURONS:
+
+The HH equations (as presented) treat the entire neuron as a single point — all membrane sees the same voltage at the same time. This is the 'isopotential' approximation. It works for:
+- The squid giant axon cross-section (the axon is very long but uniform, and they recorded from one spot)
+- Small neurons (spinal interneurons, striatal medium spiny neurons)
+- Simplified network models where exact dendritic morphology doesn't matter
+
+But for PYRAMIDAL NEURONS (the main excitatory neurons in cortex and hippocampus), the dendritic tree extends up to 1 mm. A synaptic input to the distal end of a dendrite must travel 1 mm to reach the soma (cell body) where the spike is initiated. Voltage DECAYS exponentially along the dendrite.
+
+THE CABLE EQUATION:
+Hodgkin & Huxley also wrote the cable equation (but it's not usually called 'the HH equation' — it's attributed to Kelvin from telegraph cable theory, adapted by Wilfrid Rall):
+Cm × ∂V/∂t = (d/(4Ra)) × ∂²V/∂x² - I_ion
+
+where:
+- d = dendrite diameter (µm)
+- Ra = axial resistivity (~100-150 Ω·cm for cytoplasm)
+- x = distance along dendrite
+
+KEY PARAMETERS:
+Space constant λ = sqrt(Rm × d / (4Ra)) where Rm is specific membrane resistance (Ω·cm²)
+- λ = distance over which voltage decays to 1/e (~37%) of its source amplitude
+- Typical λ for a dendrite: 0.1-0.5 mm
+- For a 1 mm dendrite: signal at the far end = e^(-1/0.3) = e^(-3.3) = only 4% of source amplitude!
+
+Time constant τm = Rm × Cm
+- Typical τm = 10-50 ms
+- Determines how fast the membrane responds to injected current (RC time constant)
+
+MULTICOMPARTMENT MODELS:
+Discretise the cable into N segments, each with its own HH equations plus current flow from neighbours:
+For compartment i: Cm × dVi/dt = I_ion_i + (V_{i-1} - Vi) / Ra_i + (V_{i+1} - Vi) / Ra_i+1
+
+Famous models:
+- Mainen-Sejnowski pyramidal cell (1996): first realistic compartmental model of a cortical L5 pyramidal neuron
+- Purkinje cell model (De Schutter & Bower 1994): 1600 compartments, shows complex Ca2+-dependent bursting
+- NEURON simulator (Carnevale & Hines 2006): standard software for multicompartment simulations
+
+DRUG EFFECTS IN MULTICOMPARTMENT CONTEXT:
+1. Axon hillock Nav block (local anesthetic): if Nav at the spike initiation zone is blocked, no AP is generated regardless of what happens in dendrites. This is the mechanism of local anesthesia.
+2. Dendritic Kv4 block (4-AP): reduces shunting inhibition in dendrites → EPSPs are larger when they reach the soma → neuron more excitable. This is one mechanism of 4-AP's pro-convulsant and anti-MS effects.
+3. Dendritic NMDA spikes: in distal dendrites, if AMPA + NMDA are activated strongly enough, a local 'dendritic spike' can be initiated even before the signal reaches the soma. NMDA receptor blockers (ketamine) prevent this → alter dendritic integration profoundly.
+
+FOR CS STUDENTS:
+A multicompartment model is essentially a graph neural network where each node is an HH model and each edge is a resistor (coupling adjacent compartments). The message passing is: currents flow between compartments according to Ohm's law. This is literally the same architecture as a GNN (Day 3)! The difference: in GNNs, we LEARN the message functions. In cable theory, the message function is Ohm's law (physics-based).""")
+
+    # --- 11. Drug targets summary ---
+    n += 1
+    make_content_slide(prs,
+        "HH Model Extensions: Drug Target Map",
+        ["Channel         | Gene family  | Key Drug Target(s)",
+         "─────────────────────────────────────────────────────",
+         "Nav (I_Na)      | SCN1A-11A   | Lidocaine, carbamazepine, TTX",
+         "Kv (I_K)        | KCNQ, Kv2   | 4-AP, TEA, fampridine",
+         "Kv (I_A)        | KCND (Kv4)  | 4-AP (Ampyra for MS)",
+         "Kv11.1 hERG     | KCNH2       | AVOID block (cardiac arrhythmia!)",
+         "Cav L-type      | CACNA1C/D   | Nifedipine, verapamil, diltiazem",
+         "Cav N-type      | CACNA1B     | Ziconotide (Prialt) for pain",
+         "Cav T-type      | CACNA1G/H   | Ethosuximide (absence epilepsy)",
+         "HCN (Ih)        | HCN1-4      | Ivabradine (Coralan) for HF",
+         "Nav persistent  | SCN8A/2A    | Riluzole (ALS), lacosamide",
+         "AMPA            | GRIA1-4     | Perampanel (epilepsy)",
+         "NMDA            | GRIN1/2A-D  | Ketamine, memantine (Alzheimer's)",
+         "GABA-A          | GABRA/B/G   | Diazepam, propofol, alcohol",
+         "GABA-B          | GABBR1/2    | Baclofen (spasticity)"],
+        n,
+        notes="""DRUG TARGET MAP — COMPLETE GUIDE:
+
+This slide shows the direct connection between the HH model components and real drugs. Every row represents a channel that is part of an HH-style model, the gene family that encodes it, and example drugs.
+
+HOW TO READ THIS TABLE:
+Column 1 (Channel/Current): This is the HH model component. All of these are ion channels that contribute current terms to the HH ODE.
+Column 2 (Gene family): The gene(s) encoding the channel. QSAR models are trained on experimental data (IC50 values) for each target. Each gene = one QSAR model.
+Column 3 (Drug targets): Approved drugs or important pharmacological tools that interact with this channel.
+
+KEY PATTERNS:
+1. ALMOST EVERY DRUG USED IN NEUROLOGY/PSYCHIATRY targets something in this table. This is because neurological diseases are diseases of electrical excitability.
+
+2. SELECTIVITY is the challenge. Lidocaine blocks Nav1.7 (pain), but also blocks Nav1.1 (heart), Nav1.5 (skeletal muscle). Selective Nav1.7 blockers have been sought for 20+ years for pain treatment (would avoid cardiac side effects). This is a major QSAR challenge.
+
+3. hERG (KCNH2) is the most dangerous off-target. Every drug candidate must be tested for hERG block. A dedicated QSAR model for hERG IC50 is one of the first models any pharmaceutical company builds.
+
+4. AI APPLICATIONS IN THIS TABLE:
+- Build QSAR models for each channel target
+- Predict which drugs have which off-target activities (polypharmacology)
+- Design selective compounds that hit the desired target but not others
+- Predict which patients will respond to which drug (pharmacogenomics — do they have the right Nav1.2 variant?)
+
+5. LACOSAMIDE (Vimpat): a newer anticonvulsant (Na channel modulator). Enhances slow inactivation of Nav channels. This is a distinct mechanism from the use-dependent fast inactivation stabilisation of lidocaine. Lacosamide has a unique interaction with a binding site at the inactivated Nav state.
+
+6. PERSONALIZED MEDICINE EXAMPLE: SCN1A mutations cause Dravet syndrome (severe childhood epilepsy). Loss-of-function in SCN1A (Nav1.1) reduces inhibitory neuron firing → network excitability → seizures. Treatment: AVOID sodium channel blockers (they would further reduce Nav1.1) → use valproate, clobazam, stiripentol. An AI model that predicts drug-Nav1.1 interaction AND knows the patient's SCN1A variant could guide personalized treatment choice.""")
+
+    # --- 12. Python simulation reference ---
+    n += 1
+    make_content_slide(prs,
+        "Python Reference: Simulating the HH Model",
+        ["Step 1 — Define rate functions:",
+         "  alpha_m(V): opening rate for m gate",
+         "  beta_m(V): closing rate for m gate",
+         "  (same pattern for h, n)",
+         "",
+         "Step 2 — Define ODE system:",
+         "  [dV/dt, dm/dt, dh/dt, dn/dt] = f(V, m, h, n, I_ext)",
+         "",
+         "Step 3 — Set initial conditions:",
+         "  V0=-65, m0=0.05, h0=0.60, n0=0.32",
+         "",
+         "Step 4 — Integrate:",
+         "  scipy.integrate.odeint(system, y0, t, args=(I_ext,))",
+         "",
+         "Step 5 — Plot V(t), m(t), h(t), n(t)",
+         "",
+         "Extensions: add I_A, I_Ca, I_h by appending gate ODEs and current terms",
+         "Packages: scipy (ODE solver), numpy (arrays), matplotlib (plots)",
+         "Full simulation in: day1_introduction/Day1_Practical_HH.ipynb"],
+        n,
+        notes="""FULL COMMENTED PYTHON CODE FOR THE HH MODEL:
+
+import numpy as np
+from scipy.integrate import odeint
+import matplotlib.pyplot as plt
+
+# ---- Rate functions ----
+def alpha_m(V):
+    # Opening rate for m gate (Na+ activation). Units: 1/ms
+    dV = V + 40  # shift by 40 (V=-40 is a singularity)
+    if abs(dV) < 1e-7:
+        return 1.0  # L'Hopital limit at the singularity
+    return 0.1 * dV / (1 - np.exp(-dV / 10))
+
+def beta_m(V):
+    # Closing rate for m gate. Units: 1/ms
+    return 4 * np.exp(-(V + 65) / 18)
+
+def alpha_h(V):
+    # Opening rate for h gate (Na+ inactivation). Units: 1/ms
+    return 0.07 * np.exp(-(V + 65) / 20)
+
+def beta_h(V):
+    # Closing rate for h gate. Units: 1/ms
+    return 1 / (np.exp(-(V + 35) / 10) + 1)
+
+def alpha_n(V):
+    # Opening rate for n gate (K+ activation). Units: 1/ms
+    dV = V + 55
+    if abs(dV) < 1e-7:
+        return 0.1
+    return 0.01 * dV / (1 - np.exp(-dV / 10))
+
+def beta_n(V):
+    # Closing rate for n gate. Units: 1/ms
+    return 0.125 * np.exp(-(V + 65) / 80)
+
+# ---- Channel parameters ----
+gNa = 120.0   # Maximum Na+ conductance (mS/cm²)
+gK  =  36.0   # Maximum K+ conductance (mS/cm²)
+gL  =   0.3   # Leak conductance (mS/cm²)
+ENa =  55.0   # Na+ reversal potential (mV)
+EK  = -77.0   # K+ reversal potential (mV)
+EL  = -54.4   # Leak reversal potential (mV)
+Cm  =   1.0   # Membrane capacitance (µF/cm²)
+
+# ---- ODE system ----
+def hodgkin_huxley(y, t, I_ext):
+    V, m, h, n = y
+    
+    # Ion currents
+    I_Na = gNa * m**3 * h * (V - ENa)   # Inward (typically negative in convention)
+    I_K  = gK  * n**4     * (V - EK)    # Outward
+    I_L  = gL             * (V - EL)    # Leak
+    
+    # Membrane voltage ODE
+    dV = (I_ext - I_Na - I_K - I_L) / Cm
+    
+    # Gating variable ODEs
+    dm = alpha_m(V) * (1 - m) - beta_m(V) * m
+    dh = alpha_h(V) * (1 - h) - beta_h(V) * h
+    dn = alpha_n(V) * (1 - n) - beta_n(V) * n
+    
+    return [dV, dm, dh, dn]
+
+# ---- Simulation ----
+t = np.arange(0, 100, 0.01)            # 100 ms, 0.01 ms step
+y0 = [-65.0, 0.05, 0.60, 0.32]         # Initial conditions at rest
+I_ext = 10.0                           # Stimulus current (µA/cm²)
+
+solution = odeint(hodgkin_huxley, y0, t, args=(I_ext,))
+V = solution[:, 0]
+m = solution[:, 1]
+h = solution[:, 2]
+n = solution[:, 3]
+
+# ---- Plot ----
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6))
+ax1.plot(t, V, 'k'); ax1.set_ylabel('Voltage (mV)'); ax1.set_title('HH Action Potential')
+ax2.plot(t, m, label='m (Na act)'); ax2.plot(t, h, label='h (Na inact)')
+ax2.plot(t, n, label='n (K act)'); ax2.legend(); ax2.set_ylabel('Gate probability')
+ax2.set_xlabel('Time (ms)')
+plt.tight_layout()
+plt.savefig('hh_simulation.png', dpi=150)
+
+TO ADD DRUG EFFECTS:
+# Simulate lidocaine (50% Nav block): set gNa = 60 (instead of 120)
+# Simulate 4-AP (K+ channel block): set gK = 18 (instead of 36)
+# Simulate GABA-A drug: add I_GABAA current with appropriate E_syn and g(t)
+
+The Day 1 notebook (day1_introduction/Day1_Practical_HH.ipynb) has a fully interactive version.""")
+
+    # --- 13. Connection to QSAR / AI drug discovery ---
+    n += 1
+    make_content_slide(prs,
+        "HH Model → QSAR → AI Drug Discovery: The Full Pipeline",
+        ["Understanding HH helps you understand WHAT your QSAR model is predicting:",
+         "",
+         "QSAR predicts: IC50 for Nav block (e.g., 50 nM for compound X)",
+         "HH simulation asks: IF Nav is blocked 80%, does the neuron still fire?",
+         "SpikerBox validates: does compound X change neural firing in a real prep?",
+         "",
+         "The channel map connects QSAR targets to HH currents:",
+         "  Nav1.2 IC50 → changes g_Na in HH → changes spike threshold/amplitude",
+         "  hERG IC50 → changes g_K in HH → changes AP duration → QT interval",
+         "  GABA-A IC50 → changes synaptic I_GABAA → changes network inhibition",
+         "",
+         "GNNs (Day 3) predict the same quantities but more accurately:",
+         "  Molecular graph → GNN → predicted IC50 for any channel",
+         "  AlphaFold → 3D structure of channel → docking → predicted pose",
+         "  Combine: structure + QSAR → multi-target prediction",
+         "",
+         "Your project: you are predicting these IC50 values, designing molecules",
+         "that hit the RIGHT channels and avoid the WRONG ones (hERG!)"],
+        n,
+        notes="""THE COMPLETE PIPELINE — CONNECTING HH TO AI DRUG DISCOVERY:
+
+STEP 1 — TARGET IDENTIFICATION:
+Which ion channel / receptor is dysfunctional in the disease?
+Example: SCN1A (Nav1.1) LOF mutation → Dravet syndrome (severe epilepsy)
+Example: CACNA1A (Cav2.1) GOF mutation → familial hemiplegic migraine
+Example: KCNH2 (hERG) drug block → drug-induced arrhythmia (MUST AVOID)
+
+STEP 2 — QSAR MODELING (today's lecture):
+Collect experimental IC50 data for the target channel from ChEMBL / internal databases.
+Train a QSAR model: molecular features (ECFP4 + descriptors) → predicted IC50.
+Evaluate with scaffold split.
+Interpret with SHAP → understand which molecular features drive potency.
+
+STEP 3 — HH SIMULATION (physiological impact prediction):
+Take the predicted IC50. Calculate what fraction of channels are blocked at a therapeutic concentration (using IC50 and plasma concentration estimates). Set g_channel = g_max × (1 - fraction_blocked) in the HH model. Simulate: does the neuron behave differently? Better (therapeutic)? Worse (side effect)?
+
+STEP 4 — SPIKERBOX VALIDATION (in vitro):
+Synthesise the top predicted compounds. Test on SpikerBox: add compound to preparation, observe neural firing change. Compare to HH prediction.
+
+STEP 5 — ANIMAL MODELS (in vivo):
+Test in rodent models of the disease (epilepsy: pentylenetetrazol seizure model; pain: von Frey test; arrhythmia: ECG QT measurement). Does the drug work? Are there side effects?
+
+STEP 6 — CLINICAL TRIALS (human):
+Phase I: safety in healthy volunteers. Phase II: dose-finding in patients. Phase III: efficacy vs. placebo in large trial. FDA/EMA approval.
+
+THE QSAR MODEL'S ROLE IN THIS PIPELINE:
+QSAR screens billions of virtual compounds at Step 2, filtering down to hundreds for synthesis and testing at Step 3-4. Without AI, Steps 2-3 would require synthesizing and testing every candidate — prohibitively expensive. With AI: test 10 × cheaper candidates, 10 × faster.
+
+FOR STUDENT PROJECTS:
+Project 1 (SpikerBot): You'll use the SpikerBox to validate QSAR predictions for Nav blockers in cockroach preparation.
+Project 2 (GABA-A): Train a QSAR model for GABA-A modulator IC50. Predict selectivity over other Cys-loop channels.
+Project 3 (Drug repurposing): Use HH simulation to predict which existing drugs could treat a neural channelopathy.
+Project 4 (Eye-tracking): Use the pupillary light reflex (controlled by M-current, Ih, Nav in EW neurons) as an in vivo readout of drug effects on these HH channels.""")
+
+    # Closing
+    n += 1
+    make_section_divider(prs, "You Now Understand the Mathematics of Neural Excitability 🧮🧠", n,
+        notes="End of the HH Explainer deck. Students (or instructors) who have worked through this deck understand: (1) the 4 HH equations and what each term means physically, (2) the gating variables m, h, n and their biophysical basis, (3) extensions: A-current, Cav, Ih, I_NaP, synaptic conductances, cable theory, (4) drug targets at every level, (5) how HH connects to QSAR and AI drug discovery. This deck provides the theoretical foundation for interpreting all computational neuroscience results in the course.",
+        subtitle="HH equations, gating variables, channel extensions, drug targets, Python code, AI connection — all covered!")
+
+    os.makedirs("hh_explainer", exist_ok=True)
+    prs.save("hh_explainer/slides.pptx")
+    print(f"  HH Explainer: {n} slides -> hh_explainer/slides.pptx")
+
+
+
+# =====================================================================
+# MAIN
+# =====================================================================
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.path.abspath(__file__)) if os.path.dirname(os.path.abspath(__file__)) else ".")
     print("=" * 60)
     print("  AI for Drug Discovery — Slide Generator")
-    print("  4 Teaching Days + Exam + 2 Quizzes + Annotated Day 2")
-    print("  Quiz 1:         Introductory Drug Discovery Quiz")
-    print("  Quiz 2:         Abbreviations & Biology Quiz")
-    print("  Day 1 (15 Apr): Introduction, Pipeline, Projects — 6 units")
-    print("  Day 2 (22 Apr): Molecular ML, QSAR, Evaluation — 8 units")
-    print("  Day 2 (annotated): Full presenter notes for everything")
-    print("  Day 3 (5 May):  Deep Learning, GNNs, AlphaFold — 8 units")
-    print("  Day 4 (19 May): Ethics, Physiology, Workshop — 4 units")
-    print("  Exam  (27 May): Presentations / Posters")
+    print("  4 Teaching Days + Exam + 3 Quizzes + Annotated Day 2 + HH Explainer")
+    print("  Quiz 1:          Introductory Drug Discovery Quiz")
+    print("  Quiz 2:          Abbreviations & Biology Quiz")
+    print("  Quiz 3:          Physiology & Neuroscience Quiz")
+    print("  Day 1 (15 Apr):  Introduction, Pipeline, Projects")
+    print("  Day 2 (22 Apr):  Molecular ML, QSAR, Evaluation")
+    print("  Day 2 annotated: Full presenter notes for everything")
+    print("  Day 3 (5 May):   Deep Learning, GNNs, AlphaFold")
+    print("  Day 4 (19 May):  Ethics, Physiology, Workshop")
+    print("  HH Explainer:    Hodgkin-Huxley deep-dive lecture deck")
     print("=" * 60)
     generate_quiz()
     generate_quiz_abbreviations()
+    generate_quiz_physiology()
     generate_day1()
     generate_day2()
     generate_day2_annotated()
     generate_day3()
     generate_day4()
+    generate_hh_explainer()
     print("=" * 60)
     print("  Done! All slides generated.")
     print("=" * 60)
