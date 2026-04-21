@@ -618,7 +618,178 @@ def generate_day2():
         2, "AI for Drug Discovery", date_str="22 April 2026",
         notes="TIMING: 0-10 min (Unit 1 start)\n\nWelcome back! Quick check-in: how did the Day 1 practical go? Who finished the Hodgkin-Huxley simulation? Today is a BIG day — 8 units. By the end, you will have trained, evaluated, and interpreted ML models on real molecular data.\n\nAgenda:\nMorning (Units 1-4, ~180 min): SMILES deep dive, fingerprints, QSAR, RF/XGBoost, Practical 1\nAfternoon (Units 5-8, ~180 min): Evaluation, scaffold splits, SHAP, Practical 2")
 
-    # --- Slide 2: Morning Agenda ---
+
+    # =========================================================
+    # PHYSIOLOGY INTRO (added for Day 2 — CS student audience)
+    # =========================================================
+
+    # --- Slide 2: Homework Reminder from Last Week ---
+    n += 1
+    make_content_slide(prs,
+        "Homework from Last Week — Did You…?",
+        ["📱 Download SpikeRecorder (backyardbrains.com/SpikeRecorder)",
+         "  → Works on iOS, Android, and desktop",
+         "  → We will use it to visualize and simulate neural signals today",
+         "",
+         "📄 Read the three papers shared after Day 1:",
+         "  → If not — try to read before Day 3 (5 May)",
+         "  → Key insight in each paper connects to today's ML methods",
+         "",
+         "🐍 RDKit exercise: plot all neurotransmitters as molecular structures",
+         "  → import rdkit; Draw.MolsToGridImage([...]) for all NTs",
+         "  → Neurotransmitters: serotonin, dopamine, GABA, glutamate, acetylcholine",
+         "  →                    norepinephrine, glycine, histamine, adenosine",
+         "",
+         "💡 Have you started thinking about your project idea?",
+         "  → Groups of 3-4, sign-up deadline: Day 2 end"],
+        n,
+        notes="TIMING: 5-10 min (before the physiology intro)\n\n=== HOMEWORK REVIEW ===\n\n1. SPIKERECORDER APP:\nFree app from Backyard Brains. Download at: backyardbrains.com/SpikeRecorder\nWorks standalone (as a simulator) even without SpikerBox hardware.\nStudents who downloaded: great! Students who didn't: do it now on your phone/laptop while we talk.\n\n2. THE THREE PAPERS:\nThe instructor shared three papers after Day 1. These likely connect to the course themes (Drosophila physiology, ion channels, and/or drug discovery with AI). If students haven't read them yet, that's okay — but they should try before Day 3 when the papers become more relevant (Deep Learning and GNNs for molecular biology).\n\n3. RDKIT NEUROTRANSMITTER EXERCISE:\nThis is a good warm-up for today. The exercise: use RDKit to draw the 9 main neurotransmitters as molecular structures in a grid.\nCode skeleton (put on board or share screen):\n\nfrom rdkit import Chem\nfrom rdkit.Chem import Draw, AllChem\n\nneurotransmitters = {\n    \'Serotonin\': \'NCCc1c[nH]c2ccc(O)cc12\',\n    \'Dopamine\': \'NCCc1ccc(O)c(O)c1\',\n    \'GABA\': \'NCCCC(=O)O\',\n    \'Glutamate\': \'N[C@@H](CCC(=O)O)C(=O)O\',\n    \'Acetylcholine\': \'CC(=O)OCC[N+](C)(C)C\',\n    \'Norepinephrine\': \'NCC(O)c1ccc(O)c(O)c1\',\n    \'Glycine\': \'NCC(=O)O\',\n    \'Histamine\': \'NCCc1c[nH]cn1\',\n    \'Adenosine\': \'Nc1ncnc2c1ncn2[C@@H]1O[C@H](CO)[C@@H](O)[C@H]1O\'\n}\nmols = [Chem.MolFromSmiles(s) for s in neurotransmitters.values()]\nimg = Draw.MolsToGridImage(mols, molsPerRow=3, legends=list(neurotransmitters.keys()))\nimg.save(\'neurotransmitters.png\')\n\n4. PROJECT IDEAS:\nStudents should be forming groups of 3-4. If they haven\'t settled on a topic: remind them of the 7 project options from Day 1. The sign-up deadline is today (end of Day 2). Encourage them to think about which option excites them most and which connects to their CS skills.")
+
+    # --- Slide 3: Day 2 Opening — Physiology Overview ---
+    n += 1
+    make_section_divider(prs, "\U0001f9e0 Physiology Intro — Setting the Stage", n,
+        notes="TIMING: 10-15 min\n\nBefore diving into the ML content, do a short physiology primer (~30 min total). The students are CS specialists — they understand algorithms but may have never studied biology or medicine. This section gives them the biological vocabulary to make sense of WHY we are doing molecular ML. Cover the topics listed on the next few slides. Each slide has detailed notes explaining WHAT you are saying and WHY it matters.",
+        subtitle="Biology crash-course for Computer Scientists")
+
+    # --- Slide 4: What is Physiology? ---
+    n += 1
+    make_content_slide(prs,
+        "What is Physiology? Why Does it Matter for Drug Discovery?",
+        ["Physiology = how living systems FUNCTION (not just their structure)",
+         "  → Organs, tissues, cells, proteins, ions — dynamic interaction",
+         "  → Example: the heart BEATS because ion channels in cardiac cells open/close rhythmically",
+         "",
+         "Drugs change physiology — that is their entire purpose:",
+         "  AI predicts molecular binding → physiology VALIDATES whether it works",
+         "  No matter how good our QSAR model, a drug only works if it changes FUNCTION",
+         "",
+         "Today\'s physiology topics (brief intro, ~30 min total):",
+         "  \u26a1 Action Potentials — how neurons/muscles fire electrically",
+         "  \U0001f52c SpikerBot & Computational SpikerBox — record and simulate signals",
+         "  \U0001f99f Fly Motion Vision — a model neural circuit",
+         "  \U0001f52d Electron Microscopy (EM) — mapping brain wiring (connectomics)",
+         "  \U0001f441 Eye-Tracking — measuring drug effects on behavior"],
+        n,
+        notes="TIMING: 15-20 min\n\n=== WHAT IS PHYSIOLOGY? (explain to CS students) ===\n\nPhysiology is the branch of biology that asks HOW, not WHAT. Anatomy tells you what structures exist (this is the heart, these are its valves). Physiology tells you how those structures work together (the heart muscle contracts because calcium floods into cardiomyocytes, triggering actin-myosin interaction, driven by action potentials from the SA node...).\n\nFor a CS analogy: anatomy is reading the source code, physiology is running the program and profiling it. You need both.\n\nWHY DOES PHYSIOLOGY MATTER FOR DRUG DISCOVERY?\nEvery drug must CHANGE a physiological process. There are only a few ways drugs can do this:\n1. BIND to a receptor → change its signaling (agonist = activates, antagonist = blocks)\n2. INHIBIT an enzyme → reduce production of a molecule\n3. BLOCK an ion channel → change electrical activity\n4. Modify gene expression (some drugs do this)\n5. Physically (antacids neutralize stomach acid)\n\nThe ML pipeline (QSAR, GNNs) predicts how strongly a molecule binds (step 1). Physiology tells you what HAPPENS after binding (steps 2-5). Both are needed.\n\nTODAY\'S AGENDA is a 30-minute tour through the physiology concepts that come up repeatedly in this course. Think of it as vocabulary building — by the end of Day 2, you will have heard terms like \'action potential\', \'ion channel\', \'patch clamp\', \'optogenetics\', \'connectomics\', \'eye-tracking\', and you will know what they mean and why they matter for AI drug discovery.")
+
+    # --- Slide 5: Action Potentials ---
+    n += 1
+    make_content_slide(prs,
+        "Action Potentials: The Electrical Language of Neurons",
+        ["A neuron at rest: membrane voltage ~-70 mV (inside more negative than outside)",
+         "  → Maintained by Na+/K+ ATPase pump (uses ATP to move ions)",
+         "  → Na+ mostly OUTSIDE; K+ mostly INSIDE",
+         "",
+         "How a spike fires (all-or-nothing, ~1 ms):",
+         "  1. Stimulus → depolarization past threshold (~-55 mV)",
+         "  2. Voltage-gated Na+ channels OPEN → Na+ rushes in → peak at +40 mV",
+         "  3. Na+ channels inactivate; K+ channels open → K+ out → repolarization",
+         "  4. Brief hyperpolarization → refractory period → back to rest",
+         "",
+         "Drug targets at every step:",
+         "  Nav blockers: lidocaine (anesthesia), carbamazepine (epilepsy)",
+         "  hERG (Kv11.1) blockers: DANGEROUS cardiac side effect of many drugs",
+         "  GABA-A modulators: diazepam (Valium), alcohol, propofol (anesthesia)",
+         "Hodgkin & Huxley (1952, Nobel 1963): first computational neuroscience model"],
+        n,
+        notes="TIMING: 20-27 min\n\n=== ACTION POTENTIALS — FULL EXPLANATION FOR CS STUDENTS ===\n\nImagine a neuron as a thin tube (the axon can be meters long in a human!) filled with salty water (cytoplasm), wrapped in a lipid membrane (like a soap bubble wall, ~5 nm thick), immersed in salty fluid (extracellular space).\n\nWHY IS THERE A VOLTAGE ACROSS THE MEMBRANE?\nBecause ions are unevenly distributed. At rest:\n- Na+ (sodium): 145 mM outside, 12 mM inside (12× more outside)\n- K+ (potassium): 4 mM outside, 155 mM inside (39× more inside)\n- Cl- (chloride): 123 mM outside, 4 mM inside (more outside)\nThe cell membrane is much more permeable to K+ than Na+ at rest. K+ wants to flow OUT (concentration gradient). As K+ flows out, it leaves negative charge behind → membrane becomes negative inside. This builds until electric force pulling K+ back equals concentration force pushing it out → equilibrium at ~-70 mV.\n\nThe Na+/K+ ATPase (sodium-potassium pump) uses 1 ATP to move 3 Na+ out and 2 K+ in. This maintains the gradient. About 25% of all ATP in the brain powers these pumps!\n\nTHE SPIKE (step by step):\n1. Input arrives (e.g., from another neuron): briefly opens some channels → membrane depolarizes slightly\n2. If it reaches -55 mV (threshold), VOLTAGE-GATED Na+ channels activate. These channels have a sensor that feels the voltage and snaps open. Na+ floods in (145 mM → 12 mM: 12× concentration gradient PLUS electrical gradient both pulling Na+ in). Voltage shoots to +40 mV in <1 ms.\n3. Na+ channels INACTIVATE (they have a second gate that closes automatically ~1 ms after opening). Voltage-gated K+ channels open (these are slower). K+ floods out. Voltage falls back.\n4. Brief undershoot below -70 mV because K+ channels take a moment to close. Then everything resets.\n\nTHE ALL-OR-NOTHING PRINCIPLE: Either the threshold is crossed and a FULL spike fires (same shape, same size every time), OR nothing happens. This is like a digital bit — ON or OFF. Information is encoded in the TIMING and FREQUENCY of spikes, not their amplitude.\n\nDRUG IMPLICATIONS:\n- LIDOCAINE (dental anesthetic): binds inside the Na+ channel pore and blocks it. No Na+ can enter. No action potentials. No pain signal to brain. (Wears off as drug diffuses away)\n- CARBAMAZEPINE (anticonvulsant for epilepsy): also a Na+ channel blocker. Neurons can\'t fire as rapidly. Seizures require many neurons firing in synchrony — block Nav → fewer synchronized bursts.\n- hERG (pronounced \'h-ERG\', also called Kv11.1): a K+ channel in cardiac muscle. If blocked, the action potential in heart cells lasts longer → QT interval prolongation on ECG → can trigger fatal arrhythmia. EVERY drug candidate must be tested for hERG block. This is why hERG QSAR models are so important (Day 2 practical context!).\n- GABA-A: an inhibitory ligand-gated Cl- channel. When GABA (the main inhibitory neurotransmitter) binds, Cl- flows in → hyperpolarization → neuron less likely to fire. Diazepam (Valium) potentiates GABA-A (makes it more sensitive to GABA). Alcohol does the same. Propofol (surgery anesthetic) activates GABA-A directly.\n\nHODGKIN-HUXLEY MODEL: Two British scientists (Alan Hodgkin and Andrew Huxley) made recordings from squid giant axons (these are very large, 1 mm diameter, easy to record from). They developed mathematical equations (4 coupled ODEs with voltage-dependent conductances) that precisely describe the action potential. 1952 paper, 1963 Nobel Prize in Physiology or Medicine. This is the Day 1 notebook simulation!")
+
+    # --- Slide 6: SpikerBot & Computational SpikerBox ---
+    n += 1
+    make_content_slide(prs,
+        "SpikerBot & The Computational SpikerBox",
+        ["SpikerBox (Backyard Brains): open-source DIY electrophysiology",
+         "  Records extracellular spikes from neurons/muscles ($100-250 USD)",
+         "  Real drug experiments: apply lidocaine → watch spikes disappear",
+         "  Ref: Marzullo & Gage (2012) PLoS ONE 7(3):e30837",
+         "",
+         "SpikerBot: adds stimulation + locomotion + multi-channel recording",
+         "  Record FROM and stimulate a living neural preparation",
+         "  Bridges AI prediction and physiological validation",
+         "",
+         "Computational SpikerBox: Hodgkin-Huxley model in software",
+         "  Interactively change ion channel conductances → see the effect",
+         "  In silico drug testing before wet-lab experiments",
+         "",
+         "SpikeRecorder app: FREE — record, visualize, analyze, simulate",
+         "  Download: backyardbrains.com/SpikeRecorder",
+         "  Works on phone/tablet/laptop, no hardware needed for simulation"],
+        n,
+        notes="TIMING: 27-32 min\n\n=== THE SPIKERBOX ECOSYSTEM ===\n\nBackyard Brains is a company founded by Greg Gage and Tim Marzullo (University of Michigan neuroscience PhD students). Their mission: democratize neuroscience education. The original SpikerBox ($100) records extracellular neural spikes from cockroach legs, earthworms, and human muscles.\n\nHOW EXTRACELLULAR RECORDING WORKS:\nA metal electrode is placed near (but not inside) a neuron. When the neuron fires, the action potential current flows in a loop: Na+ enters the cell at the spike, must come from outside, creating a tiny local current. The electrode detects this current as a ~100-500 microvolt deflection. The SpikerBox amplifies this ~1000× so you can see it on screen or hear it as a 'pop' through speakers.\n\nThis is LESS invasive than patch clamp (whole-cell recording, which is the gold standard but requires a glass micropipette sealed to the cell membrane). Patch clamp can measure individual ion channel currents. Extracellular recording measures population firing. For drug testing: both are used.\n\nDRUG EXPERIMENT EXAMPLE:\n1. Record baseline action potentials from a cockroach leg preparation (the large spiny neurons in the leg fire spontaneously)\n2. Apply lidocaine solution (a drop of local anesthetic)\n3. Watch: spikes gradually disappear (Na+ channels blocked → no more action potentials)\n4. Wash out: spikes return\n5. This IS a dose-response experiment! Our QSAR models predict exactly this IC50 value.\n\nTHE SPIKERBOT:\nAdded on top of SpikerBox: can stimulate (electrical pulses to drive activity), has more channels, can drive a small robot based on neural signals. Project 2 in our course uses SpikerBot.\n\nCOMPUTATIONAL SPIKERBOX:\nThis is a software interface to the Hodgkin-Huxley model. Students can:\n- Drag sliders to change Na+ channel conductance (simulating a Nav blocker drug)\n- See action potential shape and frequency change in real time\n- \'Virtually test\' whether a drug effect would eliminate firing or just slow it\nThis is the \'in silico\' step of the AI → physiology pipeline.\n\nSPIKERECORDER APP:\nFree app. Download it now if you haven\'t. It can:\n1. Connect to SpikerBox hardware via audio jack or Bluetooth\n2. Display real-time spike recordings (action potentials look like little mountains)\n3. Run the computational Hodgkin-Huxley simulation\n4. Do basic spike sorting (separating signals from different neurons by their shape)\n5. Export data for analysis in Python")
+
+    # --- Slide 7: Fly Motion Vision System ---
+    n += 1
+    make_content_slide(prs,
+        "Fly Motion Vision: A Model Neural Circuit",
+        ["Why Drosophila (fruit fly)?",
+         "  ~140,000 neurons (human: ~86 billion) — fully mappable!",
+         "  Powerful genetic tools: optogenetics, calcium imaging, EM",
+         "  Conserved ion channel families (same targets as human drugs)",
+         "",
+         "The visual motion circuit (simplified):",
+         "  Photoreceptors (light) → Lamina → Medulla → Lobula plate",
+         "  T4 neurons: detect ON-motion (brightening edge moves)",
+         "  T5 neurons: detect OFF-motion (darkening edge moves)",
+         "  4 directions each → population of direction-selective cells",
+         "",
+         "Drug-relevant ion channels in this circuit:",
+         "  GluCl: glutamate-gated Cl- channel = ivermectin target",
+         "  Ammer, Serbe-Kamp et al. (2023) Nat. Neurosci. 26:1894-1905",
+         "  Same Cys-loop receptor superfamily as GABA-A (anxiolytics, anesthetics)"],
+        n,
+        notes="TIMING: 32-37 min\n\n=== THE DROSOPHILA MODEL SYSTEM — WHY FLIES? ===\n\nDrosophila melanogaster (common fruit fly) is the most powerful model organism in genetics and increasingly in neuroscience. Why?\n\n1. SMALL BRAIN, FULLY MAPPABLE: 140,000 neurons. Compare: a mouse has ~71 million neurons, a human ~86 billion. With modern electron microscopy (next slide), we can now map EVERY synapse in the fly brain. The complete wiring diagram (connectome) of the fly brain was published in 2023 (Dorkenwald et al., Nature 634:124-138, 2024). This would be impossible for a mouse, let alone a human.\n\n2. GENETIC TOOLS:\n- Optogenetics: we can insert a gene for a light-sensitive protein (channelrhodopsin, a tool from algae) into ANY specific cell type using fly genetics. Shine blue light → that specific cell fires. Invaluable for testing: \'if I activate/silence THIS neuron, what happens to behavior/circuit activity?\'\n- Calcium imaging: insert a gene for GCaMP (a protein that glows brighter when calcium enters, i.e., when the neuron fires). Now you can watch WHICH neurons fire when the fly sees a moving pattern. Serbe et al. (2016, Neuron 89:829-841) and Serbe-Kamp et al. (2023, J. Neurosci. 43:2497-2514) used this to characterize the T4/T5 motion circuit.\n- EM (electron microscopy): see next slide.\n\n3. CONSERVED BIOLOGY: Fly ion channels are homologous to human ion channels. GluCl (glutamate-gated chloride channel) in flies is in the Cys-loop receptor superfamily — the SAME superfamily as human GABA-A receptors, glycine receptors, and nAChR. Ivermectin targets GluCl in parasites (worms, insects) because it locks the channel open → muscle paralysis. The drug doesn\'t affect vertebrates much because vertebrates don\'t have GluCl (they have GLRA channels instead which are less sensitive to ivermectin). This specificity makes ivermectin safe for humans while lethal to parasites.\n\nTHE MOTION VISION CIRCUIT:\n- Photoreceptors (R1-R8): detect light. Like the rods and cones in your eye.\n- Lamina and Medulla: processing layers (like retinal ganglion cells and LGN in mammals).\n- T4 neurons: respond to a bright edge moving in a specific direction. T5: dark edge. 4 types of each for 4 motion directions (up, down, left, right).\n- Lobula Plate Tangential Cells (LPTCs): integrate motion from many T4/T5 neurons to get a global optic flow signal (like: the whole world is rotating left → fly banks right).\n\nFOR DRUG DISCOVERY: The T5 circuit requires GluCl-mediated inhibition for direction selectivity (Ammer, Serbe-Kamp et al. 2023). Block GluCl → T5 can no longer tell direction. This is the same mechanism used by ivermectin in parasites. Understanding this circuit gave insight into why ivermectin is so effective AND specific.")
+
+    # --- Slide 8: Electron Microscopy ---
+    n += 1
+    make_content_slide(prs,
+        "Electron Microscopy (EM) & Connectomics",
+        ["EM = electron microscopy: resolves structures down to ~1 nm",
+         "  Light microscopy limit: ~200 nm (wavelength of light)",
+         "  EM uses electrons (wavelength ~0.001 nm) → 200× better resolution",
+         "  Can see individual synaptic vesicles, cell membranes, protein complexes",
+         "",
+         "Serial section EM (ssEM): map an entire brain\'s wiring",
+         "  Slice tissue into ~30-50 nm sections with a diamond knife",
+         "  Image each section in the electron microscope",
+         "  Reconstruct 3D volume by aligning sections (huge AI task!)",
+         "",
+         "Connectomics = the wiring diagram of the brain",
+         "  Fly brain: 139,000 neurons, 54.5 million synapses",
+         "  Dorkenwald et al. (2024) Nature 634:124-138 — first complete fly brain",
+         "",
+         "AI is essential: segmenting neurons from EM images = image segmentation",
+         "  Same CNNs used for image classification → trained on EM data"],
+        n,
+        notes="TIMING: 37-41 min\n\n=== ELECTRON MICROSCOPY — WHAT IT IS AND WHY IT MATTERS ===\n\nFor CS students: think of EM as a camera that can photograph individual molecules. A standard light microscope can see a cell (10-100 micrometers) or individual large organelles like the nucleus or mitochondria. But a synapse (the connection between two neurons) is only ~20-40 nanometers (nm) wide. And a single protein is 5-10 nm. Light can\'t resolve these — the wavelength of visible light is 400-700 nm, and you physically cannot see objects smaller than about half the wavelength (Abbe diffraction limit).\n\nElectrons have a MUCH shorter wavelength (~0.001-0.01 nm at typical energies). An electron microscope focuses a beam of electrons onto the sample and detects how the electrons scatter or are absorbed. Resolution: ~0.1-1 nm in practice.\n\nSERIAL SECTION EM (ssEM):\nTo map a whole brain, you need 3D information. The approach:\n1. Fix and stain a piece of brain tissue (heavy metals like osmium stain membranes, making them electron-dense = dark in EM)\n2. Embed in hard plastic\n3. Use an ultramicrotome (a diamond knife on a machine) to slice into sections 30-50 nm thick\n4. Image each section with the electron microscope (takes days to weeks per cubic mm of tissue)\n5. Upload to a computer and use AI (convolutional neural networks) to\n   a. Find all cell membranes in each section\n   b. Follow each neuron\'s outline from one section to the next (3D reconstruction)\n   c. Identify synapses (connections between neurons)\n6. Result: a graph where nodes are neurons and edges are synaptic connections\n\nCONNECTOMICS:\nThe connectome is the complete wiring diagram of a nervous system. For the fly (published 2024, Dorkenwald et al. Nature 634:124-138 — FlyWire project):\n- 139,000 neurons in the fly brain\n- 54.5 million synapses\n- Complete wiring diagram published and publicly available\n- This took multiple labs, years, and massive AI effort\n\nFor context: the C. elegans worm (302 neurons) had its connectome mapped manually in 1986 (Nobel Prize-winning work). The fly brain is 460× larger. Human brain would be ~600,000× the fly brain. Full human connectome: not achievable yet, but active research area.\n\nAI\'s ROLE IN EM AND CONNECTOMICS:\n1. Image segmentation: which pixels in the EM image are part of the same neuron? This is semantic segmentation (same CNN architecture as used for self-driving cars to segment road/cars/pedestrians).\n2. Synapse detection: identifying where two neurons touch and form a synapse.\n3. Proofreading: AI makes mistakes; humans verify using tools like CATMAID or Neuroglancer.\n4. Circuit analysis: once you have the graph, GNNs (same ones we use for molecules!) can analyze circuit motifs, predict function, etc.\n\nCONNECTION TO DRUG DISCOVERY:\nKnowing the wiring diagram helps understand how a drug that hits one neuron type affects the whole circuit. For psychiatric diseases (depression, schizophrenia, anxiety), the circuit-level changes are critical — single-neuron electrophysiology doesn\'t tell the whole story. Connectomics + AI + drug discovery = circuit pharmacology.")
+
+    # --- Slide 9: Eye-Tracking ---
+    n += 1
+    make_content_slide(prs,
+        "Eye-Tracking: Measuring Drug Effects on Behavior",
+        ["Eye movements reveal cognitive and neural function:",
+         "  Saccades (fast jumps), smooth pursuit, fixation, microsaccades",
+         "  Pupil dilation — controlled by autonomic nervous system",
+         "",
+         "Why eye-tracking for drug discovery?",
+         "  Non-invasive, continuous, quantitative measure of brain state",
+         "  Many CNS drugs change eye movements (a physiological biomarker)",
+         "  Example: antipsychotics affect smooth pursuit tracking",
+         "  Example: stimulants dilate pupils (sympathomimetic effect)",
+         "  Example: opioids cause miosis (pin-point pupils)",
+         "",
+         "Technical setup:",
+         "  Infrared camera tracks corneal reflection and pupil position",
+         "  Modern trackers: 1000 Hz, sub-degree accuracy",
+         "",
+         "AI + Eye-tracking:",
+         "  Classify drug state from eye movement patterns",
+         "  Predict treatment response in clinical trials",
+         "  Project option 4 in our course!"],
+        n,
+        notes="TIMING: 41-45 min\n\n=== EYE-TRACKING — WHAT IT IS AND HOW IT WORKS ===\n\nEyes are the window to the brain. Eye movements are controlled by a network of brain areas (frontal eye fields, superior colliculus, cerebellum, brainstem nuclei) and muscles (6 extraocular muscles per eye). Because this system is complex and connected to many brain areas, eye movements can reveal the state of many different neural systems.\n\nTYPES OF EYE MOVEMENTS:\n- Saccades: rapid, ballistic eye movements (jumps) from one fixation point to another. Fast (200-700 degrees/second!). Cannot be changed once initiated (like a ballistic missile). Saccade latency (~200 ms) reflects decision-making processes.\n- Smooth pursuit: when following a moving object. Requires the object to actually be moving. Controlled by visual cortex + cerebellum. Many psychiatric drugs impair smooth pursuit.\n- Microsaccades: tiny involuntary movements during fixation. Reflect attention and arousal state.\n- Pupil dilation (pupillometry): the pupil is controlled by the autonomic nervous system. Sympathetic = dilates (fight-or-flight). Parasympathetic = constricts. Cognitive load and arousal also affect pupil size.\n\nDRUG EFFECTS ON EYE MOVEMENTS:\n- Antipsychotics (dopamine D2 blockers): smooth pursuit impairment — patients and people on these drugs show characteristic \'staircase\' pursuit (the eye jumps instead of smoothly following)\n- Opioids (morphine, fentanyl): miosis (pupil constriction) because opioids activate the Edinger-Westphal nucleus (parasympathetic). Police use this to test for opioid intoxication.\n- Stimulants (cocaine, amphetamine): mydriasis (pupil dilation) because sympathomimetic effects.\n- Benzodiazepines (diazepam): reduce saccade velocity and increase fixation duration\n- Alcohol: smooth pursuit breaks down, nystagmus (involuntary oscillation) at high doses\n\nHOW EYE-TRACKERS WORK:\nMost modern eye-trackers use a near-infrared (NIR) LED to illuminate the eye. A camera captures the reflection. Two key features are tracked:\n1. Corneal reflection (CR): the reflection of the NIR LED off the curved corneal surface — moves with head movements but not eye movements\n2. Pupil center: tracked by thresholding the dark pupil area\nGaze direction = vector from CR to pupil center. This is head-movement independent.\n\nModern trackers: 1000 Hz sampling rate, <0.5 degree accuracy. Can track during free head movement (using glasses-mounted systems) or on a screen (tower-mounted).\n\nAI + EYE-TRACKING:\n1. Time-series classification: eye movement trace → classify drug state (e.g., \'sober\' vs \'0.08% BAC\'). Can be done with LSTM, transformer, or even RF on features.\n2. Pupillometry: track pupil diameter over time → extract pupil light reflex parameters (latency, amplitude, re-dilation rate) → these are biomarkers for autonomic nervous system state.\n3. Scanpath analysis: sequence of fixations and saccades → reveals what a person is \'reading\' visually (e.g., does a drug impair reading a cluttered visual scene?).\n4. Clinical applications: multiple sclerosis, Parkinson\'s, schizophrenia all have characteristic eye movement signatures. AI can detect these with high accuracy — potentially earlier than clinical symptoms.\n\nCOURSE PROJECT 4 (Eye-tracking): Build a classifier that distinguishes different cognitive states or drug conditions from eye movement features. Uses the skills from Day 2 (feature engineering, RF, evaluation) applied to time-series data instead of molecular data.")
+
+
+    # --- Slide 11: Morning Agenda ---
     n += 1
     make_content_slide(prs,
         "Morning Agenda (Units 1-4)",
@@ -1940,22 +2111,1390 @@ def generate_quiz():
     print(f"  Quiz: {n} slides → quiz_intro/slides.pptx")
 
 
+
+# =====================================================================
+# QUIZ 2 — Abbreviations & Drug Biology (easier, for CS students)
+# Explains core terminology: QSAR, SMILES, ECFP, ADMET, IC50, BBB, etc.
+# =====================================================================
+def generate_quiz_abbreviations():
+    prs = new_prs()
+    n = 0
+
+    n += 1
+    make_title_slide(prs,
+        "Drug Discovery: Abbreviations & Biology Quiz",
+        "10 questions on key terms — from QSAR to receptors to the BBB",
+        1, "AI for Drug Discovery", date_str="22 April 2026",
+        notes="Use this quiz at the start of Day 2 AFTER the physiology intro and BEFORE the molecular ML lecture. It takes about 20-25 minutes. Questions are deliberately easier than Quiz 1 — the goal is to introduce and reinforce terminology that CS students will encounter all day. Each answer slide has a detailed explanation that teaches the concept from first principles.")
+
+    # Q1: SMILES
+    n += 1
+    make_quiz_question_slide(prs, 1,
+        "What does the abbreviation 'SMILES' stand for?",
+        ["Systematic Molecular Identification and Labeling Entry System",
+         "Simplified Molecular Input Line Entry System",
+         "Structured Molecular Index with Linked Entries System",
+         "Standard Method for Indexing Large Element Sets"],
+        n,
+        notes="Most CS students guess 'Simplified' correctly if they've seen it on Day 1. If not, this is a great vocabulary intro.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 1,
+        "What does the abbreviation 'SMILES' stand for?",
+        ["Systematic Molecular Identification and Labeling Entry System",
+         "Simplified Molecular Input Line Entry System",
+         "Structured Molecular Index with Linked Entries System",
+         "Standard Method for Indexing Large Element Sets"],
+        1,
+        "✓ SMILES = Simplified Molecular Input Line Entry System.\nInvented by David Weininger (Daylight Chemical, 1988). Converts a 2D chemical structure into a text string. Essential for all molecular ML — it's how we give molecules to a computer.",
+        n,
+        notes="CITATION: Weininger, D. (1988) 'SMILES, a chemical language and information system. 1. Introduction to methodology and encoding rules.' J. Chem. Inf. Comput. Sci. 28:31-36.\n\nEXPLAIN IN DETAIL:\n- Before SMILES, there was no good standard way to put molecules into computers. Chemists drew structures by hand or used complicated graph formats.\n- Weininger designed SMILES to be human-readable AND machine-parseable. Key insight: if you do a depth-first traversal of the molecular graph and write down each atom and bond you encounter, you get a compact linear string.\n- Example: Ethanol = CCO (a chain of 2 carbons and an oxygen). Aspirin = CC(=O)Oc1ccccc1C(=O)O (more complex: an acetyl group, an ester oxygen, a benzene ring, and a carboxylic acid).\n- The 'Simplified' part: SMILES doesn't capture all stereochemistry by default, and it ignores most hydrogen atoms (they are implicit). A 'Full' version with explicit hydrogens and stereochemistry is InChI (IUPAC standard).\n- WHY IT MATTERS FOR ML: Any ML model that works with molecules needs a way to represent them. SMILES = the standard text input. From SMILES, we compute fingerprints (today's lecture), graph representations (Day 3), or feed directly into language models (SMILES as a 'molecular language').")
+
+    # Q2: QSAR
+    n += 1
+    make_quiz_question_slide(prs, 2,
+        "What does 'QSAR' stand for in drug discovery?",
+        ["Quantitative Structure-Activity Relationship",
+         "Quality-Scaled Assay Results",
+         "Quick Sequence Alignment and Ranking",
+         "Qualified Sample Analysis Report"],
+        n,
+        notes="QSAR is the central concept of today's lecture. Students should know this from Day 1 but may not remember the full expansion.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 2,
+        "What does 'QSAR' stand for in drug discovery?",
+        ["Quantitative Structure-Activity Relationship",
+         "Quality-Scaled Assay Results",
+         "Quick Sequence Alignment and Ranking",
+         "Qualified Sample Analysis Report"],
+        0,
+        "✓ QSAR = Quantitative Structure-Activity Relationship.\nFoundational concept: molecular structure determines biological activity. QSAR models learn: f(structure) → activity. Originated with Hansch (1964). Today's entire lecture is about building and evaluating QSAR models.",
+        n,
+        notes="CITATION: Hansch, C. & Fujita, T. (1964) 'ρ-σ-π Analysis. A Method for the Correlation of Biological Activity and Chemical Structure.' J. Am. Chem. Soc. 86:1616-1626. This 1964 paper by Corwin Hansch is the founding paper of computational medicinal chemistry.\n\nEXPLAIN IN DETAIL:\n- The core hypothesis of QSAR: if you know the STRUCTURE of a molecule (its atoms, bonds, shape, electronic properties), you can PREDICT its biological ACTIVITY (how strongly it binds to a protein, how toxic it is, how soluble it is).\n- This is actually a deep biological insight: drugs work by binding to proteins. Binding depends on shape complementarity and chemical compatibility (hydrogen bonds, hydrophobic contacts, electrostatics). Both the drug shape/chemistry AND the protein shape/chemistry are determined by molecular structure. Therefore structure → activity.\n- For CS students: QSAR is essentially supervised learning with molecules as inputs and activity values as outputs. The main challenge is: how do you represent a molecule as a feature vector? (Answer: fingerprints and descriptors — today's lecture.)\n- QUANTITATIVE: not just active/inactive (binary), but the actual IC50 or logS or binding affinity value. This allows regression, not just classification.\n- EXAMPLES: Predict aqueous solubility (today's practical), predict hERG channel blocking, predict BBB penetration, predict metabolic stability — all QSAR tasks.")
+
+    # Q3: ADMET
+    n += 1
+    make_quiz_question_slide(prs, 3,
+        "What does 'ADMET' stand for in pharmacology?",
+        ["Activity, Dosage, Metabolism, Efficiency, Toxicology",
+         "Absorption, Distribution, Metabolism, Excretion, Toxicity",
+         "Analysis, Detection, Mapping, Evaluation, Testing",
+         "Administration, Dosage, Mechanism, Effect, Timing"],
+        n,
+        notes="ADMET is a central concept in drug optimization. Knowing what each letter stands for helps students understand why we care about properties beyond just binding affinity.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 3,
+        "What does 'ADMET' stand for in pharmacology?",
+        ["Activity, Dosage, Metabolism, Efficiency, Toxicology",
+         "Absorption, Distribution, Metabolism, Excretion, Toxicity",
+         "Analysis, Detection, Mapping, Evaluation, Testing",
+         "Administration, Dosage, Mechanism, Effect, Timing"],
+        1,
+        "✓ ADMET = Absorption, Distribution, Metabolism, Excretion, Toxicity.\nAfter a drug is discovered to bind its target, it must also: get into the body (A), reach the right tissue (D), not be broken down too fast (M), leave the body safely (E), and not be toxic (T). AI predicts all 5!",
+        n,
+        notes="EXPLAIN IN DETAIL (each letter matters):\n\nA — ABSORPTION: Can the drug get from where you take it (stomach, skin, lung) into the bloodstream? For oral drugs, this means surviving stomach acid, crossing the intestinal wall, and surviving first-pass metabolism in the liver. Lipinski's Ro5 predicts this from molecular structure.\n\nD — DISTRIBUTION: Once in the bloodstream, does the drug reach the RIGHT tissue? For CNS drugs, the blood-brain barrier (BBB) is the key challenge. For cancer drugs, the tumor microenvironment. For heart drugs, cardiac tissue. Predicted by BBB permeability models, LogP, plasma protein binding models.\n\nM — METABOLISM: How quickly is the drug broken down, and into what products? The liver is the main metabolic organ (cytochrome P450 enzymes metabolize most drugs). Fast metabolism = drug is cleared quickly (short half-life). Some metabolites can be MORE toxic than the original drug (e.g., acetaminophen overdose: its metabolite NAPQI is the toxic species). AI predicts CYP450 interactions.\n\nE — EXCRETION: How does the drug leave the body? Mainly kidneys (urine) or bile (feces). Important for dosing schedules. Poor excretion → drug accumulates → toxicity.\n\nT — TOXICITY: Does the drug harm any tissue/organ? The most feared: hERG block (cardiac arrhythmia), hepatotoxicity (liver damage), genotoxicity (DNA damage → cancer risk). Predicting toxicity is one of the main AI applications in drug discovery — if you can eliminate toxic compounds in silico (computationally), you save enormously expensive animal and clinical trials.\n\nWHY AI IS ESSENTIAL: A drug that binds its target but fails ADMET is useless. In drug discovery, roughly 40% of failures are due to ADMET issues. Traditional approaches test ADMET in animals (expensive, slow). AI models trained on large databases can predict ADMET properties from structure alone — potentially before synthesis.")
+
+    # Q4: IC50
+    n += 1
+    make_quiz_question_slide(prs, 4,
+        "What does IC50 measure in pharmacology?",
+        ["The minimum concentration at which a drug shows any effect",
+         "The concentration that inhibits 50% of a target's activity",
+         "The lethal dose for 50% of a test population",
+         "The time at which a drug reaches 50% of its maximum concentration"],
+        n,
+        notes="IC50 is the most common bioactivity measure in medicinal chemistry. Students need to understand this to interpret ChEMBL data and QSAR predictions.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 4,
+        "What does IC50 measure in pharmacology?",
+        ["The minimum concentration at which a drug shows any effect",
+         "The concentration that inhibits 50% of a target's activity",
+         "The lethal dose for 50% of a test population",
+         "The time at which a drug reaches 50% of its maximum concentration"],
+        1,
+        "✓ IC50 = the concentration that inhibits 50% of a target's activity.\nLower IC50 = more potent (you need less drug). pIC50 = -log10(IC50) — used so higher values = more potent. ChEMBL database stores IC50 values for ~2.5 million compounds.",
+        n,
+        notes="EXPLAIN IN DETAIL:\n- IC50 = Inhibitory Concentration 50%. The concentration of drug needed to reduce a target's activity by 50%. This is measured in an assay: add increasing concentrations of drug, measure how much the target is inhibited at each concentration, fit a sigmoidal curve, read off the 50% point.\n- Units: usually nM (nanomolar), μM (micromolar), or mM (millimolar). 1 nM = one billionth of a mole per liter.\n- A drug with IC50 = 1 nM is MORE potent than a drug with IC50 = 1000 nM (1 μM), because you need 1000× less of it to achieve the same effect.\n- WHY 50%? It's the midpoint of the dose-response curve, where the measurement is most precise (the slope is steepest). It's a convention, not a magic threshold.\n- pIC50 = -log10(IC50). If IC50 = 1 nM = 10^-9 M, then pIC50 = -log10(10^-9) = 9. Higher pIC50 = better drug. QSAR models often predict pIC50 (or logIC50) because it's a better scale for linear regression.\n- LD50: Lethal Dose 50% — the dose that kills 50% of animals in a toxicity test. Completely different concept from IC50.\n- EC50: Effective Concentration 50% — for agonists (drugs that ACTIVATE a target). The concentration that produces 50% of maximal activation. If you're talking about an agonist (like a drug that activates a receptor), you use EC50. If it's an inhibitor (like an enzyme blocker or channel blocker), you use IC50.\n- Ki: binding affinity constant. Measured differently (competition assay). Lower Ki = tighter binding.\n- ChEMBL: a database maintained by EMBL-EBI containing ~2.5 million compounds with experimental IC50/Ki/EC50 measurements. This is the main training data source for QSAR models.")
+
+    # Q5: BBB
+    n += 1
+    make_quiz_question_slide(prs, 5,
+        "What is the 'BBB' in drug discovery?",
+        ["Biologically-Bioavailable Benchmark — a measurement standard",
+         "Blood-Brain Barrier — a protective membrane around the brain",
+         "Basic Biochemical Binding — a type of protein interaction",
+         "Broad Bioactivity Base — a large compound library"],
+        n,
+        notes="BBB is crucial for CNS drug development. This question teaches why we need special molecular properties for drugs that treat brain diseases.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 5,
+        "What is the 'BBB' in drug discovery?",
+        ["Biologically-Bioavailable Benchmark — a measurement standard",
+         "Blood-Brain Barrier — a protective membrane around the brain",
+         "Basic Biochemical Binding — a type of protein interaction",
+         "Broad Bioactivity Base — a large compound library"],
+        1,
+        "✓ BBB = Blood-Brain Barrier. A highly selective barrier between blood and brain tissue.\nEndothelial cells with tight junctions block most molecules. Only small, lipophilic molecules cross easily. This is why CNS drugs require special molecular properties: MW < 450, logP 1-3, HBD < 3.",
+        n,
+        notes="EXPLAIN IN DETAIL:\n- The brain is one of the most protected organs in the body. It sits inside the skull (physical protection) AND has a specialized molecular barrier.\n- Blood-brain barrier structure: brain capillaries (tiny blood vessels) are lined by endothelial cells that are joined by 'tight junctions' — protein complexes that seal the gaps between cells. In other organs, small molecules can slip between endothelial cells. In the brain, they can't.\n- How do molecules cross the BBB? Only a few ways:\n  1. Simple diffusion: if the molecule is small and lipophilic (fat-soluble), it dissolves in the membrane and passes through. This is the main route for CNS drugs.\n  2. Transporter proteins: specific transporters actively carry certain molecules across (glucose, amino acids, some drugs). Also works in REVERSE — efflux transporters (P-glycoprotein) PUMP drugs BACK OUT of the brain!\n  3. Receptor-mediated transcytosis: used by proteins like insulin.\n- The BBB evolved to protect the brain from toxins, pathogens, and fluctuations in blood composition. But for drug discovery, it's an obstacle.\n- WHY THIS MATTERS: L-DOPA is used for Parkinson's instead of dopamine BECAUSE dopamine doesn't cross the BBB well, but L-DOPA does (it uses an amino acid transporter). Once inside the brain, L-DOPA is converted to dopamine by DOPA decarboxylase.\n- MOLECULAR RULES FOR BBB PENETRATION (for QSAR models):\n  MW < 450 Da (smaller → more easily diffuses)\n  logP 1-3 (some lipophilicity needed, but too lipophilic = bad)\n  HBD (hydrogen bond donors) < 3 (hydrogen bonds make molecules sticky, slow diffusion)\n  TPSA (total polar surface area) < 90 Å²\n  These are the Lipinski-like rules for CNS drugs (Pardridge, 2005).\n- CNS DRUG CHALLENGE: ~97% of CNS drug candidates fail in clinical trials. The BBB is a major reason. AI that accurately predicts BBB penetration would be enormously valuable.")
+
+    # Q6: ECFP / Morgan fingerprints
+    n += 1
+    make_quiz_question_slide(prs, 6,
+        "What does 'ECFP4' stand for in molecular ML?",
+        ["Exact Chemical Fingerprint Protocol, version 4",
+         "Electrochemical Feature Profile with 4 iterations",
+         "Extended Connectivity Fingerprint with radius 4",
+         "Encoded Chemical Feature Pattern, 4-bit"],
+        n,
+        notes="This directly relates to today's lecture content. Most students will have seen ECFP4 mentioned on Day 1 but may not know what the number means.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 6,
+        "What does 'ECFP4' stand for in molecular ML?",
+        ["Exact Chemical Fingerprint Protocol, version 4",
+         "Electrochemical Feature Profile with 4 iterations",
+         "Extended Connectivity Fingerprint with radius 4",
+         "Encoded Chemical Feature Pattern, 4-bit"],
+        2,
+        "✓ ECFP4 = Extended Connectivity FingerPrint with radius 4 (i.e., 2 iterations).\nThe number refers to the diameter (= 2× radius). ECFP4 captures up to 2 atoms away from each center. It creates a 2048-bit binary vector. More widely known today as 'Morgan fingerprints'.",
+        n,
+        notes="CITATION: Rogers & Hahn (2010) 'Extended-Connectivity Fingerprints.' J. Chem. Inf. Model. 50(5):742-754. This paper formalized Morgan fingerprints as ECFP. The original Morgan algorithm dates to 1965: Morgan, H.L. (1965) J. Chem. Doc. 5:107-113.\n\nEXPLAIN IN DETAIL:\n- A fingerprint is a fixed-length vector of 0s and 1s (bits) that describes a molecule. Each bit says 'yes' or 'no' to whether the molecule contains a specific chemical substructure.\n- Think of it like a boolean feature vector: does the molecule have a benzene ring? (1/0). Does it have a carboxylic acid group? (1/0). Does it have a nitrogen connected to two carbons with an adjacent double bond? (1/0). With 2048 bits, you can encode 2048 such questions.\n- MORGAN/ECFP ALGORITHM:\n  1. Start at each heavy atom in the molecule\n  2. Collect information about the atom itself (atomic number, charge, etc.)\n  3. Look at all atoms 1 bond away ('radius 1 neighborhood') — collect their info, hash it together\n  4. Look at all atoms 2 bonds away ('radius 2 neighborhood') — hash together\n  5. All the hashed identifiers from all atoms at all radii → map to bit positions in a 2048-bit vector\n- ECFP4: each number (4) is the DIAMETER = 2× radius. ECFP4 uses radius 2, meaning it looks 2 bonds away from each center atom. ECFP6 uses radius 3.\n- WHY BINARY? Machine learning algorithms (especially kernel SVMs and similarity calculations) work efficiently with binary vectors. It also compresses information — Tanimoto similarity between two fingerprints can be computed as |A AND B| / |A OR B|.\n- PRACTICAL: In RDKit: from rdkit.Chem import AllChem; fp = AllChem.GetMorganFingerprintAsBitVect(mol, radius=2, nBits=2048)\n- This single line is one of the most important operations in practical molecular ML. We will use it in Practical 1 today.")
+
+    # Q7: HTS
+    n += 1
+    make_quiz_question_slide(prs, 7,
+        "What is 'HTS' in drug discovery?",
+        ["Human Testing Stage — Phase I clinical trials",
+         "High-Throughput Screening — testing millions of compounds rapidly",
+         "Hybrid Target Selection — choosing drug targets using AI",
+         "Heterogeneous Training Set — a diverse ML dataset"],
+        n,
+        notes="HTS vs. virtual screening is a key contrast for understanding why AI is valuable. Many students will not know what HTS is.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 7,
+        "What is 'HTS' in drug discovery?",
+        ["Human Testing Stage — Phase I clinical trials",
+         "High-Throughput Screening — testing millions of compounds rapidly",
+         "Hybrid Target Selection — choosing drug targets using AI",
+         "Heterogeneous Training Set — a diverse ML dataset"],
+        1,
+        "✓ HTS = High-Throughput Screening.\nRobotic systems test 100,000–1 million compounds/day against a biological target. Costs ~$1M per campaign. AI virtual screening can computationally screen billions of compounds at a fraction of the cost, guiding which compounds to actually synthesize and test.",
+        n,
+        notes="EXPLAIN IN DETAIL:\n- Traditional HTS: large pharmaceutical companies maintain 'compound libraries' of 1-2 million drug-like molecules, synthesized and stored over decades. To find a drug, they run an automated robot that dispensed tiny amounts (~1-10 nanoliters) of each compound into wells of a 384-well (or 1536-well) plate, adds their target protein (e.g., an enzyme), and measures a signal (fluorescence, luminescence, absorbance) that indicates whether the compound inhibited the target.\n- THROUGHPUT: modern HTS can screen 100,000-500,000 compounds per day. A full library of 1 million compounds takes ~2 weeks to screen.\n- COST: $1-3 per compound tested, so a 1M compound screen costs ~$1-3 million. Plus the cost of library maintenance, assay development, and follow-up validation.\n- VIRTUAL SCREENING: instead of physically testing each compound, we use a computer model (QSAR, docking, or GNN) to predict which compounds are most likely to be active. Then we only TEST the top-predicted compounds.\n- ADVANTAGE: chemical space is estimated at 10^60 drug-like molecules (much larger than 1 million). Virtual screening can explore this space computationally. HTS can only screen what you already have in a bottle.\n- DISADVANTAGE: virtual screening makes predictions based on a model, which has uncertainty. Some good compounds will be missed (false negatives), and some predicted actives will fail in the real assay (false positives). BUT: even if virtual screening misses half the actives, if it enriches the hit rate from 0.1% to 10%, you've reduced the required number of real assays by 100×.\n- THE AI WORKFLOW: virtual screening identifies top candidates (100-10,000 compounds) → these are physically tested in HTS → hits are confirmed and optimized → ADMET testing → clinical trials.")
+
+    # Q8: SHAP
+    n += 1
+    make_quiz_question_slide(prs, 8,
+        "What does 'SHAP' stand for in machine learning?",
+        ["Statistical Hypothesis and Prediction",
+         "Structural Heatmap and Pattern recognition",
+         "SHapley Additive exPlanations",
+         "Sequential Hierarchical Analysis Protocol"],
+        n,
+        notes="SHAP is covered in detail later today. This question introduces the term early so students are primed for it.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 8,
+        "What does 'SHAP' stand for in machine learning?",
+        ["Statistical Hypothesis and Prediction",
+         "Structural Heatmap and Pattern recognition",
+         "SHapley Additive exPlanations",
+         "Sequential Hierarchical Analysis Protocol"],
+        2,
+        "✓ SHAP = SHapley Additive exPlanations (named after Shapley values from game theory).\nFor each prediction, SHAP assigns a contribution score to each input feature. Allows us to explain WHY the model predicted a specific value. Critical for trust, debugging, and scientific discovery.",
+        n,
+        notes="CITATION: Lundberg & Lee (2017) 'A Unified Approach to Interpreting Model Predictions.' NeurIPS 30:4765-4774.\n\nEXPLAIN IN DETAIL:\n- Lloyd Shapley was a mathematician and economist who won the 2012 Nobel Prize in Economics. In 1953, he introduced 'Shapley values' as a fair way to distribute payoffs in a cooperative game: if several players cooperate to earn a reward, how much should each player get?\n- The key idea: a player's contribution = average of their marginal contributions across all possible orderings of players joining the coalition.\n- SHAP APPLIES THIS TO ML: instead of 'players', we have 'features'. Instead of 'payout', we have 'prediction'. For a specific molecule with a specific predicted pIC50 = 8.3, SHAP tells you: feature 'aromatic ring count' contributed +0.5, feature 'chlorine at position X' contributed +1.2, feature 'high molecular weight' contributed -0.8, etc. All contributions sum to: prediction - baseline prediction.\n- WHY THIS MATTERS:\n  1. Regulatory acceptance: FDA wants to understand model decisions. SHAP provides audit trail.\n  2. Chemist trust: medicinal chemists can say 'I see — the model predicts this is active because of the methyl group at position 3. I understand that from my experience.' Or they can say 'That SHAP attribution makes no sense chemically — I don't trust this prediction.'\n  3. New knowledge: if SHAP says the chlorine at position 4 is always the most important feature for hERG block, you now know a design rule: avoid chlorine at position 4.\n  4. Debugging: if SHAP says the model is using a structural feature that shouldn't matter (e.g., the SMILES string length), you've found a data leak or artifact.\n- PRACTICAL USE: we use shap.TreeExplainer for Random Forest and XGBoost (computationally exact, fast). For deep learning: KernelSHAP or DeepSHAP (approximate).")
+
+    # Q9: What is a receptor?
+    n += 1
+    make_quiz_question_slide(prs, 9,
+        "What is a 'receptor' in pharmacology?",
+        ["A cell that detects external signals (like a neuron or sensory cell)",
+         "A protein on a cell surface or inside cells that binds specific molecules and triggers a response",
+         "Any molecule that receives electrons in a chemical reaction",
+         "A medical device that monitors patient vital signs"],
+        n,
+        notes="This is a fundamental biology question. CS students may confuse 'receptor' with everyday usage. Understanding what receptors are is essential for making sense of drug mechanisms.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 9,
+        "What is a 'receptor' in pharmacology?",
+        ["A cell that detects external signals (like a neuron or sensory cell)",
+         "A protein on a cell surface or inside cells that binds specific molecules and triggers a response",
+         "Any molecule that receives electrons in a chemical reaction",
+         "A medical device that monitors patient vital signs"],
+        1,
+        "✓ A receptor is a protein that binds a specific molecule (ligand) and changes its activity as a result.\nMost drug receptors are on the cell surface or inside cells. About 34% of all FDA drugs target GPCRs (G Protein-Coupled Receptors) — a specific family of receptors with 7 membrane-spanning segments.",
+        n,
+        notes="EXPLAIN IN DETAIL:\n- In pharmacology, 'receptor' has a VERY specific meaning: a macromolecule (almost always a protein) that binds a ligand (drug or endogenous molecule like a neurotransmitter or hormone) with high specificity and affinity, and as a result changes its activity (is 'activated' or 'blocked').\n- DO NOT CONFUSE WITH:\n  1. Sensory receptor = a cell that detects stimuli (photoreceptor in the eye detects light). These CONTAIN receptor proteins, but the cell is not itself what pharmacologists call 'a receptor'.\n  2. Electron acceptor in chemistry = completely different, electron transfer context.\n  3. Medical monitoring device = no relation.\n\n- CLASSES OF DRUG RECEPTORS:\n  1. GPCRs (G Protein-Coupled Receptors): ~800 in the human genome. 7 membrane-spanning domains. When activated by agonist → change shape → activates G protein inside cell → second messenger cascade (cAMP, IP3, etc.) → cellular response. Examples: dopamine D2 receptor, beta-2 adrenergic receptor (asthma inhalers), opioid receptors. ~34% of all drugs target GPCRs.\n  2. Ligand-gated ion channels: protein pore that opens when a specific molecule binds. Examples: GABA-A (opens Cl- pore), nAChR (opens Na+/K+ pore), NMDA receptor (glutamate, opens Ca2+ pore). Also called 'ionotropic receptors'. ~15% of drugs target ion channels overall.\n  3. Receptor tyrosine kinases (RTKs): cell surface proteins that become enzymes when activated. Important in cancer (e.g., EGFR, HER2). Targeted by many kinase inhibitor drugs (imatinib, erlotinib).\n  4. Nuclear receptors: receptors inside the cell that, when bound by lipophilic hormones (steroids, thyroid hormones), move to the nucleus and change gene expression. Examples: estrogen receptor (tamoxifen for breast cancer), glucocorticoid receptor (prednisone).\n\n- THE LOCK-AND-KEY MODEL: drugs bind receptors like a key fits a lock. The drug shape must match the receptor binding pocket shape. This is exactly what molecular docking (Day 3) and QSAR predict: given a molecular structure, does it fit the receptor?\n\n- AGONIST vs. ANTAGONIST: an agonist ACTIVATES the receptor (turns it ON). An antagonist BLOCKS the receptor (prevents activation, turns it OFF). A partial agonist activates it partially. An inverse agonist suppresses below baseline activity.")
+
+    # Q10: LogP
+    n += 1
+    make_quiz_question_slide(prs, 10,
+        "What does 'LogP' measure in medicinal chemistry?",
+        ["The logarithm of a drug's potency (pIC50)",
+         "The log of the ratio of drug concentration in octanol vs. water — measures lipophilicity",
+         "The number of chiral centers in a molecule expressed on a log scale",
+         "The logarithm of a drug's molecular weight"],
+        n,
+        notes="LogP comes up constantly in drug design (Lipinski's Rule of Five, BBB penetration, ADMET). Students need to understand what it measures conceptually.")
+
+    n += 1
+    make_quiz_answer_slide(prs, 10,
+        "What does 'LogP' measure in medicinal chemistry?",
+        ["The logarithm of a drug's potency (pIC50)",
+         "The log of the ratio of drug concentration in octanol vs. water — measures lipophilicity",
+         "The number of chiral centers in a molecule expressed on a log scale",
+         "The logarithm of a drug's molecular weight"],
+        1,
+        "✓ LogP = log10([drug in octanol]/[drug in water]). Measures lipophilicity (fat-loving vs. water-loving).\nHigher LogP = more lipophilic (oily). Lower = more hydrophilic (watery). Lipinski's Rule of Five requires LogP ≤ 5. CNS drugs need LogP 1-3 to cross the blood-brain barrier.",
+        n,
+        notes="EXPLAIN IN DETAIL:\n- P = partition coefficient. If you shake a drug with octanol (a fatty oil-like liquid) and water, the drug distributes between the two layers. P = [drug in octanol layer] / [drug in water layer].\n- Octanol is used as a MODEL for biological membranes (cell membrane lipid bilayer). Octanol is a fatty 8-carbon alcohol that mimics the lipid part of biological membranes reasonably well.\n- LogP: since P values range from 0.0001 to 100,000+, we use the log10 scale. LogP = 0 means equal distribution (P=1, 50/50 in both). LogP = 3 means 1000× more in octanol (lipophilic). LogP = -2 means 100× more in water (hydrophilic).\n- WHY DOES THIS MATTER FOR DRUG DISCOVERY?\n  1. Oral absorption: drugs must cross the intestinal cell membrane (lipid bilayer). Some lipophilicity is needed. But too lipophilic → poor water solubility → can't be absorbed from the gut → insoluble tablets!\n  2. BBB penetration: brain capillary membranes are tight. Lipophilic molecules diffuse through more easily. BBB target: LogP 1-3.\n  3. Metabolism: more lipophilic drugs tend to be metabolized faster by the liver (the liver tries to make lipophilic drugs more water-soluble so the kidneys can excrete them). Drug half-life correlates with LogP.\n  4. Toxicity: very lipophilic drugs can accumulate in fatty tissues (liver, brain fat), leading to chronic toxicity.\n- LIPINSKI'S RULE: LogP ≤ 5. This excludes very lipophilic molecules that would be poorly absorbed or highly toxic.\n- CALCULATED vs. EXPERIMENTAL: experimental LogP (shake-flask method) is expensive. Computational LogP (cLogP) can be predicted instantly from molecular structure. RDKit: Chem.Descriptors.MolLogP(mol). Accuracy of computed LogP: ~0.5-1 log unit.\n- RELATED DESCRIPTORS: LogD = LogP at a specific pH (important for drugs that can be ionized). TPSA = Total Polar Surface Area (related to, but different from, LogP — measures the area of polar atoms).\n- FOR TODAY'S PRACTICAL: LogP is one of the key features we include alongside Morgan fingerprints in our QSAR model.")
+
+    # Closing
+    n += 1
+    make_section_divider(prs, "Great! Now You Speak the Language 📚", n,
+        notes="End of Quiz 2. Transition to the main Day 2 lecture on molecular ML. Students should now understand the key abbreviations they'll encounter all day. Reference back to these definitions as needed throughout the day.",
+        subtitle="QSAR, SMILES, ECFP, ADMET, IC50, BBB, HTS, SHAP, receptor, LogP — check!")
+
+    os.makedirs("quiz_abbreviations", exist_ok=True)
+    prs.save("quiz_abbreviations/slides.pptx")
+    print(f"  Quiz 2 (Abbreviations): {n} slides → quiz_abbreviations/slides.pptx")
+
+
+
+
+# =====================================================================
+# DAY 2 ANNOTATED — Same content, FULL plain-language presenter notes
+# For instructors who want to understand EVERYTHING on each slide
+# =====================================================================
+def generate_day2_annotated():
+    prs = new_prs()
+    n = 0
+
+    # --- Title ---
+    n += 1
+    make_title_slide(prs,
+        "Molecular ML: From Fingerprints to Predictions",
+        "Represent molecules, train models, evaluate properly, and explain results",
+        2, "AI for Drug Discovery — ANNOTATED VERSION", date_str="22 April 2026",
+        notes="""ANNOTATED VERSION — COMPREHENSIVE PRESENTER NOTES
+
+=== WHAT THIS DECK IS ===
+This is the SAME content as Day 2, but with exhaustive notes explaining every concept in plain language. If you are not familiar with a term on any slide, look at these notes for a complete explanation. You do not need to have prior knowledge of chemistry, pharmacology, or machine learning to deliver this lecture — all the key concepts are explained here.
+
+=== DAY 2 OVERVIEW ===
+Day 2 is the most technically dense day of the course. By the end, students will have:
+1. Represented molecules as numbers (SMILES → fingerprints → descriptors)
+2. Trained a QSAR model (a machine learning model that predicts drug activity from molecular structure)
+3. Evaluated the model correctly (NOT with random splits, but with scaffold splits)
+4. Explained the model's predictions using SHAP values
+
+The day is split into morning (Units 1-4, ~180 min) and afternoon (Units 5-8, ~180 min) with two 15-minute breaks.
+
+=== HOW TO USE THESE NOTES ===
+Before each slide, read the notes. They explain:
+- What every acronym means
+- Why the concept matters
+- What to say to the students
+- Common questions and misconceptions
+- The biology/chemistry context
+
+After delivering the lecture once, you will be able to improvise. Until then, these notes are your guide.""")
+
+    # --- Morning Agenda ---
+    n += 1
+    make_content_slide(prs,
+        "Morning Agenda (Units 1-4)",
+        ["1. SMILES deep dive — syntax rules, practice, limitations",
+         "2. Molecular fingerprints — Morgan/ECFP, Tanimoto similarity",
+         "3. Feature engineering — descriptors, Lipinski, BBB rules",
+         "4. QSAR: Quantitative Structure-Activity Relationships",
+         "5. ML baselines: Random Forest & XGBoost",
+         "6. PRACTICAL 1: Build a QSAR model for solubility prediction",
+         "",
+         "☕ BREAK after Unit 2 (after ~90 min)",
+         "",
+         "CNS drug focus: blood-brain barrier penetration, neuroscience targets"],
+        n,
+        notes="""=== MORNING AGENDA — EXPLAINING EACH ITEM ===
+
+1. SMILES DEEP DIVE
+SMILES = Simplified Molecular Input Line Entry System. This is the text format used to represent molecules as strings. Example: ethanol = 'CCO'. Aspirin = 'CC(=O)Oc1ccccc1C(=O)O'. The deep dive covers the grammar rules (how to read and write SMILES). This matters because ALL molecular ML starts with SMILES as the input.
+
+2. MOLECULAR FINGERPRINTS
+A fingerprint converts a molecule into a fixed-length binary vector (a sequence of 0s and 1s). Each bit represents whether a specific chemical substructure is present or absent. Morgan/ECFP fingerprints are the most widely used — they are computed by looking at each atom and its local neighborhood in the molecular graph. Tanimoto similarity is a measure of how similar two fingerprints are (like Jaccard similarity for sets: 0 = completely different, 1 = identical).
+
+3. FEATURE ENGINEERING
+In addition to fingerprints, we compute 'descriptors' — quantitative properties of a molecule like: molecular weight (MW), how fat-soluble it is (LogP), how many hydrogen bond donors/acceptors it has (HBD/HBA), how much surface area is polar (TPSA). These are used in Lipinski's Rule of Five (a set of rules that predict whether a drug can be taken as a pill) and BBB rules (which predict if a drug can cross the blood-brain barrier to reach the brain).
+
+4. QSAR — QUANTITATIVE STRUCTURE-ACTIVITY RELATIONSHIPS
+This is the main topic. QSAR = using ML to predict a biological activity (like 'how strongly does this molecule inhibit this protein') from molecular structure. Workflow: get molecular features (fingerprints + descriptors) → train RF/XGBoost → evaluate → predict for new molecules.
+
+5. ML BASELINES: RANDOM FOREST & XGBOOST
+Two powerful, non-deep-learning ML algorithms that work very well for QSAR:
+- Random Forest: build many independent decision trees, average their predictions
+- XGBoost: build trees sequentially, each correcting the previous tree's errors
+Both are excellent starting points before considering more complex models.
+
+6. PRACTICAL 1
+Students build their own QSAR model using Python, RDKit, and scikit-learn. The dataset is Delaney solubility (1,128 molecules with measured aqueous solubility values). Goal: predict log(solubility) from molecular structure.
+
+CNS DRUG FOCUS: blood-brain barrier (BBB) penetration and neuroscience drug targets come up repeatedly as examples throughout the morning. This is relevant because many students' projects will involve CNS drugs.""")
+
+    # --- SMILES Section Divider ---
+    n += 1
+    make_section_divider(prs, "SMILES: Deep Dive", n,
+        notes="""=== SMILES DEEP DIVE — WHAT THIS SECTION IS ===
+
+SMILES (Simplified Molecular Input Line Entry System) was invented by David Weininger at Daylight Chemical Information Systems in 1988. The problem he solved: how do you put a chemical structure into a computer?
+
+Before SMILES, there were complicated graph-based formats (MDL Molfile) that were hard to type and not human-readable. Weininger realized: if you do a depth-first traversal of the molecular graph and write down each atom and bond, you get a compact, human-readable string.
+
+Why teach SMILES as the first topic?
+Because EVERY molecular ML pipeline starts with SMILES. The molecule enters the model as a SMILES string, and from that string, all other representations are computed (fingerprints, graphs, 3D coordinates). If students don't understand SMILES, they can't understand the rest.
+
+TIMING: You should get through this section (slides 4-5) in about 15 minutes total. Use the whiteboard or a drawing on screen to supplement the slides.""",
+        subtitle="Weininger (1988), J. Chem. Inf. Comput. Sci. 28:31-36")
+
+    # --- SMILES Syntax ---
+    n += 1
+    make_content_slide(prs,
+        "SMILES Syntax Rules",
+        ["Atoms: C, N, O, S, P, F, Cl, Br, I (organic subset, implicit H)",
+         "Single bond: implicit (CC = ethane)  |  Double: = (C=O)  |  Triple: # (C#N)",
+         "Aromatic: lowercase (c1ccccc1 = benzene)",
+         "Branches: parentheses — CC(=O)O = acetic acid",
+         "Rings: matching digits — C1CCCCC1 = cyclohexane",
+         "Charges: [NH4+], [O-]  |  Stereochemistry: / \\ for E/Z, @ @@ for R/S",
+         "",
+         "Canonical SMILES: unique representation (RDKit Chem.MolToSmiles())",
+         "",
+         "Alternatives:",
+         "  SELFIES — 100% valid strings (Krenn et al. 2020) — great for generative AI",
+         "  InChI — IUPAC standard  |  DeepSMILES — neural network friendly"],
+        n,
+        notes="""=== SMILES SYNTAX — FULL EXPLANATION ===
+
+ATOMS:
+Each atom is written as its elemental symbol. For the 'organic subset' (C, N, O, S, P, F, Cl, Br, I), hydrogens are IMPLICIT — you don't write them. The number of hydrogens is inferred by the standard valence rules:
+- Carbon (C): valence 4. If written as 'C' with 1 bond, it has 3 implicit H. With 4 bonds, it has 0 implicit H.
+- Nitrogen (N): valence 3 normally. 'N' with no bonds = NH3 (three implicit H).
+- Oxygen (O): valence 2. 'O' with no bonds = H2O (two implicit H).
+Atoms outside the organic subset (like metal ions) must be written in brackets with explicit hydrogens: [Fe++], [NH4+].
+
+BONDS:
+- Single bond: write nothing between atoms (CC = ethane: two carbons each connected to the other and implicit H)
+- Double bond: use '=' sign (C=C is ethylene, C=O is formaldehyde/carbonyl)
+- Triple bond: use '#' (C#N is hydrogen cyanide, C#C is acetylene)
+- Aromatic bond: use ':' or lowercase letters (c:c or cc in aromatic ring)
+
+BRANCHING:
+When the chain branches, put the branch in parentheses.
+CC(=O)O = acetic acid (vinegar):
+- First C = methyl
+- Second C connects to: =O (double bond oxygen, the carbonyl) AND O (hydroxyl, from the parenthesis and the continuing chain)
+- Full structure: CH3-C(=O)-OH = CH3COOH = acetic acid
+
+RINGS:
+To represent a ring, you start at one atom, give it a number (the 'ring closure digit'), traverse the ring, and when you return to close it, write the same number again.
+C1CCCCC1 = cyclohexane: start at carbon (labeled '1'), traverse 5 more carbons, close back to '1'. The ring is formed.
+c1ccccc1 = benzene: same but lowercase (aromatic). The Kekulé structure would alternate single and double bonds, but SMILES shorthand uses lowercase.
+
+CANONICAL SMILES:
+Multiple SMILES strings can represent the same molecule (you can traverse the graph starting from any atom). CCO and OCC and C(C)O all represent ethanol. Canonical SMILES is the unique, standardized form — always the same for a given molecule. RDKit: Chem.MolToSmiles(mol).
+
+ALTERNATIVES:
+- SELFIES (Self-Referencing Embedded Strings, Krenn et al. 2020): a newer encoding where every possible SELFIES string decodes to a valid molecule (SMILES can produce invalid strings). Better for generative ML models.
+- InChI (International Chemical Identifier): IUPAC standard, hierarchical. More information than SMILES but not as human-readable.
+- DeepSMILES: modified SMILES designed for character-based neural networks (avoids some issues with branch parentheses and ring closure digits).
+
+DRAW ON THE BOARD: Draw benzene (a hexagon) and show how c1ccccc1 traverses it. Draw aspirin and show how the SMILES represents each part. This visual always helps.""")
+
+    # --- SMILES Practice ---
+    n += 1
+    make_content_slide(prs,
+        "SMILES Practice: Can You Read These?",
+        ["1. NCCc1c[nH]c2ccc(O)cc12  →  ?  (hint: neurotransmitter, mood)",
+         "2. NCCc1ccc(O)c(O)c1  →  ?  (hint: reward pathway)",
+         "3. NCCCC(=O)O  →  ?  (hint: main inhibitory NT in the brain)",
+         "4. CC(=O)Oc1ccccc1C(=O)O  →  ?  (hint: common painkiller)",
+         "5. Cn1c(=O)c2c(ncn2C)n(C)c1=O  →  ?  (hint: in your coffee)",
+         "",
+         "Answers: 1) Serotonin  2) Dopamine  3) GABA  4) Aspirin  5) Caffeine",
+         "",
+         "Note: GABA is simpler than serotonin, but both are critical NTs",
+         "GABA-A receptor is in the same Cys-loop superfamily as GluCl (ivermectin target)"],
+        n,
+        notes="""=== SMILES PRACTICE — DETAILED EXPLANATIONS ===
+
+This is an interactive slide. Give students 2 minutes to try to decode the SMILES, then reveal one by one.
+
+1. SEROTONIN: NCCc1c[nH]c2ccc(O)cc12
+Let's parse this:
+- NCC: an ethylamine chain (NH2 - CH2 - CH2)
+- c1c[nH]c2ccc(O)cc12: an indole ring system. The '1' and '2' are ring closure labels. The [nH] is an aromatic nitrogen with one hydrogen.
+- Full structure: 5-hydroxytryptamine (5-HT). The 'N' side chain is the amine, the 'OH' at the ccc(O) part is the 5-hydroxy group.
+- PHARMACOLOGY: Serotonin is a neurotransmitter synthesized from tryptophan. Its receptors include: 5-HT1A (targeted by buspirone for anxiety), 5-HT2A (targeted by atypical antipsychotics, LSD), 5-HT3 (ion channel, targeted by ondansetron for nausea), SERT (serotonin reuptake transporter, targeted by SSRIs like fluoxetine/Prozac).
+- DOES NOT CROSS BBB: Serotonin is hydrophilic (LogP ~ 0.2) and does not cross the BBB well. SSRIs work by blocking reuptake of serotonin IN the brain (they cross the BBB because they're more lipophilic).
+
+2. DOPAMINE: NCCc1ccc(O)c(O)c1
+- NCC: ethylamine (same as serotonin's side chain!)
+- c1ccc(O)c(O)c1: catechol ring (a benzene ring with two adjacent OH groups)
+- Full structure: 3,4-dihydroxyphenethylamine. The catechol + ethylamine structure.
+- PHARMACOLOGY: Dopamine = motivation, reward, motor control. Parkinson's disease = loss of dopaminergic neurons in the substantia nigra. Treatment: L-DOPA (which crosses BBB, is converted to dopamine by DOPA decarboxylase). Antipsychotics (haloperidol, clozapine) block D2 receptors.
+- DOES NOT CROSS BBB: dopamine doesn't cross BBB (too hydrophilic, no BBB transporter). L-DOPA does (uses the large neutral amino acid transporter).
+
+3. GABA: NCCCC(=O)O
+- N: amine group (NH2)
+- CCC: three carbons
+- C(=O)O: carboxylic acid (COOH)
+- Full structure: gamma-aminobutyric acid. The main INHIBITORY neurotransmitter.
+- PHARMACOLOGY: GABA-A (Cl- channel, ionotropic) and GABA-B (GPCR, metabotropic). Diazepam (Valium) potentiates GABA-A. Alcohol activates GABA-A. Gabapentin (for epilepsy, pain) modulates GABA metabolism. GABA-A is in the Cys-loop receptor superfamily, same as GluCl.
+
+4. ASPIRIN: CC(=O)Oc1ccccc1C(=O)O
+- CC(=O)O: acetyl ester (the acetyl group connected via oxygen)
+- c1ccccc1: benzene ring
+- C(=O)O: carboxylic acid
+- Full structure: acetylsalicylic acid
+- PHARMACOLOGY: COX-1/COX-2 inhibitor. Blocks prostaglandin synthesis → reduces inflammation, pain, fever. Low dose: prevents platelet aggregation → prevents heart attacks/strokes.
+
+5. CAFFEINE: Cn1c(=O)c2c(ncn2C)n(C)c1=O
+- Complex purine ring system (xanthine scaffold with 3 methyl groups)
+- Adenosine A1/A2A receptor ANTAGONIST. Adenosine normally makes you sleepy. Caffeine blocks adenosine → you feel alert.
+- LogP = -0.07 (quite water-soluble), MW = 194 Da. Very efficiently crosses the BBB!
+
+KEY TEACHING POINT: Ask students to notice how GABA (NCCCC(=O)O) is much simpler than serotonin or caffeine. But GABA is the main inhibitory neurotransmitter in the brain — biological importance doesn't correlate with molecular complexity.""")
+
+    # --- Fingerprints Section ---
+    n += 1
+    make_section_divider(prs, "Molecular Fingerprints", n,
+        notes="""=== MOLECULAR FINGERPRINTS — WHAT THIS SECTION IS ===
+
+WHY DO WE NEED FINGERPRINTS?
+SMILES is text. Machine learning algorithms need numbers (floating point vectors or binary vectors). Fingerprints convert the molecular STRUCTURE into a fixed-length vector of 0s and 1s. This is the representation used for virtually all classical ML methods (Random Forest, XGBoost, SVM) in drug discovery.
+
+WHY NOT JUST USE THE SMILES STRING DIRECTLY?
+You could train a recurrent neural network or Transformer on SMILES strings (some models do this). But for classical ML (Random Forest, XGBoost), you need a fixed-length input vector. Fingerprints provide this. Also, fingerprints are rotation/translation invariant — the same molecule always gets the same fingerprint regardless of how you draw it.
+
+WHY NOT JUST USE DESCRIPTORS?
+Descriptors (MW, LogP, etc.) lose structural information — you can't recover the molecule from its descriptors. Fingerprints preserve more structural information. In practice, combining fingerprints + descriptors is the best classical approach.""",
+        subtitle="From molecular structure to numerical vectors")
+
+    # --- Fingerprint Concept ---
+    n += 1
+    make_content_slide(prs,
+        "Molecular Fingerprints: The Concept",
+        ["A fingerprint converts a molecule into a fixed-length bit vector",
+         "Each bit indicates presence/absence of a substructure",
+         "",
+         "Types:",
+         "  Structural keys (MACCS, 166 bits) — predefined patterns",
+         "  Topological (RDKit FP) — paths through molecular graph",
+         "  Circular (Morgan/ECFP) — local atom environments at radius r",
+         "",
+         "Morgan fingerprints are the most widely used today",
+         "  Rogers & Hahn (2010), JCIM 50:742-754",
+         "  ECFP4 = radius 2, 2048 bits = default starting point",
+         "",
+         "In RDKit: AllChem.GetMorganFingerprintAsBitVect(mol, radius=2, nBits=2048)"],
+        n,
+        notes="""=== MOLECULAR FINGERPRINTS — FULL EXPLANATION ===
+
+THE CONCEPT:
+A fingerprint is a binary vector (a list of 0s and 1s). Imagine a 2048-element list. Each position in the list represents a specific chemical substructure. If the molecule CONTAINS that substructure, the bit is 1. If not, it's 0.
+
+ANALOGY: Think of a 'chemical checklist'. Does the molecule have a benzene ring? → bit 47 = 1. Does it have a carboxylic acid? → bit 312 = 1. Does it have a fluorine on an aromatic ring? → bit 891 = 0 (if it doesn't). The full list of 0s and 1s is the 'fingerprint'.
+
+TYPE 1 — STRUCTURAL KEYS (MACCS):
+Uses 166 predefined substructure questions. Was the dominant fingerprint type in the 1990s. The questions are fixed (e.g., 'does it have a thiocarbonyl?'). Limitation: only 166 bits → limited resolution. A molecule can be complex but the fingerprint only captures the 166 predefined patterns.
+
+TYPE 2 — TOPOLOGICAL (RDKit FP):
+Enumerate all paths up to a certain length through the molecular graph. Hash each path to a bit position. More flexible than structural keys but still path-based.
+
+TYPE 3 — CIRCULAR (Morgan/ECFP) — the standard today:
+Instead of paths, look at the LOCAL ENVIRONMENT around each atom. For each atom, collect information about all atoms within radius r (r=2 for ECFP4). Hash the combined information to a bit position.
+
+WHY 'CIRCULAR'? If you draw a circle of radius r around each atom and look at all atoms inside that circle, you get a 'circular' neighborhood. Radius 2 = 2 bonds away from the center atom.
+
+WHY THIS WORKS WELL:
+Biological activity depends on LOCAL chemical environments. A nitrogen next to two aromatic rings in a particular configuration creates a specific 3D shape and electronics that match a receptor pocket. ECFP captures this local pattern.
+
+THE CODE (RDKit):
+from rdkit import Chem
+from rdkit.Chem import AllChem
+mol = Chem.MolFromSmiles('CCO')  # Parse SMILES
+fp = AllChem.GetMorganFingerprintAsBitVect(mol, radius=2, nBits=2048)
+fp_array = list(fp)  # Convert to Python list of 0s and 1s
+# This 2048-element list is the fingerprint
+
+For scikit-learn, you need a numpy array:
+import numpy as np
+fp_array = np.array(fp)""")
+
+    # --- Morgan Algorithm ---
+    n += 1
+    make_content_slide(prs,
+        "Morgan / ECFP: How They Work",
+        ["Algorithm (for each atom):",
+         "  1. Start: identifier = atom type + properties",
+         "  2. Iteration 1: collect identifiers from radius-1 neighbors",
+         "  3. Hash combined info → new identifier",
+         "  4. Iteration 2: expand to radius-2, hash again",
+         "  5. Map all identifiers to fixed-length bit vector",
+         "",
+         "ECFP4 = radius 2  |  ECFP6 = radius 3",
+         "",
+         "Similarity: Tanimoto coefficient = |A∩B| / |A∪B|",
+         "  Range: 0 (different) to 1 (identical)",
+         "  Tanimoto > 0.85 → likely similar activity (but exceptions exist!)",
+         "  In RDKit: DataStructs.TanimotoSimilarity(fp1, fp2)"],
+        n,
+        notes="""=== MORGAN ALGORITHM — STEP BY STEP ===
+
+Let me walk through a concrete example. Consider a molecule with 5 atoms: A-B-C-D-E (a simple chain). We'll compute the ECFP4 (radius 2) fingerprint for atom C.
+
+STEP 1 — INITIAL IDENTIFIERS:
+Each atom gets an initial identifier based on its properties:
+- Atomic number (is it C, N, O...?)
+- Degree (how many bonds does it have?)
+- Number of hydrogens
+- Formal charge
+- Is it in a ring?
+- Is it aromatic?
+These are hashed into a single integer (the 'initial identifier').
+For atom C (the middle): it has bonds to B and D, so degree 2. Identifier = hash(C_properties).
+
+STEP 2 — RADIUS 1 ITERATION:
+For atom C: collect the identifiers of A (radius-2 from C), B (radius-1), D (radius-1), E (radius-2).
+At radius 1: we see B and D.
+New identifier for C at radius 1 = hash(C_r0, B_r0, D_r0) where r0 means the initial identifier.
+
+STEP 3 — RADIUS 2 ITERATION:
+At radius 2 from C: we also see A and E.
+New identifier for C at radius 2 = hash(C_r1, A_r0, B_r1, D_r1, E_r0).
+
+STEP 4 — COLLECT ALL IDENTIFIERS:
+We do this for EVERY atom in the molecule (A, B, C, D, E), at each radius level (0, 1, 2 for ECFP4). We collect all the integers.
+
+STEP 5 — BIT MAPPING:
+Each integer is mapped to a bit position: integer mod 2048 (for 2048-bit fingerprint). Set that bit to 1.
+
+COLLISIONS: Two different substructures might map to the same bit (hash collision). With 2048 bits, this is rare but happens. Count fingerprints (not bit fingerprints) avoid this but are not fixed-length.
+
+WHY ECFP4 > ECFP6 FOR MANY TASKS?
+ECFP4 captures local environments (2 bonds). ECFP6 captures larger environments (3 bonds). For activity prediction: activity is often determined by a specific functional group + local context (2-3 bonds). ECFP6 can sometimes over-specify (the fingerprint becomes too specific, two similar molecules look very different).
+
+TANIMOTO COEFFICIENT:
+Mathematical definition: |A ∩ B| / |A ∪ B| where A and B are the SET of 'on' bits in the two fingerprints.
+Example: Fingerprint A has bits {1, 5, 7, 12} on. Fingerprint B has bits {1, 3, 7, 15} on.
+A ∩ B (shared): {1, 7} = 2 bits
+A ∪ B (combined): {1, 3, 5, 7, 12, 15} = 6 bits
+Tanimoto = 2/6 = 0.33
+
+SIMILAR PROPERTY PRINCIPLE: molecules with similar structures tend to have similar biological activity. The rule of thumb: Tanimoto > 0.85 → likely in the same chemical series, similar activity. But ACTIVITY CLIFFS exist — this will be discussed in the afternoon.
+
+CONNECTION TO DAY 3: The Morgan algorithm is essentially the same as message passing in a Graph Neural Network (GNN). In GNNs, instead of hashing the neighborhood information, you LEARN how to combine it (trainable weights). Same concept, much more powerful.""")
+
+    # --- Feature Engineering ---
+    n += 1
+    make_content_slide(prs,
+        "Feature Engineering & Lipinski's Rule of Five",
+        ["Physicochemical descriptors:",
+         "  MW, LogP (lipophilicity), HBD, HBA, TPSA, rotatable bonds, aromatic rings",
+         "",
+         "Lipinski (Pfizer, 1997) — most cited paper in medicinal chemistry:",
+         "  Orally bioavailable if: MW ≤ 500, LogP ≤ 5, HBD ≤ 5, HBA ≤ 10",
+         "",
+         "For CNS drugs — crossing the blood-brain barrier (Pardridge 2005):",
+         "  MW < 450, LogP 1-3, HBD < 3, TPSA < 90 Å²",
+         "",
+         "Example: serotonin (MW=176, LogP=0.2) does NOT cross BBB well",
+         "  → That's why we give SSRIs (which cross BBB) not serotonin itself",
+         "  → L-DOPA crosses BBB, dopamine doesn't → Parkinson's treatment",
+         "",
+         "RDKit: 200+ descriptors  |  Mordred: >1800 descriptors"],
+        n,
+        notes="""=== FEATURE ENGINEERING — FULL EXPLANATION ===
+
+WHAT ARE 'PHYSICOCHEMICAL DESCRIPTORS'?
+These are numbers computed from molecular structure that describe PHYSICAL and CHEMICAL properties of the molecule. Unlike fingerprints (which are binary), descriptors are continuous numbers.
+
+KEY DESCRIPTORS EXPLAINED:
+
+MW (Molecular Weight):
+The mass of the molecule in Daltons (Da) or g/mol. Ethanol = 46 Da. Aspirin = 180 Da. Herceptin (trastuzumab, a monoclonal antibody) = ~148,000 Da. Small molecule drugs are typically 200-500 Da.
+For ML: larger molecules are harder to dose (you'd need a very large pill), harder to absorb, harder to get across cell membranes.
+
+LogP (Octanol-Water Partition Coefficient):
+If you shake a drug with a mixture of octanol (a fatty liquid) and water, some drug goes to the octanol phase and some to the water phase. P = [octanol] / [water]. LogP = log10(P).
+LogP = 0: equally distributed (50/50).
+LogP = 3: 1000× more in octanol → lipophilic (fatty/oily).
+LogP = -2: 100× more in water → hydrophilic (water-loving).
+Matters because: oral absorption requires crossing the lipid bilayer of intestinal cells → needs some lipophilicity. BBB penetration also requires lipophilicity. But too lipophilic → poor aqueous solubility → can't dissolve in stomach contents.
+
+HBD (Hydrogen Bond Donors):
+Atoms with N-H or O-H bonds that can DONATE a hydrogen bond. Examples: -OH (hydroxyl), -NH2 (amine), -COOH (carboxylic acid). Count of these groups.
+Too many HBDs → molecule is 'sticky', can't easily pass through lipid membranes.
+
+HBA (Hydrogen Bond Acceptors):
+Atoms (typically N and O) that can ACCEPT a hydrogen bond (they have lone electron pairs). Count of N and O atoms.
+
+TPSA (Total Polar Surface Area):
+The surface area of all polar atoms (N, O, and attached H). Measured in Å² (square angstroms).
+TPSA > 140 Å² → likely can't cross cell membranes.
+TPSA < 90 Å² → recommended for CNS drugs.
+
+LIPINSKI'S RULE OF FIVE (Ro5):
+In 1997, Christopher Lipinski at Pfizer analyzed all FDA-approved drugs and identified that those with good oral bioavailability had:
+1. MW ≤ 500 (molecular weight)
+2. LogP ≤ 5 (lipophilicity)
+3. HBD ≤ 5 (hydrogen bond donors)
+4. HBA ≤ 10 (hydrogen bond acceptors)
+All four numbers are divisible by 5 (hence 'Rule of Five'). Called 'Rule of Five' but it's actually four rules. If 2+ are violated, oral absorption is poor.
+
+EXCEPTIONS: biologics (antibodies, proteins) BREAK the Ro5 but are injected, not taken orally. Natural products (antibiotics like ivermectin, erythromycin) often break Ro5 but use active transporters. The Ro5 applies to passive diffusion.
+
+RDKIT CODE:
+from rdkit.Chem import Descriptors
+mw = Descriptors.MolWt(mol)
+logp = Descriptors.MolLogP(mol)
+hbd = Descriptors.NumHDonors(mol)
+hba = Descriptors.NumHAcceptors(mol)
+tpsa = Descriptors.TPSA(mol)""")
+
+    # --- QSAR ---
+    n += 1
+    make_content_slide(prs,
+        "QSAR: Quantitative Structure-Activity Relationships",
+        ["Core idea: molecular structure determines biological activity",
+         "  Activity = f(molecular features)",
+         "  Hansch (1964) — founded the field",
+         "",
+         "Modern QSAR workflow:",
+         "  1. Curate dataset from ChEMBL (target + activity data)",
+         "  2. Generate features (fingerprints + descriptors)",
+         "  3. Split data (scaffold split, NOT random!)",
+         "  4. Train model (RF, XGBoost, GNN)",
+         "  5. Evaluate rigorously (RMSE, R², AUC-ROC)",
+         "  6. Interpret (SHAP, feature importance)",
+         "",
+         "This is the core pipeline you'll use for your projects!"],
+        n,
+        notes="""=== QSAR — FULL EXPLANATION ===
+
+WHAT IS QSAR?
+QSAR = Quantitative Structure-Activity Relationship. The idea: if you know the molecular STRUCTURE of a drug (its atoms, bonds, 3D shape, electronic properties), you can PREDICT its biological ACTIVITY (how strongly it binds to a protein, how toxic it is, how soluble it is).
+
+This isn't magic — it's based on physical chemistry: drug binding depends on shape complementarity and chemical interactions (hydrogen bonds, van der Waals, electrostatics) between the drug and its protein target. Both the drug shape/chemistry AND the protein shape/chemistry are determined by molecular structure. Therefore structure → binding → activity.
+
+HISTORY:
+Corwin Hansch (UC Riverside) formalized QSAR in 1964 using linear regression: biological activity = a × LogP + b × Hammett_sigma + c × electronic_parameter + constant. This was a breakthrough — it showed that simple, measurable physical parameters could predict complex biological effects. The 1964 paper has been cited thousands of times.
+
+Modern QSAR uses ML instead of linear equations, but the concept is the same.
+
+THE WORKFLOW (step by step):
+
+Step 1 — DATA: Get a dataset of (molecule, activity) pairs. ChEMBL (maintained by EMBL-EBI) is the main source: it contains ~2.5 million compounds with experimental IC50/Ki/EC50 measurements against hundreds of protein targets. Download target data, clean duplicates, standardize units.
+
+Step 2 — FEATURES: For each molecule, compute:
+- Morgan fingerprints (2048-bit binary vector)
+- Physicochemical descriptors (MW, LogP, HBD, HBA, TPSA...)
+Concatenate into a single feature vector. Shape: (n_molecules, 2048+200) approximately.
+
+Step 3 — SPLIT: Divide molecules into training set (80%) and test set (20%). CRITICAL: use scaffold split (see afternoon), not random split!
+
+Step 4 — TRAIN: Fit RF or XGBoost on training set.
+
+Step 5 — EVALUATE: Compute RMSE, R², etc. on test set. Look at the actual vs. predicted scatter plot.
+
+Step 6 — INTERPRET: Use SHAP to understand which features drive predictions. Decode important fingerprint bits to chemical substructures.
+
+WHY THIS MATTERS FOR AI DRUG DISCOVERY:
+This pipeline is EXACTLY what is used in pharmaceutical companies and biotech today. Companies like Schrödinger, Insilico Medicine, and others built businesses on this pipeline. The practical skills students gain today are directly applicable in industry.""")
+
+    # --- RF & XGBoost ---
+    n += 1
+    make_two_column_slide(prs,
+        "ML Baselines: Random Forest & XGBoost",
+        "Random Forest",
+        ["Ensemble of decision trees (Breiman 2001)",
+         "Each tree trained on bootstrap sample",
+         "Final prediction = average (regression) or vote",
+         "Handles high-dimensional fingerprints well",
+         "Resistant to overfitting",
+         "Easy to interpret (feature importance)"],
+        "XGBoost",
+        ["Sequential trees correct errors (Chen & Guestrin 2016)",
+         "Often higher accuracy than RF",
+         "Built-in regularization",
+         "Handles missing values",
+         "Dominant in Kaggle competitions",
+         "Sheridan (2016, JCIM 56:2353-2360): XGBoost modestly > RF for QSAR"],
+        n,
+        notes="""=== RF AND XGBOOST — FULL EXPLANATION ===
+
+WHY ARE WE USING THESE MODELS?
+For molecular data (fingerprints + descriptors), Random Forest and XGBoost consistently outperform or match deep learning models on datasets with fewer than ~10,000 molecules. This is because:
+1. Molecular datasets are often small (expensive to generate experimentally)
+2. Tree models handle high-dimensional sparse data (fingerprints are 2048-bit but usually <5% set) very well
+3. They don't need feature scaling (deep learning does)
+4. They have excellent out-of-box performance with minimal hyperparameter tuning
+
+RANDOM FOREST:
+Invented by Leo Breiman (UC Berkeley, 2001). The idea:
+1. Create B decision trees (typically 100-500)
+2. Each tree is trained on a BOOTSTRAP SAMPLE: sample n molecules WITH replacement from the training set of n molecules. About 63% of unique molecules appear; 37% are 'out-of-bag' (OOB)
+3. At each split in the tree, only consider sqrt(n_features) features (feature subsampling). This forces diversity between trees.
+4. Final prediction: average of all trees' predictions (regression) or majority vote (classification).
+
+WHY IT WORKS: Individual trees overfit, but they overfit to DIFFERENT aspects (due to bootstrap + feature sampling). Averaging cancels out the errors = low-variance ensemble.
+
+FEATURE IMPORTANCE: The Gini importance (how much each feature reduces the variance across all trees). Can be a rough guide to which features matter most. But SHAP is more reliable (see afternoon).
+
+XGBOOST:
+Invented by Tianqi Chen (now at NVIDIA, 2016). XGBoost = eXtreme Gradient BOOSTing. The idea:
+1. Start with a simple model (constant prediction = mean of training values)
+2. Compute residuals (errors) for each training example
+3. Train a NEW decision tree to predict the residuals
+4. Add the new tree to the model (weighted by a learning rate η)
+5. Compute new residuals. Repeat.
+Each tree 'boosts' the previous ones by correcting their errors. Like a committee where each new member fixes what the previous members got wrong.
+
+WHY XGBOOST IS OFTEN BETTER:
+- Sequential learning can capture patterns that random forests miss
+- Built-in L1 and L2 regularization prevents overfitting
+- Handles missing values automatically (decides at each split which branch to take)
+- Won many Kaggle competitions for tabular data
+
+WHICH TO USE?
+- Start with RF (easy, robust, fewer hyperparameters)
+- Try XGBoost to potentially get better performance
+- In practice: try both, choose the one with better validation performance
+- In the practical today: we compare both on the same dataset
+
+SCIKIT-LEARN CODE:
+from sklearn.ensemble import RandomForestRegressor
+rf = RandomForestRegressor(n_estimators=100, random_state=42)
+rf.fit(X_train, y_train)
+y_pred = rf.predict(X_test)
+
+from xgboost import XGBRegressor
+xgb = XGBRegressor(n_estimators=100, learning_rate=0.1, random_state=42)
+xgb.fit(X_train, y_train)
+y_pred = xgb.predict(X_test)""")
+
+    # --- Break ---
+    n += 1
+    make_section_divider(prs, "☕ BREAK — 15 minutes", n,
+        notes="15-MINUTE BREAK. Students should stretch, grab coffee, and mentally prepare for Practical 1. The practical uses the concepts from the last 90 minutes (SMILES parsing, Morgan fingerprints, descriptors, RF, XGBoost). Remind students before the break: after the break, open the notebook Day2_Practical_QSAR.ipynb.",
+        subtitle="Practical 1 starts right after the break!")
+
+    # --- Practical 1 ---
+    n += 1
+    make_content_slide(prs,
+        "Practical 1: Build a QSAR Model",
+        ["Open: day2_molecular_ml/Day2_Practical_QSAR.ipynb",
+         "",
+         "Dataset: Delaney solubility (1,128 molecules, logS values)",
+         "  Delaney (2004), J. Chem. Inf. Comput. Sci. 44:1000-1005",
+         "",
+         "Steps:",
+         "  1. Load dataset, parse SMILES with RDKit",
+         "  2. Generate Morgan fingerprints (ECFP4, 2048 bits)",
+         "  3. Calculate physicochemical descriptors",
+         "  4. 80/20 train/test split",
+         "  5. Train Random Forest regressor",
+         "  6. Train XGBoost regressor",
+         "  7. Compare: RMSE, R-squared",
+         "",
+         "Time: ~50 min including code execution | Work in pairs"],
+        n,
+        notes="""=== PRACTICAL 1 — WHAT STUDENTS ARE DOING AND WHY ===
+
+THE DATASET — DELANEY SOLUBILITY:
+John Delaney (AstraZeneca) published a dataset in 2004 with 1,128 small organic molecules and their experimentally measured aqueous solubility (log S, units: log mol/L). This is a classic benchmark for QSAR.
+
+WHY SOLUBILITY? Aqueous solubility is one of the most important drug properties. About 40% of drug candidates fail because they are insoluble in water — they can't dissolve in the stomach and get absorbed. Predicting solubility from molecular structure (before synthesis!) would save enormous resources.
+
+logS VALUES: typically range from -11 (almost insoluble) to +1 (very soluble). logS = -6 means 10^-6 mol/L ≈ 0.001 mg/mL (very insoluble). logS = 0 means 1 mol/L (very soluble, like sugar).
+
+WHAT STUDENTS DO:
+1. LOAD DATA: read the CSV file, look at the SMILES and logS columns
+2. PARSE SMILES: for each SMILES string, use RDKit to create a molecule object: mol = Chem.MolFromSmiles(smiles). If the SMILES is invalid, this returns None — need to handle errors.
+3. FINGERPRINTS: for each mol, compute Morgan fingerprints: fp = AllChem.GetMorganFingerprintAsBitVect(mol, 2, 2048). Convert to numpy: np.array(fp).
+4. DESCRIPTORS: compute MW, LogP, HBD, HBA, TPSA for each molecule using RDKit Descriptors module. Stack these 5 numbers alongside the 2048-bit fingerprint. Final feature vector: 2053 dimensions per molecule.
+5. SPLIT: use sklearn.model_selection.train_test_split with test_size=0.2, random_state=42
+6. TRAIN RF: RandomForestRegressor(n_estimators=100, random_state=42).fit(X_train, y_train)
+7. TRAIN XGBOOST: XGBRegressor(n_estimators=100, learning_rate=0.1).fit(X_train, y_train)
+8. EVALUATE: compute RMSE and R² using sklearn.metrics.mean_squared_error and r2_score
+
+EXPECTED RESULTS:
+RF: RMSE ~0.6-0.8 logS, R² ~0.85-0.90
+XGBoost: RMSE ~0.5-0.7 logS, R² ~0.87-0.92
+These look great! BUT (afternoon spoiler) the random split inflates performance because similar molecules end up in both train and test. With scaffold split, performance drops. This 'aha moment' is the key learning of the afternoon.
+
+COMMON STUDENT ERRORS TO WATCH FOR:
+- Forgetting to handle None values from invalid SMILES
+- Using the wrong feature matrix shape (need 2D array, not list)
+- Confusing RMSE with MSE (RMSE = sqrt(MSE))
+- Getting confused about what R² means (0 = baseline mean prediction, 1 = perfect, negative = worse than mean)""")
+
+    # --- Practical 1 hands-on ---
+    n += 1
+    make_section_divider(prs, "🔬 PRACTICAL 1 — Build Your QSAR Model", n,
+        notes="PRACTICAL 1 SESSION (~50 minutes). Walk around the room. Help students who are stuck. Common issues: import errors (make sure rdkit, sklearn, xgboost are installed), SMILES parsing errors (remind them to check for None), shape errors in numpy arrays. The goal: every student gets RF and XGBoost trained with RMSE and R² computed by the end.",
+        subtitle="50 minutes of coding — train your first molecular ML model!")
+
+    # --- Afternoon Agenda ---
+    n += 1
+    make_content_slide(prs,
+        "Afternoon Agenda (Units 5-8)",
+        ["7. Why standard evaluation fails for molecular data",
+         "8. Activity cliffs and scaffold bias",
+         "9. Proper validation: scaffold splits, temporal splits",
+         "10. Metrics deep dive: RMSE, R², ROC-AUC, precision-recall",
+         "11. Explainability with SHAP (Lundberg & Lee 2017)",
+         "12. PRACTICAL 2: Re-evaluate your morning model properly",
+         "",
+         "☕ BREAK after Unit 6 (after ~90 min afternoon)",
+         "",
+         "Key message: the EVALUATION is more important than the model"],
+        n,
+        notes="""=== AFTERNOON AGENDA — WHAT WE'RE DOING AND WHY ===
+
+The afternoon is about RIGOUR. The morning built a model that LOOKS good (R² ~0.9). The afternoon reveals that the model might not be as good as it looks — and teaches the correct way to evaluate.
+
+WHY IS EVALUATION SO IMPORTANT?
+In pharmaceutical drug discovery, a model that falsely appears to work well can guide expensive decisions. If your model says 'compound X is active against Target Y', and you spend $100,000 synthesizing and testing it, only to find it doesn't work — that's a very expensive false positive. If the model was trained and tested with data leakage (contaminated by scaffold similarity), all those AUC-ROC 0.95 results were illusory.
+
+THE CORE PROBLEM:
+Standard ML practice: randomly split data 80/20, train on 80%, test on 20%. Works great for image recognition (a test image of a cat is genuinely unseen). But for molecules: if molecule A and molecule B are structurally similar (same scaffold), and A is in the training set, then B in the test set is not really 'unseen' — the model has seen its scaffold. The test is easier than it would be for a truly novel molecule.
+
+HOW TO FIX IT:
+Scaffold split: cluster molecules by their core ring system (scaffold). Put all molecules with the same scaffold in the SAME split (either all train or all test). This ensures the test set contains genuinely novel scaffolds.
+
+SHAP:
+After proper evaluation, we want to understand WHAT the model learned. SHAP (SHapley Additive exPlanations) is the standard tool for this. It answers: for this specific molecule's prediction, which features contributed the most (and in which direction)?
+
+THE 'AHA MOMENT' for students: compare their morning performance (random split, R² ~0.90) with their afternoon performance (scaffold split, R² ~0.75-0.80). That difference — 0.10-0.15 R² points — represents the 'scaffold memorization' the model was doing. The scaffold split reveals the true performance on novel chemical series.""")
+
+    # --- Hall of Shame ---
+    n += 1
+    make_story_slide(prs,
+        "The Hall of Shame: When Models Lie",
+        "Example 1: hERG toxicity model — 95% accuracy on random split. On novel scaffolds: 60%.\n\nExample 2: Published AUC-ROC 0.97. Remove duplicate compounds: 0.72.\n\nExample 3: Scaffold split vs random — AUROC dropped from 0.92 to 0.75.\n\nExample 4 (Neuroscience): A GABA-A binding model looked great, but it learned to recognize the benzodiazepine scaffold, not actual binding features. On novel chemotypes: near-random.\n\nLesson: ALWAYS validate properly.\n\nRef: Wallach & Heifets (2018) — 'Most Ligand-Based Benchmarks Reward Memorization'",
+        n,
+        notes="""=== HALL OF SHAME — EXPLAINING EACH EXAMPLE ===
+
+These are real failure modes from the drug discovery literature. Understanding them is CRITICAL for doing AI drug discovery properly.
+
+EXAMPLE 1 — hERG MODEL:
+hERG (pronounced 'h-ERG') = human Ether-à-go-go Related Gene. It encodes the Kv11.1 potassium channel in cardiac cells. If a drug blocks this channel, it can cause a life-threatening cardiac arrhythmia called 'Long QT syndrome' (QT = a measurement on an EKG/ECG that represents how long it takes the heart to electrically reset after each beat). Many promising drug candidates were withdrawn from clinical trials or market because they unexpectedly blocked hERG (terfenadine = Seldane, cisapride = Propulsid, etc.).
+
+The hERG QSAR model: trained on all available hERG data with RANDOM split → 95% accuracy. But hERG binders are dominated by certain chemical scaffolds (basic nitrogen + aromatic ring). If those scaffolds are in both train and test, the model learns 'does it have this scaffold?' (not 'does it bind hERG?'). On scaffolds not seen in training: 60%. NOT MUCH BETTER THAN RANDOM!
+
+EXAMPLE 2 — DUPLICATE COMPOUNDS:
+Some databases have duplicate entries (the same molecule measured multiple times, or structurally similar molecules). If you don't remove duplicates before splitting, you literally have the same molecule in train and test. Published AUC 0.97 → remove duplicates → 0.72. The published result was meaningless.
+
+EXAMPLE 3 — GENERAL SCAFFOLD SPLIT VS. RANDOM:
+This is the most common issue. AUC drops from 0.92 to 0.75 when properly evaluated. Citation: Wallach & Heifets (2018) showed this in a systematic study of multiple drug discovery benchmarks. Almost all published benchmarks at that time were overestimating performance.
+
+EXAMPLE 4 — GABA-A MODEL (neurologically relevant):
+GABA-A is the main inhibitory receptor in the brain. It's targeted by: benzodiazepines (diazepam/Valium → anxiety, sleep), barbiturates (old sedatives), Z-drugs (zolpidem/Ambien → insomnia), neurosteroids (naturally occurring anesthetics), alcohol.
+
+Most GABA-A binding data is from benzodiazepines (they were extensively studied in the 1970s-1990s). A QSAR model trained on this data learns to recognize the 1,4-benzodiazepine scaffold. It predicts that anything with a 1,4-benzodiazepine skeleton will bind GABA-A. TRUE for all the training data, but MISLEADING for novel chemotypes (neurosteroids, Z-drugs, THIP, etc.). On scaffold split: near-random performance for non-benzodiazepine chemotypes.
+
+THE LESSON:
+Every step between 'I have a great AUC' and 'I should trust this model in drug discovery' requires rigorous validation. In the afternoon practical, students will directly OBSERVE this performance drop with scaffold splits.""")
+
+    # --- Scaffold Bias ---
+    n += 1
+    make_content_slide(prs,
+        "Scaffold Bias and Proper Splitting",
+        ["Scaffold = core ring structure (Bemis-Murcko framework)",
+         "Problem: random split → same scaffold in train AND test → memorization",
+         "",
+         "Solutions:",
+         "  Scaffold split: no scaffold overlap (Bemis & Murcko 1996)",
+         "  Temporal split: train on older, test on newer data",
+         "  Cluster split: cluster molecules, split by cluster",
+         "",
+         "MoleculeNet uses scaffold split as default (Wu et al. 2018)",
+         "",
+         "Activity cliffs: very similar molecules, very different activity",
+         "  Changing one methyl → chlorine can change IC50 by 1000×",
+         "  These are the hardest cases for ML!"],
+        n,
+        notes="""=== SCAFFOLD BIAS AND PROPER SPLITTING — FULL EXPLANATION ===
+
+WHAT IS A SCAFFOLD?
+In medicinal chemistry, a 'scaffold' is the core structural framework of a drug molecule — typically the ring system (cycles) plus the atoms connecting them, with side chains removed.
+
+The Bemis-Murcko framework (Bemis & Murcko 1996, J. Med. Chem. 39:2887-2893): strip off all side chains (substituents), keep the ring systems and the linker atoms connecting them. The result is the 'scaffold'.
+
+Example: Aspirin (benzene ring + two side chains), ibuprofen (different side chains but a similar propionic acid + aryl scaffold), naproxen (naphthalene ring + propionic acid). These three have different scaffolds. Aspirin's scaffold = benzene. Ibuprofen's scaffold = isobutylbenzene. If aspirin is in train and ibuprofen is in test, they share some structural similarity but are 'scaffold different'.
+
+THE PROBLEM WITH RANDOM SPLITS:
+Drug discovery datasets often contain chemical series — groups of related compounds where medicinal chemists systematically varied substituents on a core scaffold (e.g., series of 50 compounds all with the same quinazoline core but different R groups). If you randomly split, many of these series will have molecules in BOTH train and test. The model learns to recognize the scaffold → predicts test set well → but this performance doesn't generalize to novel scaffolds.
+
+SCAFFOLD SPLIT IMPLEMENTATION:
+1. For each molecule, compute the Bemis-Murcko scaffold using RDKit: from rdkit.Chem.Scaffolds import MurckoScaffold; scaffold = MurckoScaffold.GetScaffoldForMol(mol)
+2. Group molecules by scaffold
+3. Put each scaffold entirely into train OR test (never split)
+4. Fill to 80/20 split approximately (start with largest scaffold groups in train, fill test until ~20% is reached)
+
+TEMPORAL SPLIT:
+Instead of structural split, split by TIME. Train on all data before date X, test on all data after date X. This mimics the real use case: you train the model in year Y, use it to predict in year Y+1 (on molecules that don't exist yet).
+
+ACTIVITY CLIFFS:
+The term for when structurally VERY similar molecules have VERY different activities. Example: compound A (benzene ring + NH2 group) has IC50 = 1 nM (very potent). Compound B (same benzene ring + NHMe group, just added one methyl) has IC50 = 1 μM (1000× weaker).
+
+Activity cliffs arise because: a single functional group (like NH2 vs. NMe) can make a completely different hydrogen bond. NH2 can donate TWO hydrogen bonds (two N-H bonds). NMe can donate ZERO (no N-H bond). If the receptor requires an N-H hydrogen bond for binding, adding the methyl destroys activity.
+
+WHY ACTIVITY CLIFFS ARE HARD FOR ML:
+Fingerprints make these two compounds look similar (Tanimoto ~0.9). But their activities differ by 1000×. The model can't explain this from fingerprints alone — it would need the 3D structure of the binding pocket (molecular docking, Day 3) to understand why the methyl group is so destructive.""")
+
+    # --- Metrics ---
+    n += 1
+    make_two_column_slide(prs,
+        "Evaluation Metrics for Molecular ML",
+        "Regression",
+        ["RMSE — root mean squared error",
+         "  Penalizes large errors more",
+         "R² — coefficient of determination",
+         "  1.0 = perfect, <0 = worse than mean",
+         "MAE — mean absolute error",
+         "  More robust to outliers",
+         "",
+         "Report ALL three, not just R²!"],
+        "Classification",
+        ["AUC-ROC — area under ROC curve",
+         "  0.5 = random, 1.0 = perfect",
+         "  Insensitive to class balance!",
+         "Precision-Recall AUC",
+         "  Better for imbalanced data (most drug data)",
+         "Balanced accuracy",
+         "  Average of sensitivity + specificity",
+         "",
+         "Report PR-AUC for imbalanced data!"],
+        n,
+        notes="""=== EVALUATION METRICS — FULL EXPLANATION ===
+
+REGRESSION METRICS:
+
+RMSE (Root Mean Squared Error):
+RMSE = sqrt(mean((y_true - y_pred)²))
+For solubility prediction: if RMSE = 0.7 logS, it means the average prediction error is 0.7 log units. Since each log unit = 10× in solubility, RMSE = 0.7 means the model's average prediction is off by ~5× (10^0.7 ≈ 5).
+Why square first, then root? Squaring penalizes large errors more than small ones (2² = 4, 4² = 16). A model with many small errors is better than one with a few catastrophic errors. Root brings it back to the original units (logS).
+
+R² (R-squared, Coefficient of Determination):
+R² = 1 - (SS_res / SS_tot)
+where SS_res = sum of squared residuals = sum((y_true - y_pred)²)
+SS_tot = total sum of squares = sum((y_true - mean(y_true))²)
+Interpretation:
+R² = 1.0: perfect predictions (all residuals = 0)
+R² = 0: model no better than always predicting the mean value
+R² < 0: model WORSE than always predicting the mean!
+Typically for good QSAR models: R² > 0.7 is acceptable, R² > 0.85 is good.
+
+MAE (Mean Absolute Error):
+MAE = mean(|y_true - y_pred|)
+Simpler interpretation than RMSE (average absolute error). More robust to outliers (extreme errors are not squared, so they have less influence). Useful if you have noisy experimental data.
+
+CLASSIFICATION METRICS:
+
+AUC-ROC (Area Under the Receiver Operating Characteristic Curve):
+The ROC curve plots True Positive Rate (TPR = sensitivity) vs. False Positive Rate (FPR = 1 - specificity) at different decision thresholds.
+AUC = 0.5: random classifier (ROC curve = diagonal)
+AUC = 1.0: perfect classifier
+AUC = 0.8: good classifier (80% chance that a randomly chosen positive example will be scored higher than a randomly chosen negative)
+
+PROBLEM: AUC-ROC is insensitive to class imbalance. If 99% of compounds are inactive and 1% are active, a model that always predicts 'inactive' achieves ROC-AUC ≈ 0.5 (not great) but PR-AUC ≈ 0.01 (reveals it's useless). Drug discovery data is almost always imbalanced (many more inactive compounds than active ones).
+
+PRECISION-RECALL AUC (PR-AUC):
+Precision = true positives / (true positives + false positives) = of the things I predicted positive, how many were actually positive?
+Recall = true positives / (true positives + false negatives) = of all the actual positives, how many did I find?
+PR-AUC = area under the Precision-Recall curve. For perfectly balanced data: random classifier = 0.5. For imbalanced data with 5% positives: random classifier ≈ 0.05. Much more informative for drug discovery.
+
+PRACTICAL RECOMMENDATION:
+For QSAR regression: report RMSE, R², and MAE together.
+For activity classification: report PR-AUC and ROC-AUC both.
+For comparison across datasets with different imbalance ratios: use balanced accuracy or Matthew's Correlation Coefficient (MCC).""")
+
+    # --- Interpretability Section ---
+    n += 1
+    make_section_divider(prs, "Model Interpretability", n,
+        notes="Transition slide. After evaluating performance quantitatively (RMSE, R², AUC), we want to understand WHY the model makes specific predictions. This is the SHAP section (next two slides).",
+        subtitle="Opening the black box — why does the model predict THIS?")
+
+    # --- Why Interpretability ---
+    n += 1
+    make_content_slide(prs,
+        "Why Explainability Matters",
+        ["Regulatory: FDA expects understanding of model behavior",
+         "Scientific: chemists won't trust a model they can't understand",
+         "Safety: unexplained predictions could mask dangerous failures",
+         "Discovery: understanding features drives new hypotheses",
+         "",
+         "Jimenez-Luna et al. (2020), Nature Machine Intelligence 2:573-584",
+         "",
+         "Types:",
+         "  Global: which features are generally important?",
+         "  Local: why did the model predict THIS for THIS molecule?",
+         "",
+         "EU AI Act: medical AI = high-risk = requires transparency"],
+        n,
+        notes="""=== WHY EXPLAINABILITY MATTERS — FULL EXPLANATION ===
+
+The core tension in modern AI: deep learning models are extremely powerful but hard to interpret ('black boxes'). In drug discovery, a black box is a liability, not an asset.
+
+REGULATORY (FDA):
+The FDA is increasingly paying attention to AI-driven drug discovery. They have published guidance on 'Good Machine Learning Practice' for medical devices (including AI tools in drug development). The key expectation: you must be able to explain WHY the model makes a prediction, especially for safety-critical decisions (predicting toxicity, predicting which patients respond).
+
+SCIENTIFIC CREDIBILITY:
+A medicinal chemist with 30 years of experience will not trust a model that says 'synthesize compound X — I predict it's active but I can't explain why.' They will ask: 'What structural features drive that prediction?' If you can say 'the model predicts this compound is active because of the hydroxyl group at position 4 (SHAP value +1.5) and the fluorine at position 2 (SHAP +0.8), while the large alkyl chain is hurting it (-0.4)', then the chemist can engage. They might say 'yes, that makes sense — I've seen that hydroxyl group be important in this receptor family.' Or they might say 'that fluorine shouldn't matter — there's no electrophilic site in the receptor pocket. I suspect the model is wrong.' Either way, the interpretation drives a scientific discussion.
+
+SAFETY:
+If a model predicts 'non-toxic' for a compound, but can't explain why, you're making a safety decision on faith. If the model can say 'predicted non-toxic because: low LogP (-0.3), no nitro groups (-1.0), no reactive Michael acceptors (-0.5)', you can check: 'Are these the right reasons?' If the model is making the right prediction for the wrong reasons, it will fail on new chemical types.
+
+DISCOVERY (new science):
+When SHAP says 'for this antiviral drug series, the fluorine at position 3 is consistently the most important feature', you've discovered a chemical design rule. Maybe no one knew this before. This is AI contributing to medicinal chemistry knowledge, not just prediction.
+
+GLOBAL VS. LOCAL EXPLANATIONS:
+Global: 'What are the most important features across all predictions?' → SHAP beeswarm plot (1000 points, each molecule, each dot colored by feature value, showing distribution of SHAP values).
+Local: 'Why did the model predict IC50 = 5 nM for THIS specific molecule?' → SHAP waterfall plot (single prediction, showing positive and negative contributions of each feature).
+
+EU AI ACT:
+The European Union's AI Act (2023) classifies medical AI as 'high risk'. High-risk AI systems require: transparency (documentation of training data, model design, performance), explainability (ability to understand why decisions are made), robustness (performance on diverse inputs), and human oversight (humans can override). This will affect all AI drug discovery tools used in Europe.""")
+
+    # --- SHAP ---
+    n += 1
+    make_content_slide(prs,
+        "SHAP: SHapley Additive exPlanations",
+        ["Lundberg & Lee (2017), NeurIPS",
+         "Based on Shapley values from cooperative game theory",
+         "",
+         "For each prediction, assign a contribution to each feature:",
+         "  Positive SHAP → pushes prediction higher",
+         "  Negative SHAP → pushes prediction lower",
+         "  Sum of all SHAP values + baseline = predicted value",
+         "",
+         "Advantages:",
+         "  Mathematically grounded (unique solution with desirable properties)",
+         "  Works for any model (model-agnostic)",
+         "  Local AND global explanations",
+         "  Beautiful visualizations (beeswarm, waterfall, force plots)",
+         "",
+         "For fingerprints: important bit → decode to substructure → chemistry insight"],
+        n,
+        notes="""=== SHAP — FULL EXPLANATION FROM GAME THEORY TO MOLECULAR ML ===
+
+GAME THEORY BACKGROUND:
+Lloyd Shapley (Princeton, 1953) asked: 'If several players cooperate to earn a reward, how should we distribute the reward fairly?' His answer: each player's fair share = their AVERAGE MARGINAL CONTRIBUTION across all possible orderings of players joining the coalition.
+
+EXAMPLE: Three players A, B, C earn rewards based on who is in the coalition:
+{A}=3, {B}=2, {C}=4, {A,B}=7, {A,C}=8, {B,C}=6, {A,B,C}=12
+Shapley value for A: average of A's marginal contribution in all 6 orderings (3! = 6 permutations of A,B,C joining the coalition): in some orderings A joins first (marginal contribution = 3), in others A joins after B (marginal = 7-2=5), etc. The exact Shapley values are fair and unique (they are the ONLY values satisfying efficiency, symmetry, dummy player, and additivity axioms).
+
+APPLYING TO ML:
+Players = features. Payout = prediction. SHAP value for feature i = the average marginal contribution of feature i to the prediction across all possible subsets of features.
+
+FORMULA: SHAP_i = sum over all subsets S not containing i of [|S|! × (|F|-|S|-1)! / |F|!] × [f(S∪{i}) - f(S)]
+Where F is the set of all features and f(S) is the model's prediction when only features in S are present.
+
+WHY THIS IS EXPENSIVE: There are 2^n subsets (n = number of features). For 2048-bit fingerprints, this is astronomical. TreeSHAP (Lundberg et al. 2020) computes exact Shapley values for tree-based models (RF, XGBoost) in O(T × L²) time where T = number of trees and L = max number of leaves. Fast and exact!
+
+HOW TO READ SHAP VALUES:
+For a molecule predicted to have pIC50 = 7.8:
+- Baseline (mean prediction for all training molecules) = 6.5
+- SHAP value for 'aromatic amine group' = +1.0 (pushes prediction up by 1.0)
+- SHAP value for 'high molecular weight' = -0.3 (pushes it down)
+- SHAP value for 'fluorine on ring' = +0.6
+- Sum: 6.5 + 1.0 - 0.3 + 0.6 + ... = 7.8 (predicted value)
+
+DECODING FINGERPRINT BITS:
+If bit 847 has the highest SHAP value, you want to know what molecular feature it represents. In RDKit:
+from rdkit.Chem import AllChem
+bitInfo = {}
+fp = AllChem.GetMorganFingerprintAsBitVect(mol, radius=2, nBits=2048, bitInfo=bitInfo)
+# bitInfo[847] gives you the (atom_index, radius) pair
+# Draw.DrawMorganBit(mol, bit=847, bitInfo=bitInfo) shows the substructure
+This is how you go from 'bit 847 matters' to 'the pyridine ring at position X matters'.
+
+VISUALIZATIONS:
+- Beeswarm plot: shows SHAP values for all molecules and all features. Each dot = one molecule. X-axis = SHAP value. Color = feature value (red=high, blue=low). Most informative global view.
+- Waterfall plot: for one specific molecule. Shows exactly which features pushed the prediction up/down from the baseline to the final value.
+- Force plot: like waterfall but horizontal. Good for presentations.
+
+CODE:
+import shap
+explainer = shap.TreeExplainer(rf_model)
+shap_values = explainer.shap_values(X_test)
+shap.summary_plot(shap_values, X_test)  # beeswarm""")
+
+    # --- Applicability Domain ---
+    n += 1
+    make_content_slide(prs,
+        "Applicability Domain",
+        ["A model is only reliable within its training data distribution",
+         "",
+         "Methods to define AD:",
+         "  Distance-based: is the new molecule close to training data?",
+         "  Descriptor range: are features within training bounds?",
+         "  Conformal prediction: distribution-free prediction intervals",
+         "",
+         "Sahigara et al. (2012), Molecules 17(5):4791-4810",
+         "",
+         "In practice: flag out-of-domain predictions as low confidence",
+         "A confident wrong prediction is worse than an honest 'I don't know'"],
+        n,
+        notes="""=== APPLICABILITY DOMAIN — FULL EXPLANATION ===
+
+WHAT IS THE APPLICABILITY DOMAIN?
+Every ML model has a 'comfort zone' — the region of chemical space where it has training data and can make reliable predictions. Outside this zone (the 'applicability domain'), predictions become unreliable.
+
+ANALOGY: A QSAR model trained on kinase inhibitors (cancer drugs that block protein kinases) should NOT be used to predict activity of GPCRs. The model has no training data in that chemical space. Similarly, a model trained on compounds with MW 200-400 Da should not be applied to a 900 Da macrocycle without flagging it as 'out of domain'.
+
+METHODS:
+
+1. Distance-based:
+For each new compound, compute its similarity to the nearest training compound(s) using Tanimoto similarity on fingerprints. If max_Tanimoto < threshold (e.g., 0.3), the compound is too dissimilar from anything in training → flag as outside AD.
+
+2. Descriptor range check:
+For each physicochemical descriptor, check if the new compound's value is within [min_train, max_train]. If LogP = 8 but training data had LogP 0-5, the compound is outside the training distribution for this descriptor.
+
+3. Leverage h statistic:
+From linear regression statistics. h_i = x_i^T (X^T X)^{-1} x_i. High h = influential point, far from the center of the training data. Williams plot: SHAP residual vs. h_i. Points with high h AND high residual = problem predictions.
+
+4. Conformal prediction:
+A rigorous statistical framework. Gives prediction INTERVALS with guaranteed coverage: 'I predict pIC50 = 7.5 ± 1.2, and I guarantee that 95% of the time, the true value is within this interval.' Based on p-values from comparing the new point to calibration set points. Does not require strong statistical assumptions.
+
+PRACTICAL IMPLEMENTATION:
+from sklearn.neighbors import NearestNeighbors
+nn = NearestNeighbors(n_neighbors=5, metric='jaccard')  # Tanimoto = 1 - Jaccard
+nn.fit(X_train_fps)
+distances, _ = nn.kneighbors(X_test_fps)
+ad_flag = distances.mean(axis=1) > 0.7  # True = outside AD
+
+THE KEY PRINCIPLE:
+A model that SAYS 'I don't know' is MORE VALUABLE than a model that confidently gives wrong answers. In pharmaceutical development, a false positive prediction (we predicted active, it's actually inactive) costs millions. Flagging uncertain predictions as 'low confidence' prevents these costly mistakes.""")
+
+    # --- Break ---
+    n += 1
+    make_section_divider(prs, "☕ BREAK — 15 minutes", n,
+        notes="SECOND 15-MINUTE BREAK of Day 2. Students should have their morning model trained (from Practical 1). The afternoon practical (Practical 2) will: (1) implement scaffold split, (2) re-evaluate the morning model with this proper split, and (3) compute SHAP values. Remind: open Day2_Practical_Evaluation.ipynb after the break.",
+        subtitle="Final practical of the day coming up!")
+
+    # --- Practical 2 ---
+    n += 1
+    make_content_slide(prs,
+        "Practical 2: Evaluate & Interpret Your QSAR Model",
+        ["Open: day2_molecular_ml/Day2_Practical_Evaluation.ipynb",
+         "",
+         "Steps:",
+         "  1. Load your morning QSAR model (or re-train quickly)",
+         "  2. Implement scaffold splitting (Bemis-Murcko)",
+         "  3. Compare: random split vs. scaffold split performance",
+         "  4. Compute ROC curve, precision-recall curve",
+         "  5. Calculate SHAP values for your RF model",
+         "  6. Create SHAP beeswarm plot: which features matter most?",
+         "  7. Decode important fingerprint bits to substructures",
+         "  8. Define applicability domain using Tanimoto distance",
+         "",
+         "Time: ~50 min | The 'aha moment': watch performance DROP with scaffold split"],
+        n,
+        notes="""=== PRACTICAL 2 — WHAT STUDENTS DO AND WHAT TO EXPECT ===
+
+SETUP: Students should have their morning model (RF + XGBoost) ready from Practical 1. If someone didn't finish, they can quickly re-train in the first 5 minutes.
+
+STEP 2 — SCAFFOLD SPLIT:
+from rdkit.Chem.Scaffolds import MurckoScaffold
+def get_scaffold(smiles):
+    mol = Chem.MolFromSmiles(smiles)
+    scaffold = MurckoScaffold.MurckoScaffoldSmiles(mol=mol, includeChirality=False)
+    return scaffold
+
+Group molecules by scaffold. Sort scaffold groups by size (largest first). Put largest scaffolds in train until 80% filled. Rest in test.
+
+STEP 3 — THE AHA MOMENT:
+Students will see their R² drop from ~0.85-0.90 (random split) to ~0.70-0.80 (scaffold split). This is the KEY LEARNING. The model was memorizing scaffold patterns, not learning fundamental structure-activity relationships. On novel scaffolds, performance is worse.
+
+Make sure to discuss this observation with the class after the practical. Ask: 'Why did your R² drop?' 'What does this mean for using your model to predict a truly new molecule?'
+
+STEP 5-7 — SHAP:
+import shap
+explainer = shap.TreeExplainer(rf_model)
+shap_values = explainer.shap_values(X_test)  # shape: (n_test, n_features)
+
+COMMON FINDINGS:
+- The most important features are often LogP, molecular weight, and a few specific fingerprint bits
+- LogP and MW show negative SHAP for high values (more lipophilic/heavier molecules tend to be LESS soluble)
+- Some fingerprint bits corresponding to aromatic rings or specific functional groups consistently show positive SHAP
+- The SHAP beeswarm plot makes chemical sense: high LogP → high SHAP magnitude for LogP feature → molecules that are very lipophilic are predicted to be less soluble (correct!)
+
+STEP 8 — APPLICABILITY DOMAIN:
+Simple implementation: for each test molecule, find its nearest training neighbor (Tanimoto similarity). Flag molecules where similarity < 0.3 as 'outside AD'.
+
+EXPECTED OUTCOMES:
+By the end of Practical 2, students should have:
+1. A properly evaluated QSAR model (scaffold split R² ~0.75-0.80)
+2. A SHAP beeswarm plot showing feature importances
+3. Identified the most important molecular features (LogP, MW, some fingerprint bits)
+4. An applicability domain flag for each test molecule
+
+THINGS TO HELP WITH:
+- shap.TreeExplainer with RF: use rf_model.estimators_ if there are issues with the ensemble. Or use shap.Explainer (newer API)
+- SHAP plots can be slow for large datasets: subsample to 200-500 test molecules
+- Fingerprint bit decoding: see the bitInfo dictionary from GetMorganFingerprintAsBitVect()""")
+
+    # --- Practical 2 hands-on ---
+    n += 1
+    make_section_divider(prs, "🔬 PRACTICAL 2 — Evaluate & Interpret", n,
+        notes="PRACTICAL 2 SESSION (~50 minutes). Walk around and help. The scaffold split implementation is the trickiest part — help students who get stuck on the MurckoScaffold API. The SHAP beeswarm plot is the most visually rewarding part — it's always a crowd-pleaser when you can see that LogP and MW are the most important features and they make chemical sense.",
+        subtitle="50 minutes — discover what your model really knows!")
+
+    # --- Discussion ---
+    n += 1
+    make_discussion_slide(prs,
+        "A model achieves AUC-ROC 0.95 on the test set.\nWould you trust it to guide a $100M drug campaign?",
+        ["What kind of split was used? Random or scaffold?",
+         "How imbalanced is the dataset? (Use PR-AUC instead!)",
+         "Has it been validated prospectively on truly new chemical series?",
+         "What is the applicability domain?"],
+        n,
+        notes="""=== DISCUSSION QUESTIONS — GUIDE FOR DISCUSSION ===
+
+The answer to the main question is: NO, not without more information.
+
+WALK THROUGH EACH QUESTION:
+
+Q: What kind of split was used?
+Good answer: scaffold split, ideally temporal split. Random split overfits. The student who just did Practical 2 saw their R² drop when they used scaffold split. The same applies to AUC-ROC. A published AUC 0.95 with random split might be 0.75 with scaffold split.
+
+Q: How imbalanced is the dataset?
+Drug discovery datasets are typically very imbalanced: 1-5% active, 95-99% inactive. In this case, AUC-ROC is misleading because it weights false positives and false negatives equally, ignoring class imbalance. PR-AUC is much more informative. A model with AUC-ROC 0.95 on a 1% positive rate dataset might have PR-AUC 0.15 (terrible — most of its 'active' predictions are false positives).
+
+Q: Prospective validation?
+Has the model been used in practice to predict TRULY NEW molecules (synthesized AFTER the model was built)? Not just retrospective validation on historical data. This is the ultimate test. If the model successfully guided synthesis of 5 novel actives that were predicted before synthesis, that's strong evidence. If it's only been evaluated on historical data: much weaker evidence.
+
+Q: Applicability domain?
+If the model is asked to predict for a molecule very different from its training set, the prediction is unreliable. Did anyone check whether the test set molecules are in the AD? Many published benchmarks don't report AD analysis.
+
+CLOSING THOUGHT:
+The answer 'I would not trust a $100M decision to this model without more validation' is NOT pessimism about AI. It's scientific rigor. Models that are properly validated — with scaffold splits, checked AD, prospective validation — ARE trustworthy and ARE used to guide real drug campaigns (Insilico Medicine, Schrödinger, Recursion Pharmaceuticals all do this). The key is: validate properly before making expensive decisions.""")
+
+    # --- Takeaways ---
+    n += 1
+    make_takeaway_slide(prs,
+        ["Morgan/ECFP fingerprints convert molecules to bit vectors",
+         "QSAR: predicting activity from structure (since 1964!)",
+         "RF and XGBoost: strong, production-ready QSAR baselines",
+         "Scaffold splits prevent data leakage (Wallach & Heifets 2018)",
+         "SHAP: mathematically grounded explanations for any model",
+         "Applicability domain: know your model's limits",
+         "The evaluation is more important than the model!",
+         "Next (Day 3, 5 May): Deep learning, GNNs, generative AI, AlphaFold"],
+        2, n,
+        notes="""=== KEY TAKEAWAYS — EMPHASIZE THESE ===
+
+1. MORGAN/ECFP FINGERPRINTS:
+The most important molecular representation for classical ML. Converts any molecule (SMILES) to a 2048-bit binary vector. Computed with 3 lines of RDKit code. Used in virtually every industrial QSAR model.
+
+2. QSAR IS 60 YEARS OLD:
+It's not new! Hansch (1964) showed that structure predicts activity. What's new is using deep learning (Day 3) and much larger datasets (ChEMBL). The fundamental idea is unchanged.
+
+3. RF AND XGBOOST:
+For datasets <10,000 molecules, these are often as good as deep learning. Students can use these RIGHT NOW for their projects. Both are in scikit-learn (RF) and xgboost library (XGBoost).
+
+4. SCAFFOLD SPLITS:
+This is the most common mistake in published molecular ML papers. Random split inflates performance by 10-20% R² points. Always use scaffold split for molecular property prediction. MoleculeNet (the main benchmark) uses scaffold split as default.
+
+5. SHAP:
+The gold standard for interpreting ML predictions. Mathematically rigorous (Shapley values), model-agnostic (works for RF, XGBoost, neural networks), and connects computer science (ML prediction) to chemistry (substructure importance). TreeSHAP is exact and fast for RF/XGBoost.
+
+6. APPLICABILITY DOMAIN:
+Know when to say 'I don't know.' A model outside its training distribution can give confident wrong answers. Flag low-similarity predictions as uncertain.
+
+7. THE EVALUATION IS MORE IMPORTANT THAN THE MODEL:
+A mediocre model properly evaluated is more valuable than an impressive model improperly evaluated. This is the key practical lesson of today. Industry hiring managers will ask about validation strategies — not just what model you used.
+
+8. WHAT'S COMING ON DAY 3:
+GNNs (Graph Neural Networks): instead of Morgan/ECFP hashing, LEARN how to aggregate neighborhood information. AlphaFold: predict protein 3D structure from sequence, enabling structure-based drug design. Generative AI: design new molecules from scratch.""")
+
+    # --- Next Day ---
+    n += 1
+    make_content_slide(prs,
+        "Coming Up: Day 3 — 5 May 2026",
+        ["Morning: Deep Learning & Graph Neural Networks",
+         "  Molecules as graphs → message passing → GNNs",
+         "  Practical: train a GNN on MoleculeNet data",
+         "",
+         "Afternoon: Generative AI & Protein Targets",
+         "  Generate new molecules (VAE, diffusion)",
+         "  AlphaFold for drug targets",
+         "  Practical: explore generative models or AlphaFold",
+         "",
+         "Preparation:",
+         "  Review today's SHAP analysis — understand your model",
+         "  Start discussing project approach with your group"],
+        n,
+        notes="""=== PREVIEW OF DAY 3 — WHAT IS COMING AND HOW IT BUILDS ON TODAY ===
+
+GRAPH NEURAL NETWORKS (GNNs):
+Today: Morgan/ECFP fingerprints hash the neighborhood information into a fixed vector.
+Day 3: GNNs LEARN how to aggregate the neighborhood information (message passing with trainable weights). The connection: ECFP is essentially one round of message passing with hashing. GNNs do it with neural networks instead. More expressive, learns task-specific features, but requires more data and more tuning.
+
+KEY MESSAGE: Today's lecture is NECESSARY before Day 3. Students who understand ECFP fingerprints will immediately understand why GNNs are better. Students who don't understand ECFP will be lost.
+
+GENERATIVE AI:
+VAE (Variational Autoencoder): encode molecule to latent vector → modify latent vector → decode to new molecule. Can generate molecules with specific properties.
+Diffusion models: add noise to a molecule, learn to denoise → generate new molecules from noise. State of the art for molecular generation.
+
+ALPHAFOLD:
+Google DeepMind's protein structure prediction AI (2021). Given a protein sequence, predict its 3D structure with atomic accuracy. REVOLUTIONIZED drug discovery because:
+1. Drug binding depends on 3D structure of the protein target
+2. Before AlphaFold, getting a 3D structure required experimental crystallography (expensive, slow, often fails)
+3. Now: any protein's structure is available in minutes
+4. AlphaFold + molecular docking (predicting where a drug fits in the 3D structure) = structure-based drug design
+
+WHAT STUDENTS SHOULD DO BETWEEN NOW AND DAY 3:
+1. Review their SHAP analysis from today's practical. Try to explain the top 5 most important features chemically.
+2. Finalize their project groups (sign up today!).
+3. Think about whether their project uses QSAR (today's tools) or needs GNNs (Day 3 tools). If the dataset is <5,000 molecules: RF/XGBoost might be sufficient. If >10,000 or involves 3D structure: consider GNNs/AlphaFold.""")
+
+    os.makedirs("day2_molecular_ml", exist_ok=True)
+    prs.save("day2_molecular_ml/slides_annotated.pptx")
+    print(f"  Day 2 (Annotated): {n} slides → day2_molecular_ml/slides_annotated.pptx")
+
+
+
 # ===== MAIN =====
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.path.abspath(__file__)) if os.path.dirname(os.path.abspath(__file__)) else ".")
     print("=" * 60)
     print("  AI for Drug Discovery — Slide Generator")
-    print("  4 Teaching Days + Exam + Quiz")
-    print("  Quiz:           Introductory Drug Discovery Quiz")
+    print("  4 Teaching Days + Exam + 2 Quizzes + Annotated Day 2")
+    print("  Quiz 1:         Introductory Drug Discovery Quiz")
+    print("  Quiz 2:         Abbreviations & Biology Quiz")
     print("  Day 1 (15 Apr): Introduction, Pipeline, Projects — 6 units")
     print("  Day 2 (22 Apr): Molecular ML, QSAR, Evaluation — 8 units")
+    print("  Day 2 (annotated): Full presenter notes for everything")
     print("  Day 3 (5 May):  Deep Learning, GNNs, AlphaFold — 8 units")
     print("  Day 4 (19 May): Ethics, Physiology, Workshop — 4 units")
     print("  Exam  (27 May): Presentations / Posters")
     print("=" * 60)
     generate_quiz()
+    generate_quiz_abbreviations()
     generate_day1()
     generate_day2()
+    generate_day2_annotated()
     generate_day3()
     generate_day4()
     print("=" * 60)
