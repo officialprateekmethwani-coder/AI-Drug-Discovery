@@ -1,7 +1,8 @@
 # Exam Information
 
-**Date:** 27 May 2026  
-**Format:** Group Presentations / Posters
+**Date:** 2 June 2026  
+**Format:** Group Presentations / Posters  
+**Note:** The exam takes place on the last practical day (Day 4). The morning session covers AlphaFold & Protein Structure; presentations are in the afternoon.
 
 ## Overview
 
