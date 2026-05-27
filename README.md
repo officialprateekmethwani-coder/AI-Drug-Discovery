@@ -1,6 +1,6 @@
 # 🧬 AI for Drug Discovery
 
-> **Compact Course — 26 Teaching Units | 4 Teaching Days (last day includes Exam)**  
+> **Compact Course — 26 Teaching Units | 4 Teaching Days + Exam Day**  
 > **Instructor:** Dr. Étienne Serbe-Kamp  
 > **Term:** April–May 2026
 
@@ -34,7 +34,8 @@ That's it. Every notebook is self-contained and includes step-by-step explanatio
 | 1 | 15 Apr 2026 | Drug Discovery Pipeline, AI/ML Fundamentals | [📖 day1/](day1/) |
 | 2 | 22 Apr 2026 | Molecular Representations, QSAR, Model Evaluation | [💻 day2/](day2/) |
 | 3 | 5 May 2026 | Deep Learning, Graph Neural Networks | [💻 day3/](day3/) |
-| 4 🎓 | **2 Jun 2026** | **AlphaFold, Protein Structure + Exam: Group Presentations** | [💻 day4/](day4/) · [📋 Exam](resources/exam_info.md) |
+| 4 | 19 May 2026 | AlphaFold, Protein Structure & Presentation Preparation | [💻 day4/](day4/) |
+| 🎓 | **2 Jun 2026** | **Exam: Group Presentations** | [📋 Exam](resources/exam_info.md) |
 
 ---
 
@@ -53,7 +54,7 @@ AI-Drug-Discovery/
 ├── day3/                              # Day 3: Deep Learning
 │   └── Day3_Practical_GNN.ipynb       #   🧠 Graph Neural Networks with DeepChem
 │
-├── day4/                              # Day 4: Protein Structure + Exam
+├── day4/                              # Day 4: Protein Structure & Presentation Prep
 │   └── Day4_Practical_AlphaFold.ipynb #   🧬 AlphaFold structure exploration
 │
 ├── resources/                         # Supplemental materials
@@ -91,8 +92,8 @@ AI-Drug-Discovery/
 - Compare GNN performance against traditional fingerprint methods
 - Understand why learning representations can beat hand-crafted features
 
-### Day 4 — AlphaFold & Protein Structure + Exam (2 June)
-> `day4/Day4_Practical_AlphaFold.ipynb` · Morning: Practical | Afternoon: Group Presentations
+### Day 4 — AlphaFold & Protein Structure + Presentation Preparation (19 May)
+> `day4/Day4_Practical_AlphaFold.ipynb` · AlphaFold Practical + time to prepare group presentations
 
 - Access the **AlphaFold Protein Structure Database** via its API
 - Visualize protein structures in **interactive 3D** (colored by confidence)
