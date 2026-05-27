@@ -2,7 +2,7 @@
 
 **Date:** 2 June 2026  
 **Format:** Group Presentations / Posters  
-**Note:** The exam takes place on the last practical day (Day 4). The morning session covers AlphaFold & Protein Structure; presentations are in the afternoon.
+**Note:** The exam takes place on a separate day after the last teaching day (Day 4). Day 4 covers AlphaFold & Protein Structure and provides time for presentation preparation.
 
 ## Overview
 
